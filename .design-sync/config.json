@@ -1,0 +1,23 @@
+{
+  "projectId": "949f7d8b-307c-44a8-b2a9-6659864ad529",
+  "shape": "package",
+  "pkg": "raulpersonalsite-next",
+  "globalName": "SunnyrStudio",
+  "srcDir": ".design-sync/wrappers",
+  "tsconfig": "tsconfig.json",
+  "cssEntry": ".design-sync/compiled/tailwind-compiled.css",
+  "componentSrcMap": {
+    "Button": ".design-sync/wrappers/Button.tsx",
+    "Card": ".design-sync/wrappers/Card.tsx",
+    "Section": ".design-sync/wrappers/Section.tsx",
+    "WaveformDivider": ".design-sync/wrappers/WaveformDivider.tsx",
+    "WaveformPlayer": ".design-sync/wrappers/WaveformPlayer.tsx",
+    "PortfolioTrackList": ".design-sync/wrappers/PortfolioTrackList.tsx",
+    "ContactForm": ".design-sync/wrappers/ContactForm.tsx",
+    "ProductCard": ".design-sync/wrappers/ProductCard.tsx",
+    "CheckoutButton": ".design-sync/wrappers/CheckoutButton.tsx",
+    "CalEmbed": ".design-sync/wrappers/CalEmbed.tsx"
+  },
+  "buildCmd": null,
+  "readmeHeader": ".design-sync/conventions.md"
+}

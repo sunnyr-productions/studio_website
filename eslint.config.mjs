@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // design-sync (claude.ai/design) staged converter + its generated
+    // bundle — vendored/generated code, not project source. Gitignored too;
+    // this just keeps `npm run lint` from scanning React's own internals.
+    ".ds-sync/**",
+    "ds-bundle/**",
   ]),
 ]);
 

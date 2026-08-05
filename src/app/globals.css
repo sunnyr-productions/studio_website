@@ -1,26 +1,364 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffdf8;
+  --foreground: #1f2430;
+
+  /* The site's one recurring silhouette — an intentionally uneven rounded
+     shape, never a plain rectangle or a perfect pill. Reused on every card,
+     button, and input so it reads as a deliberate signature, not a default. */
+  --radius-sketch: 1.75rem 1rem 1.75rem 1rem/1rem 1.75rem 1rem 1.75rem;
+  --radius-sketch-sm: 1.1rem 0.6rem 1.1rem 0.6rem/0.6rem 1.1rem 0.6rem 1.1rem;
+  --radius-sketch-pill: 1.6rem 1rem 1.6rem 0.9rem/1rem 1.6rem 0.9rem 1.6rem;
+
+  /* Tokens that must NOT invert between themes.
+     --color-ink-fixed: text/outline/shadow on the marigold CTA and the
+     avatar — marigold is light in both themes, so its foreground stays dark.
+     --sketch-shadow: the neutral (accent-less) sticker offset shadow, dark
+     ink on light paper / near-black on the night surface. */
+  --color-ink-fixed: #1f2430;
+  --sketch-shadow: rgba(31, 36, 48, 0.14);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ---- Warm "after-hours studio" dark theme --------------------------------
+   Not an inverted grayscale: a deep periwinkle-ink night with marigold kept
+   as the warm light source. Implemented by redefining the SAME scale tokens
+   the light theme uses, so every `bg-cream-*`, `text-ink-*`, etc. flips at
+   once (Tailwind v4 utilities reference these vars). `cream` becomes the
+   night surfaces, `ink` becomes warm off-white text; marigold/periwinkle
+   keep their hue but the shades used AS TEXT on dark are brightened. */
+:root[data-theme="dark"] {
+  --background: #14161f;
+  --foreground: #f6f1e6;
+
+  /* Surfaces (was cream: lightest → warmest) now (base night → warmer panel) */
+  --color-cream-50: #171922;
+  --color-cream-100: #1e2130;
+  --color-cream-200: #2a2438;
+
+  /* Text (was ink: dark → darkest) now warm off-whites */
+  --color-ink-500: #928f8a;
+  --color-ink-700: #c9c6bf;
+  --color-ink-900: #f6f1e6;
+
+  /* Marigold — brighten the deep shades used as text/wash on the night bg */
+  --color-marigold-100: #3a2c17;
+  --color-marigold-600: #e49b2a;
+  --color-marigold-700: #e8a63a;
+  --color-marigold-800: #f2b957;
+
+  /* Periwinkle — deepen the pale tints, brighten the text shades */
+  --color-periwinkle-50: #20233c;
+  --color-periwinkle-100: #262a48;
+  --color-periwinkle-600: #8fa0ea;
+  --color-periwinkle-700: #aab6f0;
+  --color-periwinkle-800: #c2caf5;
+
+  --sketch-shadow: rgba(0, 0, 0, 0.55);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  /* Marigold — primary accent (buttons, CTAs, large text, icons) */
+  --color-marigold-50: #fff8ec;
+  --color-marigold-100: #feeacb;
+  --color-marigold-200: #fdd48f;
+  --color-marigold-300: #fbbb56;
+  --color-marigold-400: #f8a62e;
+  --color-marigold-500: #f5a623;
+  --color-marigold-600: #db8a12;
+  --color-marigold-700: #b36b0e;
+  --color-marigold-800: #8a5210;
+  --color-marigold-900: #6e4212;
+
+  /* Periwinkle — secondary accent (links, secondary buttons, decorative strokes) */
+  --color-periwinkle-50: #f3f4fd;
+  --color-periwinkle-100: #e5e8fa;
+  --color-periwinkle-200: #c9cff3;
+  --color-periwinkle-300: #abb4ec;
+  --color-periwinkle-400: #93a0e4;
+  --color-periwinkle-500: #7b8fde;
+  --color-periwinkle-600: #5e6fc2;
+  --color-periwinkle-700: #48569c;
+  --color-periwinkle-800: #374176;
+  --color-periwinkle-900: #2a3159;
+
+  /* Ink — body text (softer than pure black) */
+  --color-ink-500: #6b7280;
+  --color-ink-700: #3a4152;
+  --color-ink-900: #1f2430;
+
+  /* Cream — warm off-white backgrounds */
+  --color-cream-50: #fffdf8;
+  --color-cream-100: #fff9ee;
+  --color-cream-200: #fef2dd;
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-fraunces);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+/* Paper grain — a faint fixed noise layer over the whole site so flat cream
+   fields read as warm paper, not a flat CSS color. Cheap: one fixed overlay,
+   not per-element. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Multiply darkens — invisible on a dark field, so the grain switches to a
+   screen (lightening) blend at night. */
+:root[data-theme="dark"] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.05;
+}
+
+::selection {
+  background: var(--color-marigold-200);
+  color: var(--color-ink-900);
+}
+
+:root[data-theme="dark"] ::selection {
+  background: var(--color-marigold-500);
+  color: var(--color-ink-fixed);
+}
+
+/* Custom scrollbar — cream track, marigold thumb, on-brand instead of the
+   OS default. */
+* {
+  scrollbar-color: var(--color-marigold-300) var(--color-cream-100);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-cream-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-marigold-300);
+  border-radius: 999px;
+  border: 3px solid var(--color-cream-100);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-marigold-400);
+}
+
+/* ---- Studio modes: the two doors ---------------------------------------
+   `data-mode` on <html> is "lessons" (teaching side) or "studio" (client
+   work). Switching is pure CSS on purpose: both variants are server-rendered
+   and the mode attribute is set pre-paint, so the homepage stays statically
+   rendered, there's no hydration mismatch, and flipping doors is instant. */
+
+/* Copy that belongs to only one door. */
+[data-mode="lessons"] [data-mode-only="studio"],
+[data-mode="studio"] [data-mode-only="lessons"] {
+  display: none;
+}
+
+/* Section running order. Lessons mode uses plain DOM order; studio mode
+   re-sequences to lead with client work. No duplicated markup — the same
+   sections simply reorder. */
+.home-sections {
+  display: flex;
+  flex-direction: column;
+}
+
+[data-mode="studio"] .home-sections > [data-sect="services"] {
+  order: 1;
+}
+[data-mode="studio"] .home-sections > [data-sect="portfolio"] {
+  order: 2;
+}
+[data-mode="studio"] .home-sections > [data-sect="why"] {
+  order: 3;
+}
+[data-mode="studio"] .home-sections > [data-sect="how"] {
+  order: 4;
+}
+[data-mode="studio"] .home-sections > [data-sect="lessons"] {
+  order: 5;
+}
+[data-mode="studio"] .home-sections > [data-sect="testimonials"] {
+  order: 6;
+}
+[data-mode="studio"] .home-sections > [data-sect="faq"] {
+  order: 7;
+}
+[data-mode="studio"] .home-sections > [data-sect="cta"] {
+  order: 8;
+}
+
+/* Store: float the current door's products to the front. Nothing is hidden —
+   both doors buy from the same shelf, the order just reflects intent. */
+.store-grid > [data-audience] {
+  order: 1;
+}
+
+[data-mode="lessons"] .store-grid > [data-audience="lessons"],
+[data-mode="studio"] .store-grid > [data-audience="studio"] {
+  order: 0;
+}
+
+/* The ambigram pays off here: the wordmark reads identically upside down, so
+   flipping the studio into its other mode literally rotates the mark. */
+.logo-mark {
+  display: block;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-mode="studio"] .logo-mark {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-mark {
+    transition: none;
+  }
+}
+
+/* Highlighter-marker underline for inline emphasis — a rough painted swipe
+   instead of a plain <em>/underline. Color set via the CSS var per use. */
+.marker {
+  --marker-color: var(--color-marigold-200);
+  background-image: linear-gradient(
+    100deg,
+    transparent 0%,
+    transparent 2%,
+    var(--marker-color) 2%,
+    var(--marker-color) 94%,
+    transparent 94%
+  );
+  background-repeat: no-repeat;
+  background-position: 0 78%;
+  background-size: 100% 45%;
+  padding: 0 0.15em;
+}
+
+.marker-periwinkle {
+  --marker-color: var(--color-periwinkle-200);
+}
+
+/* On the night surface a pale highlight behind light text reads backwards —
+   use a translucent saturated accent so it glows behind the text instead. */
+:root[data-theme="dark"] .marker {
+  --marker-color: color-mix(in srgb, var(--color-marigold-500) 32%, transparent);
+}
+
+:root[data-theme="dark"] .marker-periwinkle {
+  --marker-color: color-mix(in srgb, var(--color-periwinkle-500) 34%, transparent);
+}
+
+/* ---- Motion primitives -------------------------------------------------
+   Everything here is gated on prefers-reduced-motion: no-preference, so a
+   reduced-motion visitor just sees the final state with no transition. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes grow-y {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes sway {
+    0%,
+    100% {
+      transform: rotate(-6deg);
+    }
+    50% {
+      transform: rotate(6deg);
+    }
+  }
+
+  @keyframes float-y {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  @keyframes drift-bg {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-fade-up {
+    animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-grow-y {
+    animation: grow-y 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: bottom;
+  }
+
+  .animate-sway {
+    animation: sway 3.2s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+  }
+
+  .animate-float {
+    animation: float-y 5s ease-in-out infinite;
+  }
+
+  .animate-drift-bg {
+    background-size: 200% 200%;
+    animation: drift-bg 12s ease-in-out infinite;
+  }
+
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-reveal="in"] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduced motion: reveal content is visible immediately, no animation. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
 }
