@@ -11,6 +11,7 @@ import { Faq } from "@/components/ui/Faq";
 import { services } from "@/content/services";
 import { lessonTypes } from "@/content/lessons";
 import { modes, type ModeContent } from "@/content/modes";
+import { testimonials } from "@/content/testimonials";
 import { siteConfig } from "@/lib/site-config";
 
 /**
@@ -194,49 +195,36 @@ export default function Home() {
           </Reveal>
         </Section>
 
-        <Section data-sect="testimonials">
-          <Reveal>
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-              What people say
-            </h2>
-          </Reveal>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2">
-            <Reveal delay={0}>
-              <Card className="relative overflow-hidden">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -left-2 -top-6 font-display text-8xl text-marigold-200"
-                >
-                  &ldquo;
-                </span>
-                <p className="relative leading-relaxed text-ink-700">
-                  Turned my messy home recordings into something that actually sounds
-                  professional. Patient, clear, and genuinely fun to work with.
-                </p>
-                <p className="relative mt-4 text-sm font-semibold text-ink-900">
-                  — Placeholder Client, Artist
-                </p>
-              </Card>
+        {testimonials.length > 0 && (
+          <Section data-sect="testimonials">
+            <Reveal>
+              <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
+                What people say
+              </h2>
             </Reveal>
-            <Reveal delay={100}>
-              <Card className="relative overflow-hidden">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -left-2 -top-6 font-display text-8xl text-periwinkle-200"
-                >
-                  &ldquo;
-                </span>
-                <p className="relative leading-relaxed text-ink-700">
-                  I went from not knowing what a compressor did to running my own home sessions
-                  confidently. Lessons were exactly what I needed.
-                </p>
-                <p className="relative mt-4 text-sm font-semibold text-ink-900">
-                  — Placeholder Student
-                </p>
-              </Card>
-            </Reveal>
-          </div>
-        </Section>
+            <div className="mt-8 grid gap-6 sm:grid-cols-2">
+              {testimonials.map((t, i) => (
+                <Reveal key={t.name} delay={i * 100}>
+                  <Card className="relative overflow-hidden">
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none absolute -left-2 -top-6 font-display text-8xl ${
+                        t.accent === "periwinkle" ? "text-periwinkle-200" : "text-marigold-200"
+                      }`}
+                    >
+                      &ldquo;
+                    </span>
+                    <p className="relative leading-relaxed text-ink-700">{t.quote}</p>
+                    <p className="relative mt-4 text-sm font-semibold text-ink-900">
+                      — {t.name}
+                      {t.role ? `, ${t.role}` : ""}
+                    </p>
+                  </Card>
+                </Reveal>
+              ))}
+            </div>
+          </Section>
+        )}
 
         <Section data-sect="faq" className="bg-cream-100">
           <Faq mode={modes.lessons} />

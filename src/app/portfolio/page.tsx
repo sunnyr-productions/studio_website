@@ -1,28 +1,51 @@
 import type { Metadata } from "next";
 import { Section } from "@/components/ui/Section";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { PortfolioTrackList } from "@/components/audio/PortfolioTrackList";
 import { Reveal } from "@/components/ui/Reveal";
 import { portfolioTracks } from "@/content/portfolio/tracks";
 
 export const metadata: Metadata = {
   title: "Portfolio",
-  description: "Sample mixes and masters.",
+  description: "Mixing, mastering, and production work.",
 };
 
 export default function PortfolioPage() {
+  const hasTracks = portfolioTracks.length > 0;
+
   return (
     <Section pattern="dots" className="pt-16">
       <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
         Portfolio
       </h1>
       <p style={{ animationDelay: "80ms" }} className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700">
-        A few sample tracks to get a feel for the work — click play on any waveform below.
-        (Placeholder tone samples for now; real mixes coming soon.)
+        {hasTracks
+          ? "A few tracks to get a feel for the work — click play on any waveform below."
+          : "Mixes and masters are being added here as recent projects wrap up."}
       </p>
 
-      <Reveal delay={140} className="mt-10 max-w-2xl">
-        <PortfolioTrackList tracks={portfolioTracks} />
-      </Reveal>
+      {hasTracks ? (
+        <Reveal delay={140} className="mt-10 max-w-2xl">
+          <PortfolioTrackList tracks={portfolioTracks} />
+        </Reveal>
+      ) : (
+        <Reveal delay={140} className="mt-10 max-w-2xl">
+          <Card accent="periwinkle">
+            <p className="leading-relaxed text-ink-700">
+              I&apos;m curating a set of recent mixes and masters to feature here. In the
+              meantime, tell me about your project and I&apos;ll share relevant work directly —
+              matched to the sound you&apos;re going for.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-4">
+              <Button href="/contact">Get in touch</Button>
+              <Button href="/services" variant="secondary">
+                See services
+              </Button>
+            </div>
+          </Card>
+        </Reveal>
+      )}
     </Section>
   );
 }

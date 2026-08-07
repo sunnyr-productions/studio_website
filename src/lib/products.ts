@@ -13,7 +13,19 @@ export type Product = {
   previewAudioUrl?: string;
 };
 
-export const products: Product[] = [
+/**
+ * Real products only. The store shows a "coming soon" state while this is
+ * empty (see app/store/page.tsx), and the Stripe checkout / webhook / blob
+ * delivery paths stay fully wired for when a real product is added here.
+ *
+ * The placeholder catalog (with its live Stripe price IDs and blob file keys)
+ * is preserved in the template below — uncomment and edit to relaunch the
+ * store, or replace with genuinely new products.
+ */
+export const products: Product[] = [];
+
+/* Placeholder catalog — kept for reference / quick relaunch:
+[
   {
     slug: "midnight-drive-stems",
     name: "\"Midnight Drive\" Full Stems",
@@ -54,7 +66,8 @@ export const products: Product[] = [
     fileKey: "products/gain-staging-worksheet.pdf",
     fileType: "worksheet",
   },
-];
+]
+*/
 
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find((product) => product.slug === slug);

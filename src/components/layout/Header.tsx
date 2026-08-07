@@ -2,7 +2,7 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/site-config";
 import { LogoLockup } from "@/components/ui/LogoLockup";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { ModeToggle } from "@/components/ui/ModeToggle";
+import { HeaderModeToggle } from "./HeaderModeToggle";
 import { MobileNav } from "./MobileNav";
 
 export function Header() {
@@ -14,11 +14,11 @@ export function Header() {
           aria-label={siteConfig.name}
           className="group rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marigold-600"
         >
-          <LogoLockup className="scale-90 origin-left sm:scale-100" />
+          <LogoLockup className="scale-90 origin-left lg:scale-100" />
         </Link>
 
         <div className="flex items-center gap-4 sm:gap-6">
-          <nav className="hidden sm:block" aria-label="Main">
+          <nav className="hidden lg:block" aria-label="Main">
             <ul className="flex items-center gap-6">
               {siteConfig.nav.map((item) => (
                 <li
@@ -36,7 +36,7 @@ export function Header() {
             </ul>
           </nav>
 
-          <ModeToggle compact className="hidden sm:inline-flex" />
+          <HeaderModeToggle />
           <ThemeToggle />
           <MobileNav />
         </div>

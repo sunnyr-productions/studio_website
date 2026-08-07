@@ -1,12 +1,20 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
+  // When the form was first rendered — lets the server reject submissions that
+  // arrive implausibly fast (a human can't fill three fields in under a couple
+  // seconds; a bot fires instantly). Pairs with the hidden honeypot below.
+  // Set in an effect (not during render) to keep the component pure.
+  const mountedAtRef = useRef<number | null>(null);
+  useEffect(() => {
+    mountedAtRef.current = Date.now();
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -17,6 +25,12 @@ export function ContactForm() {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
       email: (form.elements.namedItem("email") as HTMLInputElement).value,
       message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+      // Honeypot: real users never see or fill this; bots that autofill every
+      // field will. A filled value is silently dropped server-side.
+      company: (form.elements.namedItem("company") as HTMLInputElement).value,
+      // undefined until the mount effect has run (effectively always set by the
+      // time a human submits); the server treats a missing value as "not fast".
+      elapsedMs: mountedAtRef.current != null ? Date.now() - mountedAtRef.current : undefined,
     };
 
     try {
@@ -46,6 +60,21 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Honeypot — hidden from people (offscreen, not focusable, not
+          announced) but present in the DOM for form-filling bots to trip. Kept
+          out of the tab order and autofill. */}
+      <div aria-hidden="true" className="absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="company">Company (leave this blank)</label>
+        <input
+          id="company"
+          name="company"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          defaultValue=""
+        />
+      </div>
+
       <div>
         <label htmlFor="name" className="block text-sm font-semibold text-ink-900">
           Name

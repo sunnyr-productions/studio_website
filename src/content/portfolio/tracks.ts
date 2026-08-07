@@ -6,26 +6,19 @@ export type PortfolioTrack = {
   audioUrl: string;
 };
 
-export const portfolioTracks: PortfolioTrack[] = [
+/**
+ * Real portfolio tracks only. The portfolio page shows an honest "coming soon"
+ * state while this is empty (see app/portfolio/page.tsx), so no placeholder
+ * audio ever ships. Add real mixes/masters here (with permission to publish).
+ */
+export const portfolioTracks: PortfolioTrack[] = [];
+
+/* Template for a new entry — copy into the array above:
   {
-    slug: "sample-mix-01",
-    title: "Placeholder Track One",
+    slug: "artist-song-title",
+    title: "Song Title",
     role: "Mixing",
-    artist: "Placeholder Artist",
-    audioUrl: "/audio/sample-mix-01.wav",
+    artist: "Artist Name",
+    audioUrl: "/audio/artist-song-title.wav",
   },
-  {
-    slug: "sample-master-02",
-    title: "Placeholder Track Two",
-    role: "Mastering",
-    artist: "Placeholder Artist",
-    audioUrl: "/audio/sample-master-02.wav",
-  },
-  {
-    slug: "sample-master-03",
-    title: "Placeholder Track Three",
-    role: "Production",
-    artist: "Placeholder Artist",
-    audioUrl: "/audio/sample-master-03.wav",
-  },
-];
+*/

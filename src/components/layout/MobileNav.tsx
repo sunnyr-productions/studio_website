@@ -1,15 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { siteConfig } from "@/lib/site-config";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  // On the homepage the hero carries the door chooser, so the menu doesn't
+  // repeat it (matches the header, which hides its toggle there too).
+  const showModeToggle = pathname !== "/";
 
   return (
-    <div className="sm:hidden">
+    <div className="lg:hidden">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -38,9 +43,11 @@ export function MobileNav() {
 
       {open && (
         <nav className="animate-fade-up absolute inset-x-0 top-full z-40 border-t border-ink-900/10 bg-cream-50 px-6 py-4 shadow-lg">
-          <div className="mb-4 border-b border-ink-900/10 pb-4">
-            <ModeToggle />
-          </div>
+          {showModeToggle && (
+            <div className="mb-4 border-b border-ink-900/10 pb-4">
+              <ModeToggle />
+            </div>
+          )}
           <ul className="flex flex-col gap-3">
             {siteConfig.nav.map((item, i) => (
               <li

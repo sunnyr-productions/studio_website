@@ -104,8 +104,8 @@ export const modes: Record<StudioMode, ModeContent> = {
   },
   studio: {
     id: "studio",
-    doorLabel: "Work with me",
-    shortLabel: "Work",
+    doorLabel: "Create with me",
+    shortLabel: "Create",
     crossLinkLabel: "mixing & mastering",
     eyebrow: "Mixing, Mastering & Recording — Corvallis, OR",
     headlineLead: "Let's make your mix hit a little",
