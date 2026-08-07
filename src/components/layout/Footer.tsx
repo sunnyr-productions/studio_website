@@ -28,7 +28,13 @@ export function Footer() {
       </svg>
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 pb-12 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <LogoLockup className="scale-90 origin-left" />
+          <Link
+            href="/"
+            aria-label={siteConfig.name}
+            className="group inline-block rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marigold-600"
+          >
+            <LogoLockup className="scale-90 origin-left" />
+          </Link>
           <p className="mt-4 font-display text-base italic text-marigold-800">
             {siteConfig.motto}
           </p>
