@@ -91,6 +91,10 @@ export default function Home() {
       <JsonLd data={faqPageSchema(modes.lessons.faqs)} />
       <Section pattern="dots" className="pt-20 sm:pt-28">
         <div className="animate-fade-up mb-10">
+          <p className="mb-2.5 text-sm text-ink-500">
+            <span className="font-semibold text-ink-700">What brings you here?</span>{" "}
+            Pick a side — the whole page follows your lead.
+          </p>
           <ModeToggle />
         </div>
         <ModeHero mode={modes.lessons} />
