@@ -72,7 +72,7 @@ export default function LessonsPage() {
                 className={`h-full ${lesson.featured ? "ring-2 ring-marigold-300" : ""}`}
               >
                 {lesson.featured && (
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-marigold-700">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-marigold-800">
                     Most requested
                   </p>
                 )}

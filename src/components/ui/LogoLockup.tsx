@@ -18,7 +18,7 @@ export function LogoLockup({ className = "", variant = "horizontal" }: LogoLocku
     return (
       <div className={`flex flex-col items-center gap-1 ${className}`}>
         <span className={`${label} text-base -mr-[0.35em]`}>the</span>
-        <Logo className="h-32 w-auto transition-transform duration-500 ease-out motion-safe:group-hover:rotate-[10deg]" />
+        <Logo className="h-32 w-auto" />
         <span className={`${label} text-base -mr-[0.35em]`}>studio</span>
       </div>
     );
@@ -27,7 +27,7 @@ export function LogoLockup({ className = "", variant = "horizontal" }: LogoLocku
   return (
     <div className={`flex items-center gap-4 ${className}`}>
       <span className={`${label} text-base`}>the</span>
-      <Logo className="h-20 w-auto transition-transform duration-500 ease-out motion-safe:group-hover:rotate-[10deg]" />
+      <Logo className="h-20 w-auto" />
       <span className={`${label} text-base -mr-[0.35em]`}>studio</span>
     </div>
   );

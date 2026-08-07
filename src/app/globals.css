@@ -215,19 +215,43 @@ body::before {
 }
 
 /* The ambigram pays off here: the wordmark reads identically upside down, so
-   flipping the studio into its other mode literally rotates the mark. */
+   flipping the studio into its other mode literally rotates the mark, and
+   hovering the header logo spins it a full 180° to show that off. */
 .logo-mark {
   display: block;
-  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* Symmetric ease-in-out (accelerate then settle) so the spin never reads as
+     choppy. Duration is generous enough to enjoy the half-turn. */
+  transition: transform 800ms cubic-bezier(0.65, 0, 0.35, 1);
 }
 
+/* Mode flip: the studio door rests the mark at 180°. */
 [data-mode="studio"] .logo-mark {
   transform: rotate(180deg);
 }
 
+/* Hover: complete 180° turn from whatever the current resting angle is —
+   0→180 in lessons mode, 180→360 in studio mode — so it always lands back on
+   a legible ambigram. Pointer devices only, so a touch tap can't strand it. */
+@media (hover: hover) {
+  .group:hover .logo-mark {
+    transform: rotate(180deg);
+  }
+  [data-mode="studio"] .group:hover .logo-mark {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reduced motion: no transition, and don't spin on hover — hold the resting
+   angle for each mode so nothing jumps. */
 @media (prefers-reduced-motion: reduce) {
   .logo-mark {
     transition: none;
+  }
+  .group:hover .logo-mark {
+    transform: rotate(0deg);
+  }
+  [data-mode="studio"] .group:hover .logo-mark {
+    transform: rotate(180deg);
   }
 }
 
