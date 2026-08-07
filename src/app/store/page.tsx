@@ -9,6 +9,7 @@ import { products } from "@/lib/products";
 export const metadata: Metadata = {
   title: "Store",
   description: "Stems, backing tracks, transcriptions, and worksheets.",
+  alternates: { canonical: "/store" },
 };
 
 export default function StorePage() {

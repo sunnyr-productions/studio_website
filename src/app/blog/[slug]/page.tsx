@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { Section } from "@/components/ui/Section";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { blogPostingSchema } from "@/lib/structured-data";
 import { getAllPosts, getPostSource, type PostFrontmatter } from "@/lib/blog";
 
 export function generateStaticParams() {
@@ -17,7 +19,20 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getAllPosts().find((p) => p.slug === slug);
   if (!post) return {};
-  return { title: post.title, description: post.excerpt };
+  const path = `/blog/${slug}`;
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt,
+      url: path,
+      publishedTime: post.date,
+      authors: ["Raul Patel"],
+    },
+  };
 }
 
 export default async function BlogPostPage({
@@ -41,6 +56,14 @@ export default async function BlogPostPage({
 
   return (
     <Section pattern="waveform" className="pt-16">
+      <JsonLd
+        data={blogPostingSchema({
+          slug,
+          title: frontmatter.title,
+          excerpt: frontmatter.excerpt,
+          date: frontmatter.date,
+        })}
+      />
       <Link
         href="/blog"
         className="group inline-flex items-center gap-1.5 text-sm font-semibold text-periwinkle-700 transition-colors hover:text-periwinkle-900"

@@ -9,6 +9,7 @@ import { services } from "@/content/services";
 export const metadata: Metadata = {
   title: "Services",
   description: "Mixing, mastering, recording, and consultation services.",
+  alternates: { canonical: "/services" },
 };
 
 export default function ServicesPage() {

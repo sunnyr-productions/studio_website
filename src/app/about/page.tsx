@@ -7,6 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 export const metadata: Metadata = {
   title: "About",
   description: "Get to know Raul, the teacher and engineer behind The sunny*r Studio.",
+  alternates: { canonical: "/about" },
 };
 
 const gearGroups = [

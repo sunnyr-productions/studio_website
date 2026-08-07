@@ -7,6 +7,7 @@ import { getProductBySlug } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Order confirmed",
+  robots: { index: false, follow: false },
 };
 
 export default async function StoreSuccessPage({

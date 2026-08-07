@@ -17,7 +17,11 @@ export async function generateMetadata({
   const { productSlug } = await params;
   const product = getProductBySlug(productSlug);
   if (!product) return {};
-  return { title: product.name, description: product.description };
+  return {
+    title: product.name,
+    description: product.description,
+    alternates: { canonical: `/store/${product.slug}` },
+  };
 }
 
 export default async function ProductPage({

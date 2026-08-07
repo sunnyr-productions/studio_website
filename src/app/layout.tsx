@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { localBusinessSchema } from "@/lib/structured-data";
 import { siteConfig } from "@/lib/site-config";
 
 const inter = Inter({
@@ -32,7 +36,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title,
     description: siteConfig.tagline,
   },
@@ -63,9 +67,12 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col bg-cream-50 font-sans text-ink-900">
+        <JsonLd data={localBusinessSchema()} />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

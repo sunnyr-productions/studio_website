@@ -11,6 +11,7 @@ import { lessonTypes } from "@/content/lessons";
 export const metadata: Metadata = {
   title: "Lessons",
   description: "Guitar, vocal, production, and audio engineering lessons — taught patiently, for any kind of student.",
+  alternates: { canonical: "/lessons" },
 };
 
 const pricingTiers = [

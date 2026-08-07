@@ -7,6 +7,7 @@ import { siteConfig } from "@/lib/site-config";
 export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch about mixing, mastering, lessons, or a custom quote.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {

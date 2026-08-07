@@ -8,6 +8,7 @@ import { getAllPosts } from "@/lib/blog";
 export const metadata: Metadata = {
   title: "Blog & Resources",
   description: "Notes on recording, mixing, and mastering.",
+  alternates: { canonical: "/blog" },
 };
 
 export default function BlogPage() {

@@ -9,6 +9,7 @@ import { portfolioTracks } from "@/content/portfolio/tracks";
 export const metadata: Metadata = {
   title: "Portfolio",
   description: "Mixing, mastering, and production work.",
+  alternates: { canonical: "/portfolio" },
 };
 
 export default function PortfolioPage() {

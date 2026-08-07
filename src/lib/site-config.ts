@@ -17,6 +17,10 @@ export const siteConfig = {
   tagline: "Guitar, vocal, production & engineering lessons taught patiently — plus mixing and mastering for musicians ready to level up.",
   motto: "Good things grow on the sunny*r side.",
   email: "raulpatel0224@gmail.com",
+  /** Canonical production origin — set NEXT_PUBLIC_SITE_URL in Vercel. No trailing slash. */
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
+  /** Studio location — used for local-SEO structured data. */
+  location: { city: "Corvallis", region: "OR", regionName: "Oregon", country: "US" },
   calLink: process.env.NEXT_PUBLIC_CAL_LINK ?? "raul/lesson",
   nav: [
     { label: "Home", href: "/" },

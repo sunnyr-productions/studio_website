@@ -13,6 +13,13 @@ import { lessonTypes } from "@/content/lessons";
 import { modes, type ModeContent } from "@/content/modes";
 import { testimonials } from "@/content/testimonials";
 import { siteConfig } from "@/lib/site-config";
+import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { faqPageSchema } from "@/lib/structured-data";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 /**
  * Hero copy for one door. Both are rendered; CSS shows the active one (see
@@ -81,6 +88,7 @@ function ValueProps({ mode }: { mode: ModeContent }) {
 export default function Home() {
   return (
     <>
+      <JsonLd data={faqPageSchema(modes.lessons.faqs)} />
       <Section pattern="dots" className="pt-20 sm:pt-28">
         <div className="animate-fade-up mb-10">
           <ModeToggle />
