@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import raulHeadshot from "../../../public/images/raul-headshot.jpg";
 
 export const metadata: Metadata = {
   title: "About",
@@ -56,11 +58,16 @@ export default function AboutPage() {
   return (
     <Section pattern="waveform" className="pt-16">
       <div className="grid gap-10 sm:grid-cols-[240px_1fr] sm:items-start">
-        <div
-          aria-hidden="true"
-          className="animate-fade-up animate-float flex h-48 w-48 items-center justify-center rounded-full bg-gradient-to-br from-marigold-300 to-periwinkle-300 font-display text-5xl font-semibold text-[color:var(--color-ink-fixed)] sm:h-60 sm:w-60"
-        >
-          RP
+        <div className="animate-fade-up animate-float relative h-48 w-48 overflow-hidden rounded-full ring-2 ring-marigold-200 shadow-[3px_4px_0_0_var(--sketch-shadow)] sm:h-60 sm:w-60">
+          <Image
+            src={raulHeadshot}
+            alt="Raul, the teacher and engineer behind The sunny*r Studio"
+            fill
+            sizes="(min-width: 640px) 15rem, 12rem"
+            placeholder="blur"
+            className="object-cover"
+            priority
+          />
         </div>
 
         <div>
