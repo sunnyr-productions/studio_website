@@ -231,14 +231,14 @@ body::before {
 
 /* Hover: complete 180° turn from whatever the current resting angle is —
    0→180 in lessons mode, 180→360 in studio mode — so it always lands back on
-   a legible ambigram. Pointer devices only, so a touch tap can't strand it. */
-@media (hover: hover) {
-  .group:hover .logo-mark {
-    transform: rotate(180deg);
-  }
-  [data-mode="studio"] .group:hover .logo-mark {
-    transform: rotate(360deg);
-  }
+   a legible ambigram. (No hover-media gate: the mark is a home link, so a
+   touch tap that briefly spins it before navigating is harmless — gating it
+   off silently broke the effect on touchscreen laptops and hybrids.) */
+.group:hover .logo-mark {
+  transform: rotate(180deg);
+}
+[data-mode="studio"] .group:hover .logo-mark {
+  transform: rotate(360deg);
 }
 
 /* Reduced motion: no transition, and don't spin on hover — hold the resting
