@@ -1,0 +1,41 @@
+// design-sync-only variant of src/components/store/CheckoutButton.tsx.
+// Only change: imports the design-sync Button wrapper (plain anchor, no
+// next/link) instead of the real one, so the shared bundle doesn't crash.
+// Everything else is identical to production.
+"use client";
+
+import { useState } from "react";
+import { Button } from "./Button";
+
+export function CheckoutButton({ productSlug }: { productSlug: string }) {
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+
+  async function handleClick() {
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productSlug }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error ?? "Checkout failed");
+      window.location.href = data.url;
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  return (
+    <div>
+      <Button variant="primary" onClick={handleClick} disabled={status === "loading"}>
+        {status === "loading" ? "Redirecting…" : "Buy Now"}
+      </Button>
+      {status === "error" && (
+        <p className="mt-2 text-sm text-red-700">
+          Checkout isn&apos;t available right now — please try again shortly.
+        </p>
+      )}
+    </div>
+  );
+}
