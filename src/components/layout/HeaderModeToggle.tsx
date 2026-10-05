@@ -12,5 +12,12 @@ import { ModeToggle } from "@/components/ui/ModeToggle";
 export function HeaderModeToggle() {
   const pathname = usePathname();
   if (pathname === "/") return null;
-  return <ModeToggle compact className="hidden lg:inline-flex" />;
+  // Hidden via a wrapper, not a `hidden` class on ModeToggle itself: its own
+  // `inline-flex` would win that cascade and show the toggle on phones, which
+  // pushes the menu button off-screen.
+  return (
+    <div className="hidden lg:block">
+      <ModeToggle compact />
+    </div>
+  );
 }

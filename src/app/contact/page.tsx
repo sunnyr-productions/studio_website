@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { ContactForm } from "@/components/ContactForm";
 import { Reveal } from "@/components/ui/Reveal";
@@ -52,9 +53,9 @@ export default function ContactPage() {
           </a>
 
           <p className="mt-6 font-semibold text-ink-900">Booking a lesson instead?</p>
-          <a href="/lessons" className="mt-1 block transition-colors hover:text-marigold-600">
+          <Link href="/lessons" className="mt-1 block transition-colors hover:text-marigold-600">
             Go straight to scheduling
-          </a>
+          </Link>
         </Reveal>
       </div>
     </Section>

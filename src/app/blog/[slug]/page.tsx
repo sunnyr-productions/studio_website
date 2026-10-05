@@ -80,6 +80,7 @@ export default async function BlogPostPage({
             year: "numeric",
             month: "long",
             day: "numeric",
+            timeZone: "UTC",
           })}
         </p>
         <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">

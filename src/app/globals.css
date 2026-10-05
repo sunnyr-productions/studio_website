@@ -54,6 +54,9 @@
   --color-periwinkle-700: #aab6f0;
   --color-periwinkle-800: #c2caf5;
 
+  /* Error text (forms, checkout) — Tailwind's red-700 is too dim on night */
+  --color-red-700: #f2918a;
+
   --sketch-shadow: rgba(0, 0, 0, 0.55);
 }
 

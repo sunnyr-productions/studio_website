@@ -37,6 +37,9 @@ export async function POST(request: Request) {
         await sendDownloadEmail({ to: email, productName: product.name, downloadUrl });
       } catch (error) {
         console.error("Failed to fulfill order", { productSlug, email, error });
+        // Non-2xx tells Stripe to retry delivery (with backoff, for up to 3
+        // days), so a transient email/blob failure doesn't strand a paid order.
+        return NextResponse.json({ error: "Fulfillment failed" }, { status: 500 });
       }
     } else {
       console.error("Webhook missing product or email", { productSlug, email });

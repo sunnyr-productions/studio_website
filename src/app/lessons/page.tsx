@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { CalEmbed } from "@/components/booking/CalEmbed";
 import { GrowthDivider } from "@/components/ui/GrowthDivider";
 import { Reveal } from "@/components/ui/Reveal";
@@ -119,16 +120,31 @@ export default function LessonsPage() {
           <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-900">
             Pick a time that works for you
           </h2>
-          <p className="mt-2 max-w-xl leading-relaxed text-ink-700">
-            Availability updates in real time below — book directly and you&apos;ll get a
-            confirmation email with everything you need.
-          </p>
-          <div
-            style={{ borderRadius: "var(--radius-sketch-sm)" }}
-            className="mt-8 overflow-hidden border-[1.5px] border-ink-900/20 bg-cream-50 shadow-[3px_4px_0_0_var(--sketch-shadow)]"
-          >
-            <CalEmbed calLink={siteConfig.calLink} />
-          </div>
+          {siteConfig.calLink ? (
+            <>
+              <p className="mt-2 max-w-xl leading-relaxed text-ink-700">
+                Availability updates in real time below — book directly and you&apos;ll get a
+                confirmation email with everything you need.
+              </p>
+              <div
+                style={{ borderRadius: "var(--radius-sketch-sm)" }}
+                className="mt-8 overflow-hidden border-[1.5px] border-ink-900/20 bg-cream-50 shadow-[3px_4px_0_0_var(--sketch-shadow)]"
+              >
+                <CalEmbed calLink={siteConfig.calLink} />
+              </div>
+            </>
+          ) : (
+            <Card accent="marigold" className="mt-8 max-w-2xl">
+              <p className="leading-relaxed text-ink-700">
+                Online booking is coming soon. For now, send a quick note with the lesson
+                you&apos;re interested in and a few times that work for you — I&apos;ll reply
+                with an open slot for your trial lesson.
+              </p>
+              <Button href="/contact" className="mt-5">
+                Request a lesson
+              </Button>
+            </Card>
+          )}
           <p className="mt-8 text-sm text-ink-500">
             Teaching is one side of the practice — the other door is{" "}
             <Link

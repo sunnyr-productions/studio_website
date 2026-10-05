@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getStripe } from "@/lib/stripe";
 import { getProductBySlug } from "@/lib/products";
+import { siteConfig } from "@/lib/site-config";
 
 const checkoutSchema = z.object({
   productSlug: z.string().min(1),
@@ -20,7 +21,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin;
+  // siteConfig.url strips any trailing slash; fall back to the request origin
+  // only when the env var is unset (local dev / preview deploys).
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ? siteConfig.url : new URL(request.url).origin;
 
   try {
     const stripe = getStripe();

@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The sunny\*r Studio
 
-## Getting Started
+Website for The sunny\*r Studio — music lessons (guitar, voice, production, audio engineering) plus mixing, mastering, and recording in Corvallis, OR and online.
 
-First, run the development server:
+Built with Next.js (App Router), Tailwind CSS v4, MDX blog posts, Cal.com booking, Resend email, Stripe checkout, and Vercel Blob for digital downloads.
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # fill in what you need; everything is optional for dev
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Before pushing: `npm run lint && npm run build`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+See [`.env.example`](.env.example) for the full list and what each one does. Without them the site still runs — the booking embed falls back to a contact CTA, and the contact form / store return a friendly error instead of sending.
 
-## Learn More
+## Where content lives
 
-To learn more about Next.js, take a look at the following resources:
+| What | File |
+| --- | --- |
+| Site name, email, nav, location | `src/lib/site-config.ts` |
+| Two-door homepage copy (lessons / studio), stats, FAQs | `src/content/modes.ts` |
+| Lesson types | `src/content/lessons.ts` |
+| Studio services + starting prices | `src/content/services.ts` |
+| Portfolio tracks | `src/content/portfolio/tracks.ts` |
+| Testimonials | `src/content/testimonials.ts` |
+| Store products | `src/lib/products.ts` |
+| Blog posts | `src/content/blog/*.mdx` |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Portfolio, testimonials, and store are empty on purpose: each section stays hidden (or shows an honest "coming soon" state) until real entries are added, so no placeholder content ships.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Store fulfillment flow
 
-## Deploy on Vercel
+1. `/api/checkout` creates a Stripe Checkout session for a product.
+2. Stripe calls `/api/webhooks/stripe` on `checkout.session.completed`.
+3. The webhook signs a 48-hour private Vercel Blob URL and emails it via Resend. If that fails it returns 500, so Stripe retries.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Design sync
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`.design-sync/` holds wrappers and notes for syncing components to claude.ai/design — see `.design-sync/NOTES.md`.

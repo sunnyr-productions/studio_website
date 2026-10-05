@@ -33,6 +33,7 @@ export default function BlogPage() {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
+                    timeZone: "UTC",
                   })}
                 </p>
                 <h2 className="mt-2 font-display text-xl font-semibold text-ink-900">

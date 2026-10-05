@@ -1,4 +1,5 @@
 import type { StudioMode } from "@/content/modes";
+import { products } from "@/lib/products";
 
 export type NavItem = {
   label: string;
@@ -21,13 +22,20 @@ export const siteConfig = {
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
   /** Studio location — used for local-SEO structured data. */
   location: { city: "Corvallis", region: "OR", regionName: "Oregon", country: "US" },
-  calLink: process.env.NEXT_PUBLIC_CAL_LINK ?? "raul/lesson",
+  /**
+   * Cal.com booking link, e.g. "username/lesson". Null until NEXT_PUBLIC_CAL_LINK
+   * is set — the lessons page then falls back to a contact CTA instead of
+   * rendering Cal's "link seems to be wrong" error.
+   */
+  calLink: process.env.NEXT_PUBLIC_CAL_LINK?.trim() || null,
   nav: [
     { label: "Home", href: "/" },
     { label: "Lessons", href: "/lessons", modes: ["lessons"] },
     { label: "Services", href: "/services", modes: ["studio"] },
     { label: "Portfolio", href: "/portfolio", modes: ["studio"] },
-    { label: "Store", href: "/store" },
+    // Hidden from the header until the store has stock — an empty shop in the
+    // main nav is a dead end. It stays linked in the footer.
+    ...(products.length > 0 ? [{ label: "Store", href: "/store" }] : []),
     { label: "Blog", href: "/blog" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },

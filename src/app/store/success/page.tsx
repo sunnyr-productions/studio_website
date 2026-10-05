@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -49,9 +50,9 @@ export default async function StoreSuccessPage({
               A download link is on its way to{" "}
               <span className="font-semibold">{email ?? "your email"}</span>. If it doesn&apos;t
               arrive in a few minutes, check spam or{" "}
-              <a href="/contact" className="text-marigold-800 underline">
+              <Link href="/contact" className="text-marigold-800 underline">
                 get in touch
-              </a>
+              </Link>
               .
             </p>
           </Card>
@@ -62,9 +63,9 @@ export default async function StoreSuccessPage({
           <p className="mx-auto mt-3 max-w-md text-ink-700">
             We couldn&apos;t confirm this order right now. If you were just charged, check your
             email for a receipt, or{" "}
-            <a href="/contact" className="text-marigold-800 underline">
+            <Link href="/contact" className="text-marigold-800 underline">
               reach out
-            </a>{" "}
+            </Link>{" "}
             and we&apos;ll sort it out.
           </p>
         </>

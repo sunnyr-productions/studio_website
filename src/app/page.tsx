@@ -8,10 +8,12 @@ import { ModeToggle } from "@/components/ui/ModeToggle";
 import { StatStrip } from "@/components/ui/StatStrip";
 import { HowItWorks } from "@/components/ui/HowItWorks";
 import { Faq } from "@/components/ui/Faq";
+import { PortfolioTrackList } from "@/components/audio/PortfolioTrackList";
 import { services } from "@/content/services";
 import { lessonTypes } from "@/content/lessons";
 import { modes, type ModeContent } from "@/content/modes";
 import { testimonials } from "@/content/testimonials";
+import { portfolioTracks } from "@/content/portfolio/tracks";
 import { siteConfig } from "@/lib/site-config";
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -185,27 +187,24 @@ export default function Home() {
           </Button>
         </Section>
 
-        <Section data-sect="portfolio" className="bg-cream-100">
-          <Reveal className="flex items-end justify-between gap-4">
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-              Recent work
-            </h2>
-            <Button href="/portfolio" variant="ghost" className="hidden sm:inline-flex">
-              Hear more
-            </Button>
-          </Reveal>
-          <Reveal delay={100}>
-            <Card accent="periwinkle" className="mt-8">
-              <p className="leading-relaxed text-ink-700">
-                Sample mixes and masters are on the way here — check back soon, or head to the
-                portfolio page directly.
-              </p>
-              <Button href="/portfolio" variant="ghost" className="mt-4 sm:hidden">
+        {portfolioTracks.length > 0 && (
+          <Section data-sect="portfolio" className="bg-cream-100">
+            <Reveal className="flex items-end justify-between gap-4">
+              <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
+                Recent work
+              </h2>
+              <Button href="/portfolio" variant="ghost" className="hidden sm:inline-flex">
                 Hear more
               </Button>
-            </Card>
-          </Reveal>
-        </Section>
+            </Reveal>
+            <Reveal delay={100} className="mt-8">
+              <PortfolioTrackList tracks={portfolioTracks.slice(0, 3)} />
+            </Reveal>
+            <Button href="/portfolio" variant="ghost" className="mt-8 sm:hidden">
+              Hear more
+            </Button>
+          </Section>
+        )}
 
         {testimonials.length > 0 && (
           <Section data-sect="testimonials">

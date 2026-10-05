@@ -23,7 +23,7 @@ const fraunces = Fraunces({
 const title = `${siteConfig.name} — Music Lessons, Mixing & Mastering`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(siteConfig.url),
   title: {
     default: title,
     template: `%s — ${siteConfig.name}`,

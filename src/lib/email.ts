@@ -1,5 +1,14 @@
 import "server-only";
 import { Resend } from "resend";
+import { siteConfig } from "@/lib/site-config";
+
+/**
+ * Sender address. Resend's shared `onboarding@resend.dev` only delivers to the
+ * Resend account owner — fine for contact-form notifications, but customer
+ * download emails need an address on a domain verified in Resend. Set
+ * RESEND_FROM_EMAIL (e.g. "hello@yourdomain.com") once the domain is verified.
+ */
+const FROM_ADDRESS = process.env.RESEND_FROM_EMAIL?.trim() || "onboarding@resend.dev";
 
 export async function sendContactNotification({
   name,
@@ -18,7 +27,7 @@ export async function sendContactNotification({
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   await resend.emails.send({
-    from: "Website Contact Form <onboarding@resend.dev>",
+    from: `${siteConfig.name} Website <${FROM_ADDRESS}>`,
     to,
     replyTo: email,
     subject: `New contact form message from ${name}`,
@@ -42,7 +51,7 @@ export async function sendDownloadEmail({
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   await resend.emails.send({
-    from: "Raul Patel Audio <onboarding@resend.dev>",
+    from: `${siteConfig.name} <${FROM_ADDRESS}>`,
     to,
     subject: `Your download: ${productName}`,
     text: `Thanks for your purchase!\n\n${productName}\n\nDownload link (expires in 48 hours):\n${downloadUrl}`,
