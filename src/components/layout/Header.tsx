@@ -14,10 +14,10 @@ export function Header() {
           aria-label={siteConfig.name}
           className="group rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marigold-600"
         >
-          <LogoLockup className="scale-90 origin-left lg:scale-100" />
+          <LogoLockup />
         </Link>
 
-        <div className="flex items-center gap-4 sm:gap-6">
+        <div className="flex items-center gap-2 sm:gap-6">
           <nav className="hidden lg:block" aria-label="Main">
             <ul className="flex items-center gap-6">
               {siteConfig.nav.map((item) => (

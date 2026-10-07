@@ -33,7 +33,7 @@ export function Footer() {
             aria-label={siteConfig.name}
             className="group inline-block rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marigold-600"
           >
-            <LogoLockup className="scale-90 origin-left" />
+            <LogoLockup />
           </Link>
           <p className="mt-4 font-display text-base italic text-marigold-800">
             {siteConfig.motto}

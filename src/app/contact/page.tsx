@@ -28,7 +28,8 @@ export default function ContactPage() {
           >
             Tell me what you&apos;d like to learn — your instrument, where you&apos;re starting
             from, and what you&apos;re hoping to play. No experience required, and no pressure:
-            the first lesson can be {trialPhrase}, so we can see if it&apos;s a good fit.
+            the first lesson can be {trialPhrase}, so we can see if it&apos;s a good fit. Just have
+            questions? Ask away — answering them here is free.
           </p>
           <p
             data-mode-only="studio"

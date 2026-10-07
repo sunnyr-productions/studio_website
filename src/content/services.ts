@@ -33,7 +33,7 @@ export const services: Service[] = [
     details: [
       "Single track or full EP/album",
       "Reference-track matching on request",
-      "DDP + individual file delivery",
+      "Delivered in WAV + streaming-ready MP3",
     ],
     startingPrice: "Starting at $60/track",
     accent: "periwinkle",
@@ -41,11 +41,11 @@ export const services: Service[] = [
   {
     slug: "recording",
     name: "Recording Sessions",
-    blurb: "Studio time for vocals, instruments, or full-band tracking, engineered start to finish.",
+    blurb: "Studio time for vocals and instruments, tracked one or two parts at a time and built up in layers — engineered start to finish.",
     details: [
       "Hourly or day-rate blocks",
       "Session files organized and delivered same week",
-      "Remote or in-person options",
+      "In person in Corvallis, or remote — you record, I direct over video",
     ],
     startingPrice: "Starting at $75/hour",
     accent: "periwinkle",

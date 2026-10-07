@@ -14,21 +14,12 @@ export const metadata: Metadata = {
 
 const gearGroups = [
   {
-    title: "Room & monitoring",
+    title: "Room, monitoring & recording",
     items: [
       "DIY-treated home studio (Corvallis, OR)",
       "Tascam 2x2 audio interface",
       "PreSonus Eris Studio 5 monitors",
       "HiFi-Man HE400i planar magnetic headphones",
-    ],
-  },
-  {
-    title: "Mics & recording",
-    items: [
-      "Cardioid dynamic mic",
-      "Large-diaphragm condenser (LDC)",
-      "Small-diaphragm condenser (SDC) pair",
-      "Omnidirectional dynamic mic",
       "Zoom H2 portable recorder",
     ],
   },

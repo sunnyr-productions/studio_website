@@ -50,7 +50,7 @@ export const lessonTypes: LessonType[] = [
  */
 export const lessonPricing = {
   hourlyRate: 45,
-  trial: { price: 25, minutes: 30 },
+  trial: { price: 20, minutes: 30 },
   pack: { lessons: 4, price: 160 },
   /** Free cancellation/reschedule window, in hours before the lesson. */
   cancellationNoticeHours: 24,
@@ -76,7 +76,7 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Trial Lesson",
     price: `$${trial.price} / ${trial.minutes} min`,
-    forWho: "Low-pressure first meeting — see if it's a good fit before committing to anything.",
+    forWho: "A first meeting, face to face, to see if it's a good fit. The fee just holds the time — questions by message are always free.",
     accent: "marigold",
   },
   {

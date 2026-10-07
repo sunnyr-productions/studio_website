@@ -71,7 +71,7 @@ export const modes: Record<StudioMode, ModeContent> = {
     steps: [
       {
         title: "Book a trial",
-        body: `Grab ${trialPhrase} — low pressure, no commitment. We just see if it clicks.`,
+        body: `Grab ${trialPhrase} — low pressure, no commitment. We just see if it clicks. Questions first? Send a message — that part's free.`,
       },
       {
         title: "Shape the plan",
@@ -93,7 +93,7 @@ export const modes: Record<StudioMode, ModeContent> = {
       },
       {
         q: "What does it cost?",
-        a: `$${lessonPricing.hourlyRate} an hour — one flat rate across every lesson type. A ${lessonPricing.pack.lessons}-lesson pack is $${lessonPricing.pack.price}, and your first lesson can be ${trialPhrase}. Pay in person — ${lessonPricing.paymentMethods}.`,
+        a: `$${lessonPricing.hourlyRate} an hour — one flat rate across every lesson type. A ${lessonPricing.pack.lessons}-lesson pack is $${lessonPricing.pack.price}, and your first lesson can be ${trialPhrase}. Pay in person — ${lessonPricing.paymentMethods}. The trial fee just holds the time and keeps no-shows away; if you only have questions, send them through the contact form and I'll answer what I can, free.`,
       },
       {
         q: "What can you teach?",
@@ -119,8 +119,8 @@ export const modes: Record<StudioMode, ModeContent> = {
     secondaryCta: { label: "Hear the work", href: "/portfolio" },
     valueProps: [
       {
-        title: "A room that tells the truth",
-        body: "A sound-treated studio with monitors and planar headphones, so the calls I make on your track still hold up everywhere else you play it.",
+        title: "Mixes that hold up anywhere",
+        body: "Every mix is checked on studio monitors, planar headphones, and everyday speakers, so the calls I make on your track still hold up everywhere else you play it.",
       },
       {
         title: "Engineering is the day job",
@@ -134,7 +134,7 @@ export const modes: Record<StudioMode, ModeContent> = {
     stats: [
       { value: "7 yrs", label: "recording & mixing" },
       { value: "Full-time", label: "audio & software engineer" },
-      { value: "Treated room", label: "monitors + planar headphones" },
+      { value: "Cross-checked", label: "monitors, headphones & everyday speakers" },
       { value: "2 rounds", label: "revisions on every mix" },
     ],
     steps: [
@@ -162,7 +162,7 @@ export const modes: Record<StudioMode, ModeContent> = {
       },
       {
         q: "Do you work remotely?",
-        a: "Yes — send stems from anywhere and I'll handle the rest. Recording sessions are in-person at the Corvallis studio.",
+        a: "Yes — send stems from anywhere and I'll handle the rest. Recording happens in person at the Corvallis studio, or remotely: you record at home while I direct and engineer the take over video.",
       },
       {
         q: "What will it cost?",
@@ -170,7 +170,7 @@ export const modes: Record<StudioMode, ModeContent> = {
       },
       {
         q: "What do you deliver?",
-        a: "Streaming-ready WAV + MP3, organized session files, and DDP plus individual files for masters.",
+        a: "Streaming-ready WAV + MP3 for every mix and master, plus organized session files.",
       },
     ],
   },
