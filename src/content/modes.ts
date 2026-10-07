@@ -7,6 +7,8 @@
  * cadence ("Let's make your ___ a little ___er") so the doors read as
  * siblings rather than two unrelated businesses.
  */
+import { lessonPricing, trialPhrase } from "@/content/lessons";
+
 export type StudioMode = "lessons" | "studio";
 
 export type ModeContent = {
@@ -68,7 +70,7 @@ export const modes: Record<StudioMode, ModeContent> = {
     steps: [
       {
         title: "Book a trial",
-        body: "Grab a low-pressure first lesson — discounted, no commitment. We just see if it clicks.",
+        body: `Grab ${trialPhrase} — low pressure, no commitment. We just see if it clicks.`,
       },
       {
         title: "Shape the plan",
@@ -90,7 +92,7 @@ export const modes: Record<StudioMode, ModeContent> = {
       },
       {
         q: "What does it cost?",
-        a: "$45 an hour — one flat rate across every lesson type — with small discounts on 4-lesson packs and monthly plans. The first lesson is a discounted trial.",
+        a: `$${lessonPricing.hourlyRate} an hour — one flat rate across every lesson type. A ${lessonPricing.pack.lessons}-lesson pack is $${lessonPricing.pack.price}, and your first lesson can be ${trialPhrase}.`,
       },
       {
         q: "What can you teach?",

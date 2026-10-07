@@ -28,7 +28,7 @@ export default function ServicesPage() {
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
         {services.map((service, i) => (
           <Reveal key={service.slug} delay={i * 70}>
-            <Card accent={service.accent} className="h-full">
+            <Card accent={service.accent} className="flex h-full flex-col">
               <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-900">
                 {service.name}
               </h2>
@@ -43,9 +43,15 @@ export default function ServicesPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-sm font-semibold text-marigold-800">
-                {service.startingPrice}
-              </p>
+              <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-5">
+                <p className="text-sm font-semibold text-marigold-800">{service.startingPrice}</p>
+                <Link
+                  href={`/contact?service=${service.slug}`}
+                  className="text-sm font-semibold text-periwinkle-700 underline decoration-periwinkle-300 underline-offset-2 transition-colors hover:text-periwinkle-600"
+                >
+                  Get a quote<span className="sr-only"> for {service.name.toLowerCase()}</span>
+                </Link>
+              </div>
             </Card>
           </Reveal>
         ))}

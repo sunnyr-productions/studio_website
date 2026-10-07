@@ -42,3 +42,51 @@ export const lessonTypes: LessonType[] = [
     accent: "periwinkle",
   },
 ];
+
+/**
+ * Lesson pricing — the single source for every price shown on the site
+ * (lessons page, FAQ, how-it-works, contact copy, policies). Change a number
+ * here and it updates everywhere.
+ */
+export const lessonPricing = {
+  hourlyRate: 45,
+  trial: { price: 25, minutes: 30 },
+  pack: { lessons: 4, price: 160 },
+  /** Free cancellation/reschedule window, in hours before the lesson. */
+  cancellationNoticeHours: 24,
+} as const;
+
+const { hourlyRate, trial, pack } = lessonPricing;
+const packPerLesson = pack.price / pack.lessons;
+const packSavings = hourlyRate * pack.lessons - pack.price;
+
+/** Short phrase for running copy, e.g. "a $25 half-hour trial". */
+export const trialPhrase = `a $${trial.price} ${trial.minutes === 30 ? "half-hour" : `${trial.minutes}-minute`} trial`;
+
+export type PricingTier = {
+  name: string;
+  price: string;
+  forWho: string;
+  accent: "marigold" | "periwinkle";
+};
+
+export const pricingTiers: PricingTier[] = [
+  {
+    name: "Trial Lesson",
+    price: `$${trial.price} / ${trial.minutes} min`,
+    forWho: "Low-pressure first meeting — see if it's a good fit before committing to anything.",
+    accent: "marigold",
+  },
+  {
+    name: "Single Lesson",
+    price: `$${hourlyRate} / hour`,
+    forWho: "Same flat rate across guitar, vocal, production, and audio engineering lessons.",
+    accent: "periwinkle",
+  },
+  {
+    name: `${pack.lessons}-Lesson Pack`,
+    price: `$${pack.price} ($${packPerLesson} / lesson)`,
+    forWho: `Save $${packSavings} vs. ${pack.lessons} singles — for students ready to commit to steady, regular progress.`,
+    accent: "marigold",
+  },
+];

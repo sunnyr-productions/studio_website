@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/ui/Reveal";
 import type { ModeContent } from "@/content/modes";
+import { trialPhrase } from "@/content/lessons";
 
 /**
  * Three plain steps to lower first-contact anxiety — the "how it works" every
@@ -11,7 +12,7 @@ export function HowItWorks({ mode }: { mode: ModeContent }) {
   const numBg = isLessons ? "bg-marigold-500" : "bg-periwinkle-500";
   const heading = isLessons ? "Getting started is easy" : "How a project runs";
   const reassurance = isLessons
-    ? "The first lesson is a discounted trial — no commitment, no pressure."
+    ? `Start with ${trialPhrase} — no commitment, no pressure.`
     : "Quotes are free and itemized — no obligation, no surprise fees.";
 
   return (

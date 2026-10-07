@@ -75,9 +75,14 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-ink-900/5 px-6 py-4 text-center text-xs text-ink-500">
-        &copy; {year} {siteConfig.name}. All rights reserved.{" "}
-        <Link href="/contact" className="transition-colors hover:text-marigold-600">
-          Get in touch
+        &copy; {year} {siteConfig.name}. All rights reserved.
+        <span className="mx-2" aria-hidden="true">·</span>
+        <Link href="/terms" className="transition-colors hover:text-marigold-600">
+          Terms &amp; policies
+        </Link>
+        <span className="mx-2" aria-hidden="true">·</span>
+        <Link href="/privacy" className="transition-colors hover:text-marigold-600">
+          Privacy
         </Link>
       </div>
     </footer>

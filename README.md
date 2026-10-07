@@ -24,12 +24,14 @@ See [`.env.example`](.env.example) for the full list and what each one does. Wit
 | --- | --- |
 | Site name, email, nav, location | `src/lib/site-config.ts` |
 | Two-door homepage copy (lessons / studio), stats, FAQs | `src/content/modes.ts` |
-| Lesson types | `src/content/lessons.ts` |
+| Lesson types, **lesson pricing** (trial, single, pack, cancellation window) | `src/content/lessons.ts` |
 | Studio services + starting prices | `src/content/services.ts` |
 | Portfolio tracks | `src/content/portfolio/tracks.ts` |
 | Testimonials | `src/content/testimonials.ts` |
 | Store products | `src/lib/products.ts` |
 | Blog posts | `src/content/blog/*.mdx` |
+| Contact-form choices (services, budgets, lesson options) | `src/content/inquiry.ts` |
+| Terms & policies / privacy policy | `src/app/terms/page.tsx`, `src/app/privacy/page.tsx` |
 
 Portfolio, testimonials, and store are empty on purpose: each section stays hidden (or shows an honest "coming soon" state) until real entries are added, so no placeholder content ships.
 

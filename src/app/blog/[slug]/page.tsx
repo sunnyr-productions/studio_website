@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { Section } from "@/components/ui/Section";
+import { Prose } from "@/components/ui/Prose";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { blogPostingSchema } from "@/lib/structured-data";
 import { getAllPosts, getPostSource, type PostFrontmatter } from "@/lib/blog";
@@ -86,9 +87,7 @@ export default async function BlogPostPage({
         <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">
           {frontmatter.title}
         </h1>
-        <div className="mt-6 leading-relaxed text-ink-700 [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-ink-900 [&_p]:mt-4 [&_p]:leading-relaxed [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_a]:text-marigold-800 [&_a]:underline [&_a]:decoration-marigold-300 [&_a]:underline-offset-2 [&_a]:transition-colors [&_a]:hover:text-marigold-600">
-          {content}
-        </div>
+        <Prose className="mt-6">{content}</Prose>
       </article>
     </Section>
   );

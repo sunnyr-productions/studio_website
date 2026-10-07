@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Section } from "@/components/ui/Section";
-import { ContactForm } from "@/components/ContactForm";
+import { Suspense } from "react";
+import { ContactForm, ContactFormFromUrl } from "@/components/ContactForm";
 import { Reveal } from "@/components/ui/Reveal";
 import { siteConfig } from "@/lib/site-config";
+import { trialPhrase } from "@/content/lessons";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <Section pattern="dots" className="pt-16">
-      <div className="grid gap-10 sm:grid-cols-[1fr_320px]">
+      <div className="grid gap-10 lg:grid-cols-[1fr_280px]">
         <div>
           <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
             Let&apos;s work together
@@ -26,7 +28,7 @@ export default function ContactPage() {
           >
             Tell me what you&apos;d like to learn — your instrument, where you&apos;re starting
             from, and what you&apos;re hoping to play. No experience required, and no pressure:
-            the first lesson is a discounted trial so we can see if it&apos;s a good fit.
+            the first lesson can be {trialPhrase}, so we can see if it&apos;s a good fit.
           </p>
           <p
             data-mode-only="studio"
@@ -38,8 +40,10 @@ export default function ContactPage() {
             one-size-fits-all rate.
           </p>
 
-          <div style={{ animationDelay: "140ms" }} className="animate-fade-up mt-8 max-w-lg">
-            <ContactForm />
+          <div style={{ animationDelay: "140ms" }} className="animate-fade-up mt-8 max-w-2xl">
+            <Suspense fallback={<ContactForm />}>
+              <ContactFormFromUrl />
+            </Suspense>
           </div>
         </div>
 

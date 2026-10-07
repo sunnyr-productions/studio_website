@@ -1,36 +1,15 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import { modes, type StudioMode } from "@/content/modes";
+import { setStudioMode, useStudioMode } from "@/lib/use-studio-mode";
 
 const ORDER: StudioMode[] = ["lessons", "studio"];
-const EVENT = "sunnyr:mode-change";
-
-function subscribe(callback: () => void) {
-  window.addEventListener(EVENT, callback);
-  window.addEventListener("storage", callback);
-  return () => {
-    window.removeEventListener(EVENT, callback);
-    window.removeEventListener("storage", callback);
-  };
-}
-
-function getSnapshot(): StudioMode {
-  return document.documentElement.getAttribute("data-mode") === "studio" ? "studio" : "lessons";
-}
-
-// Matches the <html data-mode="lessons"> default in the root layout — must
-// equal the server-rendered value exactly, or React logs a mismatch.
-function getServerSnapshot(): StudioMode {
-  return "lessons";
-}
 
 /**
  * The two-door switch. Sets `data-mode` on <html>; all the actual swapping is
  * CSS (see globals.css), so the page content itself is server-rendered and
- * static — this only flips the attribute and remembers the choice. Reads the
- * current door via useSyncExternalStore (external, browser-only state set by
- * the pre-paint script and this component's own click handler).
+ * static — this only flips the attribute and remembers the choice (see
+ * src/lib/use-studio-mode.ts).
  */
 export function ModeToggle({
   className = "",
@@ -40,17 +19,7 @@ export function ModeToggle({
   /** Short labels for the header, where space is tight. */
   compact?: boolean;
 }) {
-  const active = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-
-  function pick(next: StudioMode) {
-    document.documentElement.setAttribute("data-mode", next);
-    try {
-      localStorage.setItem("mode", next);
-    } catch {
-      /* private mode — session-only choice is fine */
-    }
-    window.dispatchEvent(new Event(EVENT));
-  }
+  const active = useStudioMode();
 
   return (
     <div
@@ -65,7 +34,7 @@ export function ModeToggle({
           <button
             key={id}
             type="button"
-            onClick={() => pick(id)}
+            onClick={() => setStudioMode(id)}
             aria-pressed={isActive}
             style={{ borderRadius: "var(--radius-sketch-pill)" }}
             className={`font-semibold transition-all duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marigold-600 ${
