@@ -22,10 +22,10 @@ See [`.env.example`](.env.example) for the full list and what each one does. Wit
 
 | What | File |
 | --- | --- |
-| Site name, email, nav, location | `src/lib/site-config.ts` |
+| Site name, email, response time, nav, location | `src/lib/site-config.ts` |
 | Two-door homepage copy (lessons / studio), stats, FAQs | `src/content/modes.ts` |
-| Lesson types, **lesson pricing** (trial, single, pack, cancellation window) | `src/content/lessons.ts` |
-| Studio services + starting prices | `src/content/services.ts` |
+| Lesson types, **lesson pricing** (trial, single, pack, cancellation window, payment methods) | `src/content/lessons.ts` |
+| Studio services, starting prices, deposit % | `src/content/services.ts` |
 | Portfolio tracks | `src/content/portfolio/tracks.ts` |
 | Testimonials | `src/content/testimonials.ts` |
 | Store products | `src/lib/products.ts` |
@@ -34,6 +34,14 @@ See [`.env.example`](.env.example) for the full list and what each one does. Wit
 | Terms & policies / privacy policy | `src/app/terms/page.tsx`, `src/app/privacy/page.tsx` |
 
 Portfolio, testimonials, and store are empty on purpose: each section stays hidden (or shows an honest "coming soon" state) until real entries are added, so no placeholder content ships.
+
+## Contact form flow
+
+1. The form posts to `/api/contact`, which runs Vercel BotID (on Vercel only), a honeypot, and a fill-time check.
+2. You get the inquiry by email (service in the subject, all details listed); replying goes straight to the sender.
+3. Once `RESEND_FROM_EMAIL` is set, the sender also gets an auto-reply with your response time and next steps. It contains only fixed copy — never text they typed — so the form can't be used to send spam to strangers.
+
+Conversion events (`Inquiry Sent`, `Lesson Booked`, `Checkout Started`, `Door Chosen`) go to Vercel Web Analytics via `src/lib/analytics.ts`. Custom events appear in the dashboard on Vercel's Pro plan.
 
 ## Store fulfillment flow
 

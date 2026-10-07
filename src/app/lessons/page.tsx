@@ -87,8 +87,8 @@ export default function LessonsPage() {
           better in-person, since hands-on technique is harder to see clearly over video.
         </p>
         <p className="mt-3 text-sm leading-relaxed text-ink-700">
-          Need to move a lesson? Free with {lessonPricing.cancellationNoticeHours}+ hours&apos;
-          notice — see the{" "}
+          Lessons are paid in person — {lessonPricing.paymentMethods}. Need to move one? Free with{" "}
+          {lessonPricing.cancellationNoticeHours}+ hours&apos; notice — see the{" "}
           <Link
             href="/terms#lessons"
             className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"

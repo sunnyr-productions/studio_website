@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { Prose } from "@/components/ui/Prose";
 import { lessonPricing } from "@/content/lessons";
+import { studioTerms } from "@/content/services";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 
 const LAST_UPDATED = "October 7, 2026";
 
-const { hourlyRate, trial, pack, cancellationNoticeHours } = lessonPricing;
+const { hourlyRate, trial, pack, cancellationNoticeHours, paymentMethods } = lessonPricing;
 
 /**
  * Plain-language terms. Section ids (#lessons, #studio, #store) are linked
@@ -42,11 +43,12 @@ export default function TermsPage() {
           <ul>
             <li>
               <strong>Rates.</strong> Trial lesson ${trial.price} ({trial.minutes} minutes). Single
-              lessons ${hourlyRate}/hour. A {pack.lessons}-lesson pack is ${pack.price}, paid up
-              front.
+              lessons ${hourlyRate}/hour. A {pack.lessons}-lesson pack is ${pack.price}.
             </li>
             <li>
-              <strong>Payment.</strong> Single and trial lessons are paid at or before the lesson.
+              <strong>Payment.</strong> Lessons are paid in person at the lesson, by{" "}
+              {paymentMethods}. Packs are paid in full at the first lesson of the pack. For online
+              lessons, please send payment by Venmo before we start.
             </li>
             <li>
               <strong>Rescheduling and cancelling.</strong> Free with at least{" "}
@@ -69,6 +71,11 @@ export default function TermsPage() {
               <strong>Quotes first.</strong> Every project starts with a written quote covering
               scope (songs, track counts, deliverables), price, timeline, and payment terms. Work
               begins once you approve it.
+            </li>
+            <li>
+              <strong>Deposit.</strong> Projects are booked with a {studioTerms.depositPercent}%
+              deposit of the quoted price. The balance is due before final files are delivered.
+              Both are invoiced by email.
             </li>
             <li>
               <strong>Revisions.</strong> Two rounds of revisions are included on every mix.

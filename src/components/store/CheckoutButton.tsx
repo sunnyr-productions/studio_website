@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { trackEvent } from "@/lib/analytics";
 
 export function CheckoutButton({ productSlug }: { productSlug: string }) {
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
 
   async function handleClick() {
     setStatus("loading");
+    trackEvent("Checkout Started", { product: productSlug });
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",

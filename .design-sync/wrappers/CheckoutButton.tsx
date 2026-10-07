@@ -6,12 +6,14 @@
 
 import { useState } from "react";
 import { Button } from "./Button";
+import { trackEvent } from "@/lib/analytics";
 
 export function CheckoutButton({ productSlug }: { productSlug: string }) {
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
 
   async function handleClick() {
     setStatus("loading");
+    trackEvent("Checkout Started", { product: productSlug });
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -32,7 +34,7 @@ export function CheckoutButton({ productSlug }: { productSlug: string }) {
         {status === "loading" ? "Redirecting…" : "Buy Now"}
       </Button>
       {status === "error" && (
-        <p className="mt-2 text-sm text-red-700">
+        <p className="animate-fade-up mt-2 text-sm text-red-700">
           Checkout isn&apos;t available right now — please try again shortly.
         </p>
       )}

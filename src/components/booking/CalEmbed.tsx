@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Cal, { getCalApi } from "@calcom/embed-react";
+import { trackEvent } from "@/lib/analytics";
 
 // Matches the theme signal broadcast by ThemeToggle / the pre-paint script.
 const THEME_EVENT = "sunnyr:theme-change";
@@ -26,6 +27,20 @@ export function CalEmbed({ calLink }: { calLink: string }) {
       window.removeEventListener("storage", sync);
     };
   }, []);
+
+  // Report confirmed bookings as a conversion. Registered once; the embed
+  // fires this after the visitor completes a booking inside it.
+  useEffect(() => {
+    (async () => {
+      const cal = await getCalApi();
+      cal("on", {
+        action: "bookingSuccessfulV2",
+        callback: (e) => {
+          trackEvent("Lesson Booked", { event: e.detail.data.title ?? calLink });
+        },
+      });
+    })();
+  }, [calLink]);
 
   useEffect(() => {
     (async () => {

@@ -3,12 +3,17 @@ import { z } from "zod";
 import { getStripe } from "@/lib/stripe";
 import { getProductBySlug } from "@/lib/products";
 import { siteConfig } from "@/lib/site-config";
+import { isBot } from "@/lib/bot-check";
 
 const checkoutSchema = z.object({
   productSlug: z.string().min(1),
 });
 
 export async function POST(request: Request) {
+  if (await isBot()) {
+    return NextResponse.json({ error: "Request blocked" }, { status: 403 });
+  }
+
   const body = await request.json().catch(() => null);
   const parsed = checkoutSchema.safeParse(body);
 

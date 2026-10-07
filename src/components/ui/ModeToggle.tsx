@@ -2,6 +2,7 @@
 
 import { modes, type StudioMode } from "@/content/modes";
 import { setStudioMode, useStudioMode } from "@/lib/use-studio-mode";
+import { trackEvent } from "@/lib/analytics";
 
 const ORDER: StudioMode[] = ["lessons", "studio"];
 
@@ -34,7 +35,10 @@ export function ModeToggle({
           <button
             key={id}
             type="button"
-            onClick={() => setStudioMode(id)}
+            onClick={() => {
+              if (id !== active) trackEvent("Door Chosen", { door: id });
+              setStudioMode(id);
+            }}
             aria-pressed={isActive}
             style={{ borderRadius: "var(--radius-sketch-pill)" }}
             className={`font-semibold transition-all duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marigold-600 ${

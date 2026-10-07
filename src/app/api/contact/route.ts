@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { sendContactNotification } from "@/lib/email";
+import { isBot } from "@/lib/bot-check";
+import { sendContactNotification, sendInquiryConfirmation } from "@/lib/email";
 import {
   budgetOptions,
   experienceOptions,
@@ -49,6 +50,13 @@ const contactSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  // A flagged request gets a visible error (not the silent "ok" the traps
+  // use): if BotID ever misjudges a real person, the form tells them to email
+  // directly instead of swallowing their message.
+  if (await isBot()) {
+    return NextResponse.json({ error: "Request blocked" }, { status: 403 });
+  }
+
   const body = await request.json().catch(() => null);
   const parsed = contactSchema.safeParse(body);
 
@@ -73,6 +81,14 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Failed to send contact notification", error);
     return NextResponse.json({ error: "Failed to send message" }, { status: 502 });
+  }
+
+  // Courtesy auto-reply. The inquiry already reached the inbox, so a failure
+  // here is logged rather than surfaced as a failed submission.
+  try {
+    await sendInquiryConfirmation(submission);
+  } catch (error) {
+    console.error("Failed to send inquiry confirmation", error);
   }
 
   return NextResponse.json({ ok: true });

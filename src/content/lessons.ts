@@ -54,6 +54,8 @@ export const lessonPricing = {
   pack: { lessons: 4, price: 160 },
   /** Free cancellation/reschedule window, in hours before the lesson. */
   cancellationNoticeHours: 24,
+  /** How lessons are paid — in person, at the lesson. */
+  paymentMethods: "cash or Venmo",
 } as const;
 
 const { hourlyRate, trial, pack } = lessonPricing;

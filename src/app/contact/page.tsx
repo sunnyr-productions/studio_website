@@ -48,7 +48,10 @@ export default function ContactPage() {
         </div>
 
         <Reveal delay={120} className="text-sm text-ink-700">
-          <p className="font-semibold text-ink-900">Prefer email?</p>
+          <p className="font-semibold text-ink-900">When you&apos;ll hear back</p>
+          <p className="mt-1">Within {siteConfig.responseTime}.</p>
+
+          <p className="mt-6 font-semibold text-ink-900">Prefer email?</p>
           <a
             href={`mailto:${siteConfig.email}`}
             className="mt-1 block transition-colors hover:text-marigold-600"

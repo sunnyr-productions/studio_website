@@ -8,6 +8,7 @@
  * siblings rather than two unrelated businesses.
  */
 import { lessonPricing, trialPhrase } from "@/content/lessons";
+import { studioTerms } from "@/content/services";
 
 export type StudioMode = "lessons" | "studio";
 
@@ -92,7 +93,7 @@ export const modes: Record<StudioMode, ModeContent> = {
       },
       {
         q: "What does it cost?",
-        a: `$${lessonPricing.hourlyRate} an hour — one flat rate across every lesson type. A ${lessonPricing.pack.lessons}-lesson pack is $${lessonPricing.pack.price}, and your first lesson can be ${trialPhrase}.`,
+        a: `$${lessonPricing.hourlyRate} an hour — one flat rate across every lesson type. A ${lessonPricing.pack.lessons}-lesson pack is $${lessonPricing.pack.price}, and your first lesson can be ${trialPhrase}. Pay in person — ${lessonPricing.paymentMethods}.`,
       },
       {
         q: "What can you teach?",
@@ -143,7 +144,7 @@ export const modes: Record<StudioMode, ModeContent> = {
       },
       {
         title: "Get a quote",
-        body: "A clear, itemized quote shaped around the actual work — no one-size-fits-all rate, no surprise fees.",
+        body: `A clear, itemized quote shaped around the actual work — no surprise fees. A ${studioTerms.depositPercent}% deposit books your spot.`,
       },
       {
         title: "Mix, revise, release",
@@ -165,7 +166,7 @@ export const modes: Record<StudioMode, ModeContent> = {
       },
       {
         q: "What will it cost?",
-        a: "Mixing from $175/song, mastering from $60/track, recording from $75/hour. Every quote is tailored to your track count, timeline, and goals.",
+        a: `Mixing from $175/song, mastering from $60/track, recording from $75/hour. Every quote is tailored to your track count, timeline, and goals. Projects start with a ${studioTerms.depositPercent}% deposit, with the balance due before final delivery.`,
       },
       {
         q: "What do you deliver?",

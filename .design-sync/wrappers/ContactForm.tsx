@@ -16,6 +16,8 @@ import {
 } from "react";
 import { Button } from "./Button";
 import { useStudioMode } from "@/lib/use-studio-mode";
+import { siteConfig } from "@/lib/site-config";
+import { trackEvent } from "@/lib/analytics";
 import {
   LESSON_SERVICE,
   budgetOptions,
@@ -28,6 +30,13 @@ import {
 } from "@/content/inquiry";
 
 type Status = "idle" | "submitting" | "success" | "error";
+
+/**
+ * Give up on a submission after this long. The request passes through the
+ * BotID challenge first; if that ever stalls, the visitor gets the error
+ * state (with the email fallback) instead of "Sending…" forever.
+ */
+const SUBMIT_TIMEOUT_MS = 20_000;
 
 const inputClass =
   "mt-1 w-full border border-ink-900/20 bg-cream-50 px-4 py-3 text-ink-900 transition-all duration-200 focus:border-marigold-500 focus:outline-none focus:ring-2 focus:ring-marigold-200";
@@ -172,12 +181,18 @@ export function ContactForm({ initialService }: { initialService?: string | null
     };
 
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const res = await Promise.race([
+        fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Timed out")), SUBMIT_TIMEOUT_MS),
+        ),
+      ]);
       if (!res.ok) throw new Error("Request failed");
+      trackEvent("Inquiry Sent", { service });
       setStatus("success");
       form.reset();
     } catch {
@@ -192,7 +207,7 @@ export function ContactForm({ initialService }: { initialService?: string | null
         style={{ borderRadius: "var(--radius-sketch)" }}
         className="animate-fade-up border-[1.5px] border-periwinkle-300 bg-periwinkle-50 p-6 text-periwinkle-800"
       >
-        Thanks for reaching out! I&apos;ll get back to you within a couple of days.
+        Thanks for reaching out! I&apos;ll get back to you within {siteConfig.responseTime}.
       </p>
     );
   }
@@ -344,7 +359,11 @@ export function ContactForm({ initialService }: { initialService?: string | null
 
       {status === "error" && (
         <p role="alert" className="text-sm text-red-700">
-          Something went wrong sending your message — please try again or email directly.
+          Something went wrong sending your message — please try again, or email me at{" "}
+          <a href={`mailto:${siteConfig.email}`} className="font-semibold underline underline-offset-2">
+            {siteConfig.email}
+          </a>
+          .
         </p>
       )}
 

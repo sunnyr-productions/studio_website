@@ -7,6 +7,12 @@ export type Service = {
   accent: "marigold" | "periwinkle";
 };
 
+/** Payment terms for studio projects — shown in the FAQ, terms, and auto-reply. */
+export const studioTerms = {
+  /** Share of the quote paid upfront to book the project. */
+  depositPercent: 50,
+} as const;
+
 export const services: Service[] = [
   {
     slug: "mixing",
