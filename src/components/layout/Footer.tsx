@@ -7,7 +7,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto bg-cream-100">
+    <footer className="surface-ground mt-auto">
       <svg
         viewBox="0 0 1200 60"
         preserveAspectRatio="none"

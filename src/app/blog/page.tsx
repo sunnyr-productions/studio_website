@@ -15,12 +15,16 @@ export default function BlogPage() {
   const posts = getAllPosts();
 
   return (
-    <Section pattern="dots" className="pt-16">
+    <Section pattern="dots" space="page">
       <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
         Blog &amp; Resources
       </h1>
-      <p style={{ animationDelay: "80ms" }} className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700">
-        Notes on recording, mixing, gear, and learning music, written for musicians rather than engineers.
+      <p
+        style={{ animationDelay: "80ms" }}
+        className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700"
+      >
+        Notes on recording, mixing, gear, and learning music, written for musicians rather than
+        engineers.
       </p>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">

@@ -37,21 +37,31 @@ export default async function ProductPage({
   }
 
   return (
-    <Section pattern="waveform" className="pt-16">
+    <Section pattern="waveform" space="page">
       <div className="max-w-xl">
         <h1 className="animate-fade-up font-display text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">
           {product.name}
         </h1>
-        <p style={{ animationDelay: "80ms" }} className="animate-fade-up mt-4 leading-relaxed text-ink-700">
+        <p
+          style={{ animationDelay: "80ms" }}
+          className="animate-fade-up mt-4 leading-relaxed text-ink-700"
+        >
           {product.description}
         </p>
-        <p style={{ animationDelay: "140ms" }} className="animate-fade-up mt-6 text-2xl font-semibold text-marigold-700">
+        <p
+          style={{ animationDelay: "140ms" }}
+          className="animate-fade-up mt-6 text-2xl font-semibold text-marigold-700"
+        >
           {product.priceDisplay}
         </p>
 
         {product.previewAudioUrl && (
           <div style={{ animationDelay: "200ms" }} className="animate-fade-up mt-6">
-            <WaveformPlayer title="Preview" subtitle={product.name} audioUrl={product.previewAudioUrl} />
+            <WaveformPlayer
+              title="Preview"
+              subtitle={product.name}
+              audioUrl={product.previewAudioUrl}
+            />
           </div>
         )}
 

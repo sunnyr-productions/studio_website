@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fffdf8;
+  --background: #fbeee3;
   --foreground: #1f2430;
 
   /* The site's one recurring silhouette — an intentionally uneven rounded
@@ -18,6 +18,31 @@
      ink on light paper / near-black on the night surface. */
   --color-ink-fixed: #1f2430;
   --sketch-shadow: rgba(31, 36, 48, 0.14);
+
+  /* Section surfaces (see Section.tsx). The light theme is an early
+     sunrise: lavender sky overhead, blush in the middle, gold at the
+     horizon, and one band of the indigo that's left of the night.
+
+     Every surface is a gradient with a reason for its direction:
+     - page:   the sky itself, fixed to the viewport, so plain sections are
+               windows onto it (cool at the top of the screen, warm at the
+               bottom) rather than flat paper.
+     - sky:    the full sunrise, top of a main page. Vertical, like the
+               horizon it stands for.
+     - sun / dusk: vertical too, deepening downward toward the horizon.
+     - tint / ink / card: diagonal, lit from the upper left, because they
+               are objects in the scene rather than sky.
+     - ground: the footer, darkening as it leaves the horizon line.
+     Small controls (buttons, inputs, toggles) stay flat so they read as
+     crisp stickers on top. */
+  --surface-page: linear-gradient(180deg, #f1e6f1 0%, #fbeee3 48%, #fde4cb 100%);
+  --surface-sky: linear-gradient(180deg, #cdd9f8 0%, #f0d1df 52%, #fdd9a8 100%);
+  --surface-sun: linear-gradient(180deg, #fde2bb 0%, #fbcd96 100%);
+  --surface-dusk: linear-gradient(180deg, #f2d3dc 0%, #f8cdbf 100%);
+  --surface-tint: linear-gradient(135deg, #dadff7 0%, #eadcee 100%);
+  --surface-ink: linear-gradient(150deg, #262b5a 0%, #3b3069 100%);
+  --surface-card: linear-gradient(150deg, #fff7ef 0%, #fbe9dc 100%);
+  --surface-ground: linear-gradient(180deg, #e3e5f7 0%, #d3d6f1 100%);
 }
 
 /* ---- Warm "after-hours studio" dark theme --------------------------------
@@ -28,13 +53,31 @@
    night surfaces, `ink` becomes warm off-white text; marigold/periwinkle
    keep their hue but the shades used AS TEXT on dark are brightened. */
 :root[data-theme="dark"] {
-  --background: #14161f;
+  --background: #1e1b30;
   --foreground: #f6f1e6;
 
+  /* The dark theme is a late sunset: indigo-violet sky overhead, magenta
+     plum in the middle, embers at the horizon, and one band of afterglow
+     wine where the light theme has its indigo. */
+  --surface-page: linear-gradient(180deg, #1a1935 0%, #1e1b30 48%, #2b1c2c 100%);
+  --surface-sky: linear-gradient(180deg, #191936 0%, #3b2148 55%, #6a3226 100%);
+  --surface-sun: linear-gradient(180deg, #3d2924 0%, #5a301c 100%);
+  --surface-dusk: linear-gradient(180deg, #2f204c 0%, #46203e 100%);
+  --surface-tint: linear-gradient(135deg, #2a2144 0%, #35203a 100%);
+  --surface-ink: linear-gradient(150deg, #3a1e36 0%, #5c262c 100%);
+  --surface-ground: linear-gradient(180deg, #2b2140 0%, #221935 100%);
+}
+
+/* The ink band is a slice of night inside the day theme, so it takes the same
+   token set as the dark theme: everything inside it (text, cards, borders)
+   flips with no per-component styling. */
+:root[data-theme="dark"],
+.surface-ink {
   /* Surfaces (was cream: lightest → warmest) now (base night → warmer panel) */
-  --color-cream-50: #171922;
-  --color-cream-100: #1e2130;
-  --color-cream-200: #2a2438;
+  --surface-card: linear-gradient(150deg, #29254a 0%, #1f1b32 100%);
+  --color-cream-50: #1e1b30;
+  --color-cream-100: #2b2140;
+  --color-cream-200: #3d2a3a;
 
   /* Text (was ink: dark → darkest) now warm off-whites */
   --color-ink-500: #928f8a;
@@ -53,6 +96,11 @@
   --color-periwinkle-600: #8fa0ea;
   --color-periwinkle-700: #aab6f0;
   --color-periwinkle-800: #c2caf5;
+
+  /* Coral — plum for the pale tint, brightened where it's used as text */
+  --color-coral-100: #40222f;
+  --color-coral-700: #f0998c;
+  --color-coral-800: #f6b3a8;
 
   /* Error text (forms, checkout) — Tailwind's red-700 is too dim on night */
   --color-red-700: #f2918a;
@@ -85,18 +133,62 @@
   --color-periwinkle-800: #374176;
   --color-periwinkle-900: #2a3159;
 
+  /* Coral — the third hue: the blush between the gold horizon and the
+     periwinkle sky. Card accents, dividers, the CTA panel. */
+  --color-coral-100: #fde3dd;
+  --color-coral-200: #f9c7bc;
+  --color-coral-300: #f4a898;
+  --color-coral-400: #ee8b7a;
+  --color-coral-500: #e56f60;
+  --color-coral-600: #c9554a;
+  --color-coral-700: #a5423b;
+  --color-coral-800: #7e332f;
+
   /* Ink — body text (softer than pure black) */
-  --color-ink-500: #6b7280;
+  --color-ink-500: #5b6272;
   --color-ink-700: #2c3342;
   --color-ink-900: #1f2430;
 
-  /* Cream — warm off-white backgrounds */
-  --color-cream-50: #fffdf8;
-  --color-cream-100: #fff9ee;
-  --color-cream-200: #fef2dd;
+  /* Cream — the paper, tinted on purpose so nothing reads as plain white.
+     50 is the page (peach), 100 the lavender morning-mist step (tint
+     bands, footer), 200 the warm hover wash. */
+  --color-cream-50: #fbeee3;
+  --color-cream-100: #e3e5f7;
+  --color-cream-200: #f6d9ba;
 
   --font-sans: var(--font-body);
   --font-display: var(--font-fraunces);
+}
+
+/* Surfaces. Section.tsx says what each band is for; the gradients themselves
+   are defined (and explained) with the theme tokens at the top. */
+.surface-sun {
+  background: var(--surface-sun);
+}
+
+.surface-dusk {
+  background: var(--surface-dusk);
+}
+
+.surface-sky {
+  background: var(--surface-sky);
+}
+
+.surface-tint {
+  background: var(--surface-tint);
+}
+
+.surface-card {
+  background: var(--surface-card);
+}
+
+.surface-ground {
+  background: var(--surface-ground);
+}
+
+.surface-ink {
+  background: var(--surface-ink);
+  color: var(--color-ink-900);
 }
 
 /* Body copy runs at 17px; every rem-based size scales with it. */
@@ -104,10 +196,24 @@ html {
   font-size: 106.25%;
 }
 
-body {
+html {
   background: var(--background);
+}
+
+body {
   color: var(--foreground);
   position: relative;
+}
+
+/* The page sky: one fixed layer behind everything (a fixed element, not
+   background-attachment, which phones ignore). */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--surface-page);
 }
 
 /* Paper grain — a faint fixed noise layer over the whole site so flat cream

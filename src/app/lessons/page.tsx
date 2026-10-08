@@ -6,34 +6,44 @@ import { Button } from "@/components/ui/Button";
 import { CalEmbed } from "@/components/booking/CalEmbed";
 import { GrowthDivider } from "@/components/ui/GrowthDivider";
 import { Reveal } from "@/components/ui/Reveal";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PhotoStrip } from "@/components/ui/Photo";
+import { getStudioPhotos } from "@/content/media";
 import { siteConfig } from "@/lib/site-config";
 import { lessonPricing, lessonTypes, pricingTiers } from "@/content/lessons";
 
 export const metadata: Metadata = {
   title: "Lessons",
-  description: "Guitar, vocal, production, and audio engineering lessons, taught patiently, for any kind of student.",
+  description:
+    "Guitar, vocal, production, and audio engineering lessons, taught patiently, for any kind of student.",
   alternates: { canonical: "/lessons" },
 };
 
 export default function LessonsPage() {
   return (
     <>
-      <Section pattern="dots" className="pt-16 pb-10">
-        <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
+      <Section pattern="dots" surface="sky" space="page">
+        <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
           Lessons
         </h1>
-        <p style={{ animationDelay: "80ms" }} className="animate-fade-up mt-3 max-w-2xl leading-relaxed text-ink-700">
-          One-on-one lessons in guitar, voice, production, and audio engineering, taught
-          patiently and never rigidly. Every lesson is shaped around what <em>you</em> want to
-          get out of music, whether that&apos;s your first chord or your tenth release. Growth
-          isn&apos;t rushed here. It just needs <span className="marker">consistent sunlight</span>.
+        <p
+          style={{ animationDelay: "80ms" }}
+          className="animate-fade-up mt-4 max-w-2xl text-lg leading-relaxed text-ink-700"
+        >
+          One-on-one lessons in guitar, voice, production, and audio engineering, taught patiently
+          and never rigidly. Every lesson is shaped around what <em>you</em> want to get out of
+          music, whether that&apos;s your first chord or your tenth release. Growth isn&apos;t
+          rushed here. It just needs <span className="marker">consistent sunlight</span>.
         </p>
-        <p style={{ animationDelay: "140ms" }} className="animate-fade-up mt-3 max-w-2xl leading-relaxed text-ink-700">
+        <p
+          style={{ animationDelay: "140ms" }}
+          className="animate-fade-up mt-3 max-w-2xl leading-relaxed text-ink-700"
+        >
           I&apos;m neurodivergent myself, and I work especially well with students who&apos;ve had
           trouble learning in more traditional settings. Any genre, any starting point.
         </p>
 
-        <GrowthDivider className="mt-8 max-w-sm" />
+        <GrowthDivider className="mt-10 max-w-sm" />
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
           {lessonTypes.map((lesson, i) => (
@@ -58,16 +68,14 @@ export default function LessonsPage() {
         </div>
       </Section>
 
-      <Section className="bg-cream-100">
+      <Section surface="sun" id="pricing">
         <Reveal>
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-900">
-            Pricing
-          </h2>
-          <p className="mt-2 max-w-xl leading-relaxed text-ink-700">
-            One flat rate, no matter which lesson type. Simple on purpose.
-          </p>
+          <SectionHeading
+            title="Pricing"
+            lede="One flat rate, no matter which lesson type. Simple on purpose."
+          />
         </Reveal>
-        <div className="mt-8 grid gap-6 sm:grid-cols-3">
+        <div className="mt-10 grid gap-6 sm:grid-cols-3">
           {pricingTiers.map((tier, i) => (
             <Reveal key={tier.name} delay={i * 70}>
               <Card accent={tier.accent} className="h-full">
@@ -78,12 +86,13 @@ export default function LessonsPage() {
             </Reveal>
           ))}
         </div>
-        <p className="mt-6 text-sm leading-relaxed text-ink-700">
-          In-person lessons happen at my sound-treated home studio in Corvallis, OR. Online
-          lessons work great for voice, production, and audio engineering. Guitar tends to go
-          better in-person, since hands-on technique is harder to see clearly over video.
+        <PhotoStrip photos={getStudioPhotos()} className="mt-10" />
+        <p className="mt-10 max-w-3xl leading-relaxed text-ink-700">
+          In-person lessons happen at my sound-treated home studio in Corvallis, OR. Online lessons
+          work great for voice, production, and audio engineering. Guitar tends to go better
+          in-person, since hands-on technique is harder to see clearly over video.
         </p>
-        <p className="mt-3 text-sm leading-relaxed text-ink-700">
+        <p className="mt-3 max-w-3xl leading-relaxed text-ink-700">
           Lessons are paid in person, by {lessonPricing.paymentMethods}. Need to move one? Free with{" "}
           {lessonPricing.cancellationNoticeHours}+ hours&apos; notice. See the{" "}
           <Link
@@ -96,11 +105,9 @@ export default function LessonsPage() {
         </p>
       </Section>
 
-      <Section className="pb-20">
+      <Section id="book">
         <Reveal>
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-900">
-            Pick a time that works for you
-          </h2>
+          <SectionHeading title="Pick a time that works for you" />
           {siteConfig.calLink ? (
             <>
               <p className="mt-2 max-w-xl leading-relaxed text-ink-700">
@@ -118,8 +125,8 @@ export default function LessonsPage() {
             <Card accent="marigold" className="mt-8 max-w-2xl">
               <p className="leading-relaxed text-ink-700">
                 Online booking is coming soon. For now, send a quick note with the lesson
-                you&apos;re interested in and a few times that work for you. I&apos;ll reply
-                with an open slot for your trial lesson.
+                you&apos;re interested in and a few times that work for you. I&apos;ll reply with an
+                open slot for your trial lesson.
               </p>
               <Button href="/contact" className="mt-5">
                 Request a lesson

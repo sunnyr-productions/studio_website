@@ -18,7 +18,7 @@ const LAST_UPDATED = "October 7, 2026";
  */
 export default function PrivacyPage() {
   return (
-    <Section pattern="dots" className="pt-16">
+    <Section pattern="dots" space="page" width="narrow">
       <article className="max-w-2xl">
         <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
           Privacy Policy
@@ -35,8 +35,8 @@ export default function PrivacyPage() {
           <h2 id="collect">What&apos;s collected, and where it goes</h2>
           <ul>
             <li>
-              <strong>Contact form.</strong> Your name, email, the service you pick, any project
-              or lesson details, links you include, and your message. It&apos;s sent to my inbox by
+              <strong>Contact form.</strong> Your name, email, the service you pick, any project or
+              lesson details, links you include, and your message. It&apos;s sent to my inbox by
               email (via Resend). It isn&apos;t stored in a database on this site.
             </li>
             <li>
@@ -45,8 +45,8 @@ export default function PrivacyPage() {
             </li>
             <li>
               <strong>Store purchases.</strong> Checkout is handled by Stripe. Card details go
-              straight to Stripe and never reach this site; I receive your name, email, and what
-              you bought, and your download link is emailed via Resend.
+              straight to Stripe and never reach this site; I receive your name, email, and what you
+              bought, and your download link is emailed via Resend.
             </li>
             <li>
               <strong>Analytics.</strong> Vercel Web Analytics and Speed Insights count page views
@@ -63,8 +63,8 @@ export default function PrivacyPage() {
           <h2 id="use">How it&apos;s used</h2>
           <p>
             To answer your message, schedule and teach lessons, deliver studio work and downloads,
-            and keep basic business records. That&apos;s it: no mailing lists unless you
-            explicitly sign up for one.
+            and keep basic business records. That&apos;s it: no mailing lists unless you explicitly
+            sign up for one.
           </p>
 
           <h2 id="choices">Your choices</h2>
@@ -80,8 +80,8 @@ export default function PrivacyPage() {
 
           <h2 id="changes">Changes</h2>
           <p>
-            If this policy changes, the updated version is posted here with a new date. See also
-            the <Link href="/terms">terms &amp; policies</Link>.
+            If this policy changes, the updated version is posted here with a new date. See also the{" "}
+            <Link href="/terms">terms &amp; policies</Link>.
           </p>
         </Prose>
       </article>

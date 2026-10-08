@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { ModeContent } from "@/content/modes";
 import { trialPhrase } from "@/content/lessons";
 
@@ -7,7 +8,14 @@ import { trialPhrase } from "@/content/lessons";
  * lessons/service competitor front-loads. Big sticker-circle numerals in the
  * door's accent color. Rendered per door; CSS shows the active one.
  */
-export function HowItWorks({ mode }: { mode: ModeContent }) {
+export function HowItWorks({
+  mode,
+  always = false,
+}: {
+  mode: ModeContent;
+  /** Show regardless of the current door (a page that belongs to one side). */
+  always?: boolean;
+}) {
   const isLessons = mode.id === "lessons";
   const numBg = isLessons ? "bg-marigold-500" : "bg-periwinkle-500";
   const heading = isLessons ? "Getting started is easy" : "How a project runs";
@@ -16,14 +24,11 @@ export function HowItWorks({ mode }: { mode: ModeContent }) {
     : "Quotes are free and itemized. No obligation, no surprise fees.";
 
   return (
-    <div data-mode-only={mode.id}>
+    <div data-mode-only={always ? undefined : mode.id}>
       <Reveal>
-        <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-          {heading}
-        </h2>
-        <p className="mt-2 text-ink-700">{reassurance}</p>
+        <SectionHeading title={heading} lede={reassurance} />
       </Reveal>
-      <ol className="mt-8 grid gap-6 sm:grid-cols-3">
+      <ol className="mt-10 grid gap-8 sm:grid-cols-3">
         {mode.steps.map((step, i) => (
           <Reveal key={step.title} delay={i * 90}>
             <li className="flex h-full flex-col">
@@ -34,10 +39,8 @@ export function HowItWorks({ mode }: { mode: ModeContent }) {
               >
                 {i + 1}
               </span>
-              <h3 className="mt-4 font-display text-lg font-semibold text-ink-900">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-700">{step.body}</p>
+              <h3 className="mt-4 font-display text-lg font-semibold text-ink-900">{step.title}</h3>
+              <p className="mt-2 leading-relaxed text-ink-700">{step.body}</p>
             </li>
           </Reveal>
         ))}

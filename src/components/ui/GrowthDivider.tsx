@@ -33,19 +33,21 @@ export function GrowthDivider({ className = "" }: { className?: string }) {
   return (
     <div className={`flex h-16 items-end gap-1 ${className}`} aria-hidden="true">
       {BAR_HEIGHTS.map((barHeight, i) => {
-        const isMarigold = i % 2 === 0;
+        // Gold, blush, periwinkle: the horizon-to-sky order of the palette.
+        const bar = ["bg-marigold-400", "bg-coral-400", "bg-periwinkle-400"][i % 3];
+        const leaf = ["text-periwinkle-300", "text-marigold-300", "text-coral-300"][i % 3];
         return (
           <div key={i} className="relative flex-1">
             {SPROUT_AT.has(i) && (
               <Leaf
                 flip={i % 4 >= 2}
-                color={isMarigold ? "text-periwinkle-300" : "text-marigold-300"}
+                color={leaf}
                 delay={i * 120}
               />
             )}
             <div
               style={{ height: `${barHeight * 1.7}px`, animationDelay: `${i * 30}ms` }}
-              className={`animate-grow-y rounded-full ${isMarigold ? "bg-marigold-400" : "bg-periwinkle-400"}`}
+              className={`animate-grow-y rounded-full ${bar}`}
             />
           </div>
         );

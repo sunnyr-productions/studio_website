@@ -1,25 +1,39 @@
+import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { ModeContent } from "@/content/modes";
 
 /**
  * FAQ accordion — native <details>/<summary>, no client JS needed. Cuts
- * pre-contact friction and gives crawlers real Q&A text. Rendered per door;
- * CSS shows the active one.
+ * pre-contact friction and gives crawlers real Q&A text. Heading on the left,
+ * questions on the right. Rendered per door; CSS shows the active one.
  */
 export function Faq({ mode }: { mode: ModeContent }) {
   return (
-    <div data-mode-only={mode.id}>
+    <div data-mode-only={mode.id} className="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
       <Reveal>
-        <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-          Questions people ask
-        </h2>
+        <SectionHeading
+          title="Questions people ask"
+          lede={
+            <>
+              Don&apos;t see yours?{" "}
+              <Link
+                href="/contact"
+                className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
+              >
+                Ask me directly
+              </Link>
+              .
+            </>
+          }
+        />
       </Reveal>
-      <div className="mt-6 flex flex-col gap-3">
+      <div className="flex flex-col gap-3">
         {mode.faqs.map((faq, i) => (
           <Reveal key={faq.q} delay={i * 60}>
             <details
               style={{ borderRadius: "var(--radius-sketch-sm)" }}
-              className="group border-[1.5px] border-ink-900/20 bg-cream-50 px-5 py-4 shadow-[2px_3px_0_0_var(--sketch-shadow)] transition-shadow open:shadow-[3px_4px_0_0_var(--sketch-shadow)]"
+              className="surface-card group border-[1.5px] border-ink-900/20 px-5 py-4 shadow-[2px_3px_0_0_var(--sketch-shadow)] transition-shadow open:shadow-[3px_4px_0_0_var(--sketch-shadow)]"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-base font-semibold text-ink-900 [&::-webkit-details-marker]:hidden">
                 {faq.q}

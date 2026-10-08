@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <Section pattern="dots" className="pt-16 pb-24">
+    <Section pattern="dots" surface="sky" space="page">
       <p className="animate-fade-up font-semibold tracking-[0.08em] text-marigold-800">404</p>
       <h1
         style={{ animationDelay: "80ms" }}
@@ -21,10 +21,13 @@ export default function NotFound() {
         style={{ animationDelay: "140ms" }}
         className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700"
       >
-        The link may be old, or the page may have moved. Everything on the site is a click away
-        from here.
+        The link may be old, or the page may have moved. Everything on the site is a click away from
+        here.
       </p>
-      <div style={{ animationDelay: "200ms" }} className="animate-fade-up mt-8 flex flex-wrap gap-4">
+      <div
+        style={{ animationDelay: "200ms" }}
+        className="animate-fade-up mt-8 flex flex-wrap gap-4"
+      >
         <Button href="/">Back to home</Button>
         <span data-mode-only="lessons" className="contents">
           <Button href="/lessons" variant="secondary">

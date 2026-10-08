@@ -36,10 +36,12 @@ export default async function StoreSuccessPage({
   }
 
   return (
-    <Section pattern="dots" className="pt-16 text-center">
+    <Section pattern="dots" space="page" className="text-center">
       {paid ? (
         <>
-          <h1 className="font-display text-3xl font-semibold text-ink-900">Thanks for your order!</h1>
+          <h1 className="font-display text-3xl font-semibold text-ink-900">
+            Thanks for your order!
+          </h1>
           <Card accent="marigold" className="mx-auto mt-6 max-w-md text-left">
             {productName && (
               <p className="text-ink-900">
@@ -59,7 +61,9 @@ export default async function StoreSuccessPage({
         </>
       ) : (
         <>
-          <h1 className="font-display text-3xl font-semibold text-ink-900">Order status unavailable</h1>
+          <h1 className="font-display text-3xl font-semibold text-ink-900">
+            Order status unavailable
+          </h1>
           <p className="mx-auto mt-3 max-w-md text-ink-700">
             We couldn&apos;t confirm this order right now. If you were just charged, check your
             email for a receipt, or{" "}

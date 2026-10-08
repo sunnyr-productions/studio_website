@@ -3,7 +3,7 @@ export type LessonType = {
   name: string;
   blurb: string;
   format: string;
-  accent: "marigold" | "periwinkle";
+  accent: "marigold" | "periwinkle" | "coral";
   featured?: boolean;
 };
 
@@ -31,7 +31,7 @@ export const lessonTypes: LessonType[] = [
     blurb:
       "Songwriting, beat-making, and arranging inside Ableton, Logic, or Pro Tools, plus whatever other instruments come up along the way.",
     format: "In-person or online",
-    accent: "marigold",
+    accent: "coral",
   },
   {
     slug: "audio-engineering",
@@ -69,7 +69,7 @@ export type PricingTier = {
   name: string;
   price: string;
   forWho: string;
-  accent: "marigold" | "periwinkle";
+  accent: "marigold" | "periwinkle" | "coral";
 };
 
 export const pricingTiers: PricingTier[] = [
@@ -89,6 +89,6 @@ export const pricingTiers: PricingTier[] = [
     name: `${pack.lessons}-Lesson Pack`,
     price: `$${pack.price} ($${packPerLesson} / lesson)`,
     forWho: `Save $${packSavings} vs. ${pack.lessons} singles. For students ready to commit to steady, regular progress.`,
-    accent: "marigold",
+    accent: "coral",
   },
 ];

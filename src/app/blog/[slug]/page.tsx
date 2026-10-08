@@ -36,11 +36,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   let source: string;
@@ -56,7 +52,7 @@ export default async function BlogPostPage({
   });
 
   return (
-    <Section pattern="waveform" className="pt-16">
+    <Section pattern="waveform" space="page" width="narrow">
       <JsonLd
         data={blogPostingSchema({
           slug,
@@ -69,7 +65,10 @@ export default async function BlogPostPage({
         href="/blog"
         className="group inline-flex items-center gap-1.5 text-sm font-semibold text-periwinkle-700 transition-colors hover:text-periwinkle-900"
       >
-        <span aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-x-1">
+        <span
+          aria-hidden="true"
+          className="transition-transform duration-300 group-hover:-translate-x-1"
+        >
           &larr;
         </span>
         Back to Blog
@@ -83,7 +82,9 @@ export default async function BlogPostPage({
             day: "numeric",
             timeZone: "UTC",
           })}
-          <span className="mx-2" aria-hidden="true">·</span>
+          <span className="mx-2" aria-hidden="true">
+            ·
+          </span>
           By Raul Patel
         </p>
         <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">

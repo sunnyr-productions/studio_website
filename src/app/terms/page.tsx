@@ -23,7 +23,7 @@ const { hourlyRate, trial, pack, cancellationNoticeHours, paymentMethods } = les
  */
 export default function TermsPage() {
   return (
-    <Section pattern="dots" className="pt-16">
+    <Section pattern="dots" space="page" width="narrow">
       <article className="max-w-2xl">
         <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
           Terms &amp; Policies
@@ -74,8 +74,8 @@ export default function TermsPage() {
             </li>
             <li>
               <strong>Deposit.</strong> Projects are booked with a {studioTerms.depositPercent}%
-              deposit of the quoted price. The balance is due before final files are delivered.
-              Both are invoiced by email.
+              deposit of the quoted price. The balance is due before final files are delivered. Both
+              are invoiced by email.
             </li>
             <li>
               <strong>Revisions.</strong> Two rounds of revisions are included on every mix.
@@ -112,15 +112,13 @@ export default function TermsPage() {
               If a file is broken, missing, or not what was described,{" "}
               <Link href="/contact">get in touch</Link> and I&apos;ll fix it or refund you.
             </li>
-            <li>
-              Payments are processed by Stripe; card details never touch this site.
-            </li>
+            <li>Payments are processed by Stripe; card details never touch this site.</li>
           </ul>
 
           <h2 id="website">Using this website</h2>
           <p>
-            The writing, audio, design, and logo on this site belong to {siteConfig.name}. Feel
-            free to share links; please don&apos;t republish the content without permission.
+            The writing, audio, design, and logo on this site belong to {siteConfig.name}. Feel free
+            to share links; please don&apos;t republish the content without permission.
           </p>
           <p>
             The site and blog posts are provided as-is, for general information. To the extent the
@@ -128,8 +126,8 @@ export default function TermsPage() {
             limited to the amount you paid for the service involved.
           </p>
           <p>
-            These terms are governed by the laws of the State of Oregon. If they change, the
-            updated version is posted here with a new date.
+            These terms are governed by the laws of the State of Oregon. If they change, the updated
+            version is posted here with a new date.
           </p>
 
           <p>

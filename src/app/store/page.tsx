@@ -16,22 +16,24 @@ export default function StorePage() {
   const hasProducts = products.length > 0;
 
   return (
-    <Section pattern="dots" className="pt-16">
+    <Section pattern="dots" space="page">
       <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
         Store
       </h1>
-      <p style={{ animationDelay: "80ms" }} className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700">
+      <p
+        style={{ animationDelay: "80ms" }}
+        className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700"
+      >
         {hasProducts ? (
           <>
             <span data-mode-only="lessons">
-              Practice material to take home: transcriptions and worksheets to work through
-              between lessons, plus stems and backing tracks to play along with. Instant delivery
-              to your inbox after checkout.
+              Practice material to take home: transcriptions and worksheets to work through between
+              lessons, plus stems and backing tracks to play along with. Instant delivery to your
+              inbox after checkout.
             </span>
             <span data-mode-only="studio">
-              Digital downloads: multitrack stems and backing tracks to remix or practice
-              against, plus transcriptions and worksheets. Instant delivery to your inbox after
-              checkout.
+              Digital downloads: multitrack stems and backing tracks to remix or practice against,
+              plus transcriptions and worksheets. Instant delivery to your inbox after checkout.
             </span>
           </>
         ) : (

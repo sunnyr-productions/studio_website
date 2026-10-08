@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <Section pattern="dots" className="pt-16">
+    <Section pattern="dots" space="page">
       <div className="grid gap-10 lg:grid-cols-[1fr_280px]">
         <div>
           <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
@@ -25,9 +25,9 @@ export default function ContactPage() {
             style={{ animationDelay: "80ms" }}
             className="animate-fade-up mt-3 max-w-lg leading-relaxed text-ink-700"
           >
-            Pick what you need help with and the form will ask for the details that matter.
-            Lessons can start with {trialPhrase}; studio projects get a quote shaped around the
-            actual work. Just have questions? Ask away. Answering them here is free.
+            Pick what you need help with and the form will ask for the details that matter. Lessons
+            can start with {trialPhrase}; studio projects get a quote shaped around the actual work.
+            Just have questions? Ask away. Answering them here is free.
           </p>
 
           <div style={{ animationDelay: "140ms" }} className="animate-fade-up mt-8 max-w-2xl">

@@ -66,7 +66,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="flex min-h-full flex-col bg-cream-50 font-sans text-ink-900">
+      <body className="flex min-h-full flex-col font-sans text-ink-900">
         <JsonLd data={localBusinessSchema()} />
         <Header />
         <main className="flex-1">{children}</main>

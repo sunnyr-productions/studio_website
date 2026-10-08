@@ -2,6 +2,10 @@ import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { GrowthDivider } from "@/components/ui/GrowthDivider";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { CtaPanel } from "@/components/ui/CtaPanel";
+import { Photo } from "@/components/ui/Photo";
+import { getHeroPhotos } from "@/content/media";
 import { Reveal } from "@/components/ui/Reveal";
 import { Scribble } from "@/components/ui/Scribble";
 import { ModeToggle } from "@/components/ui/ModeToggle";
@@ -45,6 +49,45 @@ function Hero() {
     };
   });
 
+  const heroPhotos = getHeroPhotos();
+  const hasPhoto = Boolean(heroPhotos.lessons || heroPhotos.studio);
+
+  return (
+    <div className={hasPhoto ? "grid items-center gap-12 lg:grid-cols-[1.2fr_1fr]" : ""}>
+      <HeroCopy doors={doors} />
+      {hasPhoto && (
+        <div style={{ animationDelay: "200ms" }} className="animate-fade-up">
+          {doors.map(({ mode }) => {
+            const photo = heroPhotos[mode.id];
+            return (
+              photo && (
+                <div key={mode.id} data-mode-only={mode.id}>
+                  <Photo
+                    photo={photo}
+                    accent={mode.id === "lessons" ? "marigold" : "periwinkle"}
+                    aspect="aspect-[4/5]"
+                    sizes="(min-width: 1024px) 40vw, 100vw"
+                    priority
+                    className="mx-auto max-w-md lg:max-w-none"
+                  />
+                </div>
+              )
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+type Door = {
+  mode: ModeContent;
+  accentText: string;
+  scribbleColor: string;
+  secondaryCta: { label: string; href: string };
+};
+
+function HeroCopy({ doors }: { doors: Door[] }) {
   return (
     <div className="max-w-2xl">
       <p className="animate-fade-up font-semibold tracking-[0.08em]">
@@ -74,7 +117,10 @@ function Hero() {
           </span>
         ))}
       </p>
-      <p style={{ animationDelay: "220ms" }} className="animate-fade-up mt-3 font-display text-lg italic">
+      <p
+        style={{ animationDelay: "220ms" }}
+        className="animate-fade-up mt-3 font-display text-lg italic"
+      >
         {doors.map(({ mode, accentText }) => (
           <span key={mode.id} data-mode-only={mode.id} className={accentText}>
             {siteConfig.motto}
@@ -98,17 +144,36 @@ function Hero() {
   );
 }
 
+const whyHeadings: Record<ModeContent["id"], { eyebrow: string; title: string }> = {
+  lessons: {
+    eyebrow: "Why learn here",
+    title: "Lessons that fit the student, not the other way round",
+  },
+  studio: {
+    eyebrow: "Why work with me",
+    title: "An engineer who does this every day",
+  },
+};
+
+/** Heading on the left, the three reasons stacked on the right with hairlines. */
 function ValueProps({ mode }: { mode: ModeContent }) {
   return (
-    <div data-mode-only={mode.id} className="grid gap-8 sm:grid-cols-3">
-      {mode.valueProps.map((item, i) => (
-        <Reveal key={item.title} delay={i * 100}>
-          <h2 className="font-display text-xl font-semibold tracking-tight text-ink-900">
-            {item.title}
-          </h2>
-          <p className="mt-2 leading-relaxed text-ink-700">{item.body}</p>
-        </Reveal>
-      ))}
+    <div data-mode-only={mode.id} className="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
+      <Reveal>
+        <SectionHeading {...whyHeadings[mode.id]} />
+      </Reveal>
+      <ul className="border-t border-ink-900/15">
+        {mode.valueProps.map((item, i) => (
+          <li key={item.title} className="border-b border-ink-900/15 py-6">
+            <Reveal delay={i * 100}>
+              <h3 className="font-display text-xl font-semibold tracking-tight text-ink-900">
+                {item.title}
+              </h3>
+              <p className="mt-2 leading-relaxed text-ink-700">{item.body}</p>
+            </Reveal>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -117,11 +182,11 @@ export default function Home() {
   return (
     <>
       <JsonLd data={faqPageSchema([...modes.lessons.faqs, ...modes.studio.faqs])} />
-      <Section pattern="dots" className="pt-20 sm:pt-28">
+      <Section pattern="dots" surface="sky" space="hero">
         <div className="animate-fade-up mb-10">
           <p className="mb-2.5 text-sm text-ink-500">
-            <span className="font-semibold text-ink-700">What brings you here?</span>{" "}
-            Pick a side and the whole page follows your lead.
+            <span className="font-semibold text-ink-700">What brings you here?</span> Pick a side
+            and the whole page follows your lead.
           </p>
           <ModeToggle />
         </div>
@@ -145,32 +210,33 @@ export default function Home() {
           "cta",
         ]}
       >
-        <Section data-sect="why" className="py-14 sm:py-16">
+        <Section data-sect="why">
           <ValueProps mode={modes.lessons} />
           <ValueProps mode={modes.studio} />
         </Section>
 
-        <Section data-sect="how" className="bg-cream-100">
+        <Section data-sect="how" surface="ink">
           <HowItWorks mode={modes.lessons} />
           <HowItWorks mode={modes.studio} />
         </Section>
 
         <Section data-sect="lessons" pattern="sprout">
-          <Reveal className="flex items-end justify-between gap-4">
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-              Lessons
-            </h2>
-            <Button href="/lessons" variant="ghost" className="hidden sm:inline-flex">
-              View all lessons
-            </Button>
+          <Reveal>
+            <SectionHeading
+              title="Lessons"
+              lede="Four ways in, one flat rate. Pick the one closest to what you want to make."
+              action={
+                <Button href="/lessons" variant="ghost" className="hidden sm:inline-flex">
+                  View all lessons
+                </Button>
+              }
+            />
           </Reveal>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {lessonTypes.map((lesson, i) => (
               <Reveal key={lesson.slug} delay={i * 80}>
                 <Card accent={lesson.accent} className="h-full">
-                  <h3 className="font-display text-lg font-semibold text-ink-900">
-                    {lesson.name}
-                  </h3>
+                  <h3 className="font-display text-lg font-semibold text-ink-900">{lesson.name}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-700">{lesson.blurb}</p>
                 </Card>
               </Reveal>
@@ -181,29 +247,35 @@ export default function Home() {
           </Button>
         </Section>
 
-        <Section data-sect="services">
-          <Reveal className="flex items-end justify-between gap-4">
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-              <span data-mode-only="lessons">Also offering: mixing &amp; mastering</span>
-              <span data-mode-only="studio">Mixing &amp; mastering</span>
-            </h2>
-            <Button href="/services" variant="ghost" className="hidden sm:inline-flex">
-              View services
-            </Button>
+        <Section data-sect="services" surface="dusk">
+          <Reveal>
+            <SectionHeading
+              title={
+                <>
+                  <span data-mode-only="lessons">Also offering: mixing &amp; mastering</span>
+                  <span data-mode-only="studio">Mixing &amp; mastering</span>
+                </>
+              }
+              lede={
+                <>
+                  <span data-mode-only="lessons">
+                    For lesson students ready to release something, or anyone who just needs a track
+                    to sound its best.
+                  </span>
+                  <span data-mode-only="studio">
+                    Every project is different. Pricing below is a starting point, and a quote comes
+                    back shaped around your track count, timeline, and goals.
+                  </span>
+                </>
+              }
+              action={
+                <Button href="/services" variant="ghost" className="hidden sm:inline-flex">
+                  View services
+                </Button>
+              }
+            />
           </Reveal>
-          <Reveal delay={60}>
-            <p className="mt-2 max-w-xl leading-relaxed text-ink-700">
-              <span data-mode-only="lessons">
-                For lesson students ready to release something, or anyone who just needs a track
-                to sound its best.
-              </span>
-              <span data-mode-only="studio">
-                Every project is different. Pricing below is a starting point, and a quote comes
-                back shaped around your track count, timeline, and goals.
-              </span>
-            </p>
-          </Reveal>
-          <div className="mt-8 grid gap-6 sm:grid-cols-3">
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
             {services.slice(0, 3).map((service, i) => (
               <Reveal key={service.slug} delay={i * 80}>
                 <Card accent={service.accent} className="h-full">
@@ -224,16 +296,18 @@ export default function Home() {
         </Section>
 
         {portfolioTracks.length > 0 && (
-          <Section data-sect="portfolio" className="bg-cream-100">
-            <Reveal className="flex items-end justify-between gap-4">
-              <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-                Recent work
-              </h2>
-              <Button href="/portfolio" variant="ghost" className="hidden sm:inline-flex">
-                Hear more
-              </Button>
+          <Section data-sect="portfolio" surface="tint">
+            <Reveal>
+              <SectionHeading
+                title="Recent work"
+                action={
+                  <Button href="/portfolio" variant="ghost" className="hidden sm:inline-flex">
+                    Hear more
+                  </Button>
+                }
+              />
             </Reveal>
-            <Reveal delay={100} className="mt-8">
+            <Reveal delay={100} className="mt-10">
               <PortfolioTrackList tracks={portfolioTracks.slice(0, 3)} />
             </Reveal>
             <Button href="/portfolio" variant="ghost" className="mt-8 sm:hidden">
@@ -245,11 +319,9 @@ export default function Home() {
         {testimonials.length > 0 && (
           <Section data-sect="testimonials">
             <Reveal>
-              <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-                What people say
-              </h2>
+              <SectionHeading title="What people say" />
             </Reveal>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2">
+            <div className="mt-10 grid gap-6 sm:grid-cols-2">
               {testimonials.map((t, i) => (
                 <Reveal key={t.name} delay={i * 100}>
                   <Card className="relative overflow-hidden">
@@ -273,31 +345,21 @@ export default function Home() {
           </Section>
         )}
 
-        <Section data-sect="faq" className="bg-cream-100">
+        <Section data-sect="faq" surface="tint">
           <Faq mode={modes.lessons} />
           <Faq mode={modes.studio} />
         </Section>
 
-        <Section
-          data-sect="cta"
-          className="animate-drift-bg bg-gradient-to-br from-periwinkle-100 via-cream-100 to-marigold-100 text-center"
-        >
-          <Reveal>
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-              Ready to get started?
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl leading-relaxed text-ink-700">
-              Book a first lesson, or tell me about a project you need mixed or mastered. Either
-              way, I&apos;ll get back to you with next steps.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Button href="/lessons">Book a lesson</Button>
-              <Button href="/contact" variant="secondary">
-                Start a project
-              </Button>
-            </div>
-            <GrowthDivider className="mx-auto mt-12 max-w-xs" />
-          </Reveal>
+        <Section data-sect="cta" space="tight">
+          <CtaPanel
+            title="Ready to get started?"
+            body="Book a first lesson, or tell me about a project you need mixed or mastered. Either way, I'll get back to you with next steps."
+          >
+            <Button href="/lessons">Book a lesson</Button>
+            <Button href="/contact" variant="secondary">
+              Start a project
+            </Button>
+          </CtaPanel>
         </Section>
       </HomeSections>
     </>

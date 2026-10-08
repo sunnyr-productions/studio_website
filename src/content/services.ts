@@ -4,7 +4,7 @@ export type Service = {
   blurb: string;
   details: string[];
   startingPrice: string;
-  accent: "marigold" | "periwinkle";
+  accent: "marigold" | "periwinkle" | "coral";
 };
 
 /** Payment terms for studio projects — shown in the FAQ, terms, and auto-reply. */
@@ -48,7 +48,7 @@ export const services: Service[] = [
       "In person in Corvallis, or remote (you record, I direct over video)",
     ],
     startingPrice: "Starting at $75/hour",
-    accent: "periwinkle",
+    accent: "coral",
   },
   {
     slug: "consultation",
@@ -72,6 +72,6 @@ export const services: Service[] = [
       "Great default for a single/EP release",
     ],
     startingPrice: "Starting at $210/song (vs. $235 à la carte)",
-    accent: "marigold",
+    accent: "coral",
   },
 ];

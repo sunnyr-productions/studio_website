@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-type Accent = "marigold" | "periwinkle" | "none";
+type Accent = "marigold" | "periwinkle" | "coral" | "none";
 
 // Flat, un-blurred offset shadows instead of soft blur — the "sticker on
 // paper" look, not the generic soft-shadow SaaS card. Color signals accent;
@@ -10,6 +10,8 @@ const accentClasses: Record<Accent, string> = {
     "border-ink-900/80 shadow-[3px_4px_0_0_var(--color-marigold-400)] motion-safe:hover:shadow-[5px_6px_0_0_var(--color-marigold-400)]",
   periwinkle:
     "border-ink-900/80 shadow-[3px_4px_0_0_var(--color-periwinkle-400)] motion-safe:hover:shadow-[5px_6px_0_0_var(--color-periwinkle-400)]",
+  coral:
+    "border-ink-900/80 shadow-[3px_4px_0_0_var(--color-coral-400)] motion-safe:hover:shadow-[5px_6px_0_0_var(--color-coral-400)]",
   none: "border-ink-900/25 shadow-[3px_4px_0_0_var(--sketch-shadow)] motion-safe:hover:shadow-[5px_6px_0_0_var(--sketch-shadow)]",
 };
 
@@ -25,7 +27,7 @@ export function Card({
   return (
     <div
       style={{ borderRadius: "var(--radius-sketch)" }}
-      className={`border-[1.5px] bg-cream-50 p-6 transition-all duration-300 ease-out motion-safe:hover:-translate-x-0.5 motion-safe:hover:-translate-y-0.5 ${accentClasses[accent]} ${className}`}
+      className={`surface-card border-[1.5px] p-6 transition-all duration-300 ease-out motion-safe:hover:-translate-x-0.5 motion-safe:hover:-translate-y-0.5 ${accentClasses[accent]} ${className}`}
     >
       {children}
     </div>
