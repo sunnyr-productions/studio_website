@@ -30,10 +30,9 @@ export default function LessonsPage() {
           style={{ animationDelay: "80ms" }}
           className="animate-fade-up mt-4 max-w-2xl text-lg leading-relaxed text-ink-700"
         >
-          One-on-one lessons in guitar, voice, production, and audio engineering, taught patiently
-          and never rigidly. Every lesson is shaped around what <em>you</em> want to get out of
-          music, whether that’s your first chord or your tenth release. Growth isn’t
-          rushed here. It just needs <span className="marker">consistent sunlight</span>.
+          I teach guitar, voice, production, and audio engineering, one-on-one and without a
+          script. Each lesson goes wherever <em>you</em> want to take it, whether that’s your
+          first chord or your tenth release. Nobody’s rushing you here. Growth just needs <span className="marker">consistent sunlight</span>.
         </p>
         <p
           style={{ animationDelay: "140ms" }}
@@ -111,8 +110,7 @@ export default function LessonsPage() {
           {siteConfig.calLink ? (
             <>
               <p className="mt-2 max-w-xl leading-relaxed text-ink-700">
-                Availability updates in real time below. Book directly and you’ll get a
-                confirmation email with everything you need.
+                Grab any open slot below. You’ll get a confirmation email with the details.
               </p>
               <div
                 style={{ borderRadius: "var(--radius-sketch-sm)" }}

@@ -27,9 +27,8 @@ export default function ServicesPage() {
           style={{ animationDelay: "80ms" }}
           className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700"
         >
-          Mixing, mastering, recording, and consultation for artists getting a release ready. Prices
-          below are starting points. Send me your track count, timeline, and goals, and I’ll
-          reply with a fixed quote.
+          Here’s what I can do for your music and roughly what it costs. Every project is a bit
+          different, so tell me about yours and I’ll send a fixed quote before anything starts.
         </p>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
@@ -72,8 +71,8 @@ export default function ServicesPage() {
 
       <Section space="tight">
         <CtaPanel
-          title="Tell me about the project"
-          body="Send your track count, timeline, and a reference or two. A fixed quote comes back within 2 business days."
+          title="Got a song that's ready?"
+          body="Tell me how many tracks, when you need it, and what you want it to sound like. I'll send a quote within 2 business days."
         >
           <Button href="/contact">Get a quote</Button>
           <Button href="/lessons" variant="secondary">

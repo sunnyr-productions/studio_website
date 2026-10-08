@@ -25,9 +25,9 @@ export default function ContactPage() {
             style={{ animationDelay: "80ms" }}
             className="animate-fade-up mt-3 max-w-lg leading-relaxed text-ink-700"
           >
-            Pick what you need help with and the form will ask for the details that matter. Lessons
-            can start with {trialPhrase}; studio projects get a quote shaped around the actual work.
-            Just have questions? Ask away. Answering them here is free.
+            Tell me what you’re after and the form will ask the right follow-up questions. Lessons
+            can start with {trialPhrase}, and studio projects get a quote before any work starts.
+            Just curious about something? Ask. Questions are free.
           </p>
 
           <div style={{ animationDelay: "140ms" }} className="animate-fade-up mt-8 max-w-2xl">

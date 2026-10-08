@@ -20,8 +20,8 @@ export function HowItWorks({
   const numBg = isLessons ? "bg-marigold-500" : "bg-periwinkle-500";
   const heading = isLessons ? "Getting started is easy" : "How a project runs";
   const reassurance = isLessons
-    ? `Start with ${trialPhrase}. No commitment, no pressure.`
-    : "Quotes are free and itemized. No obligation, no surprise fees.";
+    ? `It starts with ${trialPhrase}, and you can stop there if it's not for you.`
+    : "Quotes are free, and asking for one doesn't commit you to anything.";
 
   return (
     <div data-mode-only={always ? undefined : mode.id}>

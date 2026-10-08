@@ -26,7 +26,7 @@ export default function PortfolioPage() {
       >
         {hasTracks
           ? "A few tracks to get a feel for the work. Click play on any waveform below."
-          : "Nothing is posted here yet. I only feature finished work with the artist's permission."}
+          : "Nothing up here yet. I only post finished work, and only when the artist says yes."}
       </p>
 
       {hasTracks ? (
@@ -37,9 +37,8 @@ export default function PortfolioPage() {
         <Reveal delay={140} className="mt-10 max-w-2xl">
           <Card accent="periwinkle">
             <p className="leading-relaxed text-ink-700">
-              Until there are tracks here, the quickest way to hear what I do is to ask: tell me
-              about your project and I’ll send examples close to the sound you’re going
-              for.
+              In the meantime, just ask. Tell me about your project and I’ll send you a few
+              things I’ve worked on that are close to what you’re going for.
             </p>
             <div className="mt-5 flex flex-wrap gap-4">
               <Button href="/contact">Get in touch</Button>

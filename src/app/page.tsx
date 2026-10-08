@@ -147,11 +147,11 @@ function HeroCopy({ doors }: { doors: Door[] }) {
 const whyHeadings: Record<ModeContent["id"], { eyebrow: string; title: string }> = {
   lessons: {
     eyebrow: "Why learn here",
-    title: "Lessons that fit the student, not the other way round",
+    title: "I teach the way I wish I'd been taught",
   },
   studio: {
     eyebrow: "Why work with me",
-    title: "An engineer who does this every day",
+    title: "What you can expect from me",
   },
 };
 
@@ -224,7 +224,7 @@ export default function Home() {
           <Reveal>
             <SectionHeading
               title="Lessons"
-              lede="Four ways in, one flat rate. Pick the one closest to what you want to make."
+              lede="Pick whichever is closest to what you want to do. They're all the same price."
               action={
                 <Button href="/lessons" variant="ghost" className="hidden sm:inline-flex">
                   View all lessons
@@ -259,12 +259,11 @@ export default function Home() {
               lede={
                 <>
                   <span data-mode-only="lessons">
-                    For lesson students ready to release something, or anyone who just needs a track
-                    to sound its best.
+                    When you’ve got a song you want to put out, I can mix and master it too.
                   </span>
                   <span data-mode-only="studio">
-                    Every project is different. Pricing below is a starting point, and a quote comes
-                    back shaped around your track count, timeline, and goals.
+                    These prices are starting points. Tell me about your project and I’ll send
+                    you a real number.
                   </span>
                 </>
               }
@@ -352,8 +351,8 @@ export default function Home() {
 
         <Section data-sect="cta" space="tight">
           <CtaPanel
-            title="Ready to get started?"
-            body="Book a first lesson, or tell me about a project you need mixed or mastered. Either way, I'll get back to you with next steps."
+            title="Want to give it a try?"
+            body="Book a first lesson, or tell me about the song you're working on. Either way, I'll write back myself within 2 business days."
           >
             <Button href="/lessons">Book a lesson</Button>
             <Button href="/contact" variant="secondary">

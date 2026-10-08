@@ -17,7 +17,7 @@ export const services: Service[] = [
   {
     slug: "mixing",
     name: "Mixing",
-    blurb: "Turning your raw tracks into a balanced, punchy final mix that translates on any speaker.",
+    blurb: "You send me the raw tracks, and I send back a mix that's balanced, punchy, and sounds right on any speaker.",
     details: [
       "Up to 48 tracks per session",
       "2 rounds of revisions included",
@@ -29,7 +29,7 @@ export const services: Service[] = [
   {
     slug: "mastering",
     name: "Mastering",
-    blurb: "The final polish: competitive loudness, tonal balance, and consistency across your whole release.",
+    blurb: "The last step before release. I bring the loudness up to where it should be, even out the tone, and make sure every track sits together.",
     details: [
       "Single track or full EP/album",
       "Reference-track matching on request",
@@ -41,7 +41,7 @@ export const services: Service[] = [
   {
     slug: "recording",
     name: "Recording Sessions",
-    blurb: "Studio time for vocals and instruments, tracked one or two parts at a time and built up in layers, engineered start to finish.",
+    blurb: "Come record vocals or instruments at the studio. We track one or two parts at a time and build the song up in layers, and I run the session so you can just play.",
     details: [
       "Hourly or day-rate blocks",
       "Session files organized and delivered same week",
@@ -53,7 +53,7 @@ export const services: Service[] = [
   {
     slug: "consultation",
     name: "Production Consultation",
-    blurb: "A focused session going through your project together: arrangement, tone, or a stuck mix.",
+    blurb: "An hour on a call, going through your project together. Good for a stuck mix, an arrangement that isn't working, or a second opinion.",
     details: [
       "60-minute video call",
       "Written notes + marked-up session follow-up",
@@ -65,7 +65,7 @@ export const services: Service[] = [
   {
     slug: "mix-master-bundle",
     name: "Mixing + Mastering Bundle",
-    blurb: "Book both together for a discount: one engineer, one vision, from raw tracks to final master.",
+    blurb: "Book mixing and mastering together and save a little. Same ears on your song from raw tracks to final master.",
     details: [
       "Same deliverables as mixing + mastering separately",
       "~10% savings vs. booking à la carte",

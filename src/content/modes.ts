@@ -45,21 +45,21 @@ export const modes: Record<StudioMode, ModeContent> = {
     headlineLead: "Let's make your sound a little",
     headlineAccent: "sunnier",
     body:
-      "Patient, student-led lessons in guitar, voice, production, and audio engineering. No rigid curriculum, no judgment, just music built around what you want to make.",
+      "I teach guitar, voice, production, and audio engineering, and I teach them patiently. There's no set curriculum and nobody's judging. We start with the music you want to make and go from there.",
     primaryCta: { label: "Book a lesson", href: "/lessons" },
     secondaryCta: { label: "Ask a question", href: "/contact" },
     valueProps: [
       {
-        title: "Room to grow, at your own pace",
-        body: "Neurodivergent-affirming and never rigid. Lessons are shaped around what you're interested in, not a fixed curriculum.",
+        title: "You set the pace",
+        body: "I'm neurodivergent myself, so I know a fixed lesson plan doesn't work for everybody. If something isn't clicking, we try it another way. If you'd rather chase a different song this week, we do that.",
       },
       {
-        title: "16 years playing, 7 years engineering",
-        body: "Real background behind every lesson, plus day-to-day audio engineering work in podcast production.",
+        title: "I've been at this a while",
+        body: "Sixteen years on guitar, ten writing and producing, seven recording and engineering. Audio is also my day job, so the studio side of music can come into lessons whenever you want it to.",
       },
       {
-        title: "Any genre, any starting point",
-        body: "First-timers and gigging musicians are both welcome, in whatever style you play. Wherever you're planted, there's room to grow.",
+        title: "Bring whatever you're into",
+        body: "Never touched an instrument? Great. Already gigging and stuck on something? Also great. Any style is fair game. Wherever you're planted, there's room to grow.",
       },
     ],
     stats: [
@@ -71,37 +71,37 @@ export const modes: Record<StudioMode, ModeContent> = {
     steps: [
       {
         title: "Book a trial",
-        body: `Grab ${trialPhrase}: low pressure, no commitment. We just see if it clicks. Questions first? Send a message. That part's free.`,
+        body: `Grab ${trialPhrase} and we'll see if it clicks. Got questions first? Message me. That part's free.`,
       },
       {
-        title: "Shape the plan",
-        body: "We build lessons around the music you want to play, at a pace that fits your life.",
+        title: "Make a plan",
+        body: "You tell me what you want to play, and we work out what to practice and how often. It should fit into your life, not take it over.",
       },
       {
-        title: "Grow at your pace",
-        body: "Weekly, biweekly, or whenever. Steady reps pointed at the music you care about.",
+        title: "Keep showing up",
+        body: "Weekly, every other week, whenever works. A little steady practice on music you care about goes a long way.",
       },
     ],
     faqs: [
       {
         q: "Do I need any experience?",
-        a: "None at all. I teach total beginners through gigging musicians. We start wherever you are and build from there.",
+        a: "Nope. I teach people who've never held a guitar and people who play out every weekend. We start wherever you are.",
       },
       {
         q: "In person or online?",
-        a: "Both. In-person lessons happen at my sound-treated home studio in Corvallis; voice, production, and engineering work great over video too (guitar tends to go best in person).",
+        a: "Either. In person, we meet at my home studio in Corvallis. Voice, production, and engineering lessons work really well over video too. Guitar usually goes better in the room, because I can see your hands.",
       },
       {
         q: "What does it cost?",
-        a: `$${lessonPricing.hourlyRate} an hour, one flat rate across every lesson type. A ${lessonPricing.pack.lessons}-lesson pack is $${lessonPricing.pack.price}, and your first lesson can be ${trialPhrase}. Pay in person by ${lessonPricing.paymentMethods}. The trial fee just holds the time and keeps no-shows away; if you only have questions, send them through the contact form and I'll answer what I can, free.`,
+        a: `$${lessonPricing.hourlyRate} an hour, whatever we're working on. ${lessonPricing.pack.lessons} lessons booked together are $${lessonPricing.pack.price}, and your first one can be ${trialPhrase}. You pay at the lesson, by ${lessonPricing.paymentMethods}. The trial fee is only there to hold the time and keep no-shows away. If you just have questions, send them through the contact form and I'll answer what I can for free.`,
       },
       {
         q: "What can you teach?",
-        a: "Guitar and voice, plus music production / DAW work and audio engineering. Any genre: folk, pop, indie, alternative, R&B, funk, and more.",
+        a: "Guitar, voice, music production in a DAW, and audio engineering. Genre-wise I'm happy anywhere: folk, pop, indie, alternative, R&B, funk, you name it.",
       },
       {
         q: "What if lessons haven't worked for me before?",
-        a: "That's my specialty. I'm neurodivergent, I teach patiently and without a fixed curriculum, and I shape everything around how you learn.",
+        a: "Then we should talk. I'm neurodivergent myself, I go slowly, there's no fixed curriculum, and I'll keep changing the approach until it fits how you learn.",
       },
     ],
   },
@@ -114,21 +114,21 @@ export const modes: Record<StudioMode, ModeContent> = {
     headlineLead: "Let's make your mix hit a little",
     headlineAccent: "harder",
     body:
-      "Mixing, mastering, recording, and production consultation for artists ready to release something that holds up next to anything else on the playlist.",
+      "I mix, master, and record, and I'm happy to just talk a project through with you too. The goal is a release you're proud to put next to anything else on the playlist.",
     primaryCta: { label: "Get a quote", href: "/contact" },
     secondaryCta: { label: "Hear the work", href: "/portfolio" },
     valueProps: [
       {
-        title: "Mixes that hold up anywhere",
-        body: "Every mix is checked on studio monitors, planar headphones, and everyday speakers, so the calls I make on your track still hold up everywhere else you play it.",
+        title: "It'll sound right everywhere",
+        body: "I check every mix on studio monitors, good headphones, and the kind of everyday speakers people really listen on. If it only sounds good in my room, it isn't done.",
       },
       {
-        title: "Engineering is the day job",
-        body: "I work full-time as an audio and software engineer in podcast production. Mixing isn't a weekend hobby; it's the craft I practice daily.",
+        title: "This is my day job too",
+        body: "I work full-time as an audio and software engineer in podcast production, so I'm in sessions every day. Your mix gets the same ears.",
       },
       {
-        title: "Clear scope, revisions included",
-        body: "Two rounds of revisions come standard on a mix, with organized session files and streaming-ready deliverables. No surprise line items.",
+        title: "You'll know what you're getting",
+        body: "You get a quote before I start, two rounds of revisions on every mix, and tidy session files at the end. No surprise charges.",
       },
     ],
     stats: [
@@ -139,38 +139,38 @@ export const modes: Record<StudioMode, ModeContent> = {
     ],
     steps: [
       {
-        title: "Send the project",
-        body: "Tell me the track count, your timeline, and the sound you're chasing. References welcome.",
+        title: "Tell me about it",
+        body: "How many tracks, when you need it, and what you want it to sound like. Send a reference song or two if you have them.",
       },
       {
         title: "Get a quote",
-        body: `A clear, itemized quote shaped around the actual work, with no surprise fees. A ${studioTerms.depositPercent}% deposit books your spot.`,
+        body: `I'll send back a price and a timeline for exactly what you described. If it looks good, a ${studioTerms.depositPercent}% deposit holds your spot.`,
       },
       {
-        title: "Mix, revise, release",
-        body: "Two revision rounds come standard, delivered streaming-ready and organized for whatever's next.",
+        title: "Mix, tweak, release",
+        body: "I send a mix, you send notes, and we go two rounds like that. Then you get final files, ready to upload.",
       },
     ],
     faqs: [
       {
         q: "What's your turnaround?",
-        a: "Most mixes come back in about a week. For larger projects like an EP or album, we'll set a realistic timeline up front.",
+        a: "A single mix usually takes me about a week. For an EP or an album, we'll agree on a timeline before I start.",
       },
       {
         q: "How many revisions do I get?",
-        a: "Two rounds are included on every mix, so we can dial it in together without the meter running.",
+        a: "Two rounds on every mix, included in the price. That's usually plenty to get it where you want it.",
       },
       {
         q: "Do you work remotely?",
-        a: "Yes. Send stems from anywhere and I'll handle the rest. Recording happens in person at the Corvallis studio, or remotely: you record at home while I direct and engineer the take over video.",
+        a: "Yes. Send me your tracks from anywhere and I'll take it from there. For recording, you can come to the studio in Corvallis, or record at home while I direct and engineer the take over video.",
       },
       {
         q: "What will it cost?",
-        a: `Mixing from $175/song, mastering from $60/track, recording from $75/hour. Every quote is tailored to your track count, timeline, and goals. Projects start with a ${studioTerms.depositPercent}% deposit, with the balance due before final delivery.`,
+        a: `Mixing starts at $175 a song, mastering at $60 a track, and recording at $75 an hour. The real number depends on how many tracks there are and how soon you need it, so I'll quote it first. It's ${studioTerms.depositPercent}% up front and the rest before I send final files.`,
       },
       {
         q: "What do you deliver?",
-        a: "Streaming-ready WAV + MP3 for every mix and master, plus organized session files.",
+        a: "WAV and MP3 files of every mix and master, ready for streaming, plus the session files in case you want them later.",
       },
     ],
   },

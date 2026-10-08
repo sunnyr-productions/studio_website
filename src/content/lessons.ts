@@ -12,7 +12,7 @@ export const lessonTypes: LessonType[] = [
     slug: "vocal",
     name: "Vocal Lessons",
     blurb:
-      "Technique, range, and performance confidence, drawing on years of coaching a cappella singers through both the vocal and stage-presence side of things.",
+      "Technique, range, and the nerve to perform. I spent years coaching a cappella singers on both the singing and the stage presence.",
     format: "In-person or online",
     accent: "marigold",
     featured: true,
@@ -21,15 +21,15 @@ export const lessonTypes: LessonType[] = [
     slug: "guitar",
     name: "Guitar Lessons",
     blurb:
-      "From your first chords to writing your own songs, taught at whatever pace keeps it fun. 16 years of playing behind every lesson.",
-    format: "Best in-person (hands-on technique is tough fully remote)",
+      "From your first chords to writing your own songs, at whatever pace keeps it fun. I've been playing for 16 years.",
+    format: "Best in person, since I need to see your hands",
     accent: "periwinkle",
   },
   {
     slug: "production",
     name: "Music Production / DAW Lessons",
     blurb:
-      "Songwriting, beat-making, and arranging inside Ableton, Logic, or Pro Tools, plus whatever other instruments come up along the way.",
+      "Songwriting, beat-making, and arranging in Ableton, Logic, or Pro Tools. If another instrument comes up along the way, we'll pick it up.",
     format: "In-person or online",
     accent: "coral",
   },
@@ -37,7 +37,7 @@ export const lessonTypes: LessonType[] = [
     slug: "audio-engineering",
     name: "Audio Engineering / Recording Lessons",
     blurb:
-      "Mixing, mic technique, and setting up a home studio that sounds good, backed by day-to-day engineering work in podcast production.",
+      "Mixing, mic technique, and getting a home studio to sound good. It's what I do at work all day, so ask me anything.",
     format: "In-person or online",
     accent: "periwinkle",
   },
@@ -76,19 +76,19 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Trial Lesson",
     price: `$${trial.price} / ${trial.minutes} min`,
-    forWho: "A first meeting, face to face, to see if it's a good fit. The fee just holds the time. Questions by message are always free.",
+    forWho: "Half an hour, face to face, to see if we get along. The fee just holds the time. If you only have questions, message me. That's free.",
     accent: "marigold",
   },
   {
     name: "Single Lesson",
     price: `$${hourlyRate} / hour`,
-    forWho: "Same flat rate across guitar, vocal, production, and audio engineering lessons.",
+    forWho: "Same price whatever we're working on: guitar, voice, production, or engineering.",
     accent: "periwinkle",
   },
   {
     name: `${pack.lessons}-Lesson Pack`,
     price: `$${pack.price} ($${packPerLesson} / lesson)`,
-    forWho: `Save $${packSavings} vs. ${pack.lessons} singles. For students ready to commit to steady, regular progress.`,
+    forWho: `Saves you $${packSavings} over booking ${pack.lessons} one at a time. Good once you know you're sticking with it.`,
     accent: "coral",
   },
 ];

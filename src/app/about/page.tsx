@@ -128,7 +128,7 @@ export default function AboutPage() {
         <Reveal>
           <SectionHeading
             title="The room and the gear"
-            lede="A DIY-treated home studio in Corvallis. Nothing exotic, all of it known inside out."
+            lede="It's a home studio in Corvallis that I treated myself. Nothing fancy, but I know every inch of it."
           />
         </Reveal>
         <PhotoStrip photos={getStudioPhotos()} className="mt-10" />
