@@ -32,14 +32,14 @@ export default function LessonsPage() {
         >
           One-on-one lessons in guitar, voice, production, and audio engineering, taught patiently
           and never rigidly. Every lesson is shaped around what <em>you</em> want to get out of
-          music, whether that&apos;s your first chord or your tenth release. Growth isn&apos;t
+          music, whether that’s your first chord or your tenth release. Growth isn’t
           rushed here. It just needs <span className="marker">consistent sunlight</span>.
         </p>
         <p
           style={{ animationDelay: "140ms" }}
           className="animate-fade-up mt-3 max-w-2xl leading-relaxed text-ink-700"
         >
-          I&apos;m neurodivergent myself, and I work especially well with students who&apos;ve had
+          I’m neurodivergent myself, and I work especially well with students who’ve had
           trouble learning in more traditional settings. Any genre, any starting point.
         </p>
 
@@ -94,7 +94,7 @@ export default function LessonsPage() {
         </p>
         <p className="mt-3 max-w-3xl leading-relaxed text-ink-700">
           Lessons are paid in person, by {lessonPricing.paymentMethods}. Need to move one? Free with{" "}
-          {lessonPricing.cancellationNoticeHours}+ hours&apos; notice. See the{" "}
+          {lessonPricing.cancellationNoticeHours}+ hours’ notice. See the{" "}
           <Link
             href="/terms#lessons"
             className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
@@ -111,7 +111,7 @@ export default function LessonsPage() {
           {siteConfig.calLink ? (
             <>
               <p className="mt-2 max-w-xl leading-relaxed text-ink-700">
-                Availability updates in real time below. Book directly and you&apos;ll get a
+                Availability updates in real time below. Book directly and you’ll get a
                 confirmation email with everything you need.
               </p>
               <div
@@ -125,7 +125,7 @@ export default function LessonsPage() {
             <Card accent="marigold" className="mt-8 max-w-2xl">
               <p className="leading-relaxed text-ink-700">
                 Online booking is coming soon. For now, send a quick note with the lesson
-                you&apos;re interested in and a few times that work for you. I&apos;ll reply with an
+                you’re interested in and a few times that work for you. I’ll reply with an
                 open slot for your trial lesson.
               </p>
               <Button href="/contact" className="mt-5">

@@ -28,16 +28,16 @@ export default function PrivacyPage() {
         <Prose className="mt-6">
           <p>
             {siteConfig.name} is a one-person studio, so this is simple: I collect only what I need
-            to reply to you and deliver what you&apos;ve booked or bought. I don&apos;t sell your
-            information, and there&apos;s no advertising tracking on this site.
+            to reply to you and deliver what you’ve booked or bought. I don’t sell your
+            information, and there’s no advertising tracking on this site.
           </p>
 
-          <h2 id="collect">What&apos;s collected, and where it goes</h2>
+          <h2 id="collect">What’s collected, and where it goes</h2>
           <ul>
             <li>
               <strong>Contact form.</strong> Your name, email, the service you pick, any project or
-              lesson details, links you include, and your message. It&apos;s sent to my inbox by
-              email (via Resend). It isn&apos;t stored in a database on this site.
+              lesson details, links you include, and your message. It’s sent to my inbox by
+              email (via Resend). It isn’t stored in a database on this site.
             </li>
             <li>
               <strong>Lesson booking.</strong> Bookings are handled by Cal.com, which collects your
@@ -50,20 +50,20 @@ export default function PrivacyPage() {
             </li>
             <li>
               <strong>Analytics.</strong> Vercel Web Analytics and Speed Insights count page views
-              and measure load performance. They don&apos;t use cookies and don&apos;t identify you
+              and measure load performance. They don’t use cookies and don’t identify you
               personally.
             </li>
             <li>
               <strong>Your browser.</strong> Your light/dark theme and lessons/studio choice are
-              saved in your browser&apos;s local storage so the site remembers them. That stays on
+              saved in your browser’s local storage so the site remembers them. That stays on
               your device.
             </li>
           </ul>
 
-          <h2 id="use">How it&apos;s used</h2>
+          <h2 id="use">How it’s used</h2>
           <p>
             To answer your message, schedule and teach lessons, deliver studio work and downloads,
-            and keep basic business records. That&apos;s it: no mailing lists unless you explicitly
+            and keep basic business records. That’s it: no mailing lists unless you explicitly
             sign up for one.
           </p>
 
@@ -74,7 +74,7 @@ export default function PrivacyPage() {
             payment receipts) may need to be kept for tax purposes.
           </p>
           <p>
-            This site isn&apos;t meant for children under 13 to submit information. Parents or
+            This site isn’t meant for children under 13 to submit information. Parents or
             guardians booking lessons for a child can reach out directly.
           </p>
 

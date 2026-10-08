@@ -63,8 +63,8 @@ export default function StorePage() {
         <Reveal delay={140} className="mt-10 max-w-2xl">
           <Card accent="marigold">
             <p className="leading-relaxed text-ink-700">
-              The shop is being stocked. If there&apos;s something specific you&apos;re after, like
-              stems to remix, a backing track, or practice worksheets, let me know and I&apos;ll
+              The shop is being stocked. If there’s something specific you’re after, like
+              stems to remix, a backing track, or practice worksheets, let me know and I’ll
               point you in the right direction.
             </p>
             <div className="mt-5 flex flex-wrap gap-4">

@@ -50,7 +50,7 @@ export default async function StoreSuccessPage({
             )}
             <p className="mt-2 text-ink-700">
               A download link is on its way to{" "}
-              <span className="font-semibold">{email ?? "your email"}</span>. If it doesn&apos;t
+              <span className="font-semibold">{email ?? "your email"}</span>. If it doesn’t
               arrive in a few minutes, check spam or{" "}
               <Link href="/contact" className="text-marigold-800 underline">
                 get in touch
@@ -65,12 +65,12 @@ export default async function StoreSuccessPage({
             Order status unavailable
           </h1>
           <p className="mx-auto mt-3 max-w-md text-ink-700">
-            We couldn&apos;t confirm this order right now. If you were just charged, check your
+            We couldn’t confirm this order right now. If you were just charged, check your
             email for a receipt, or{" "}
             <Link href="/contact" className="text-marigold-800 underline">
               reach out
             </Link>{" "}
-            and we&apos;ll sort it out.
+            and we’ll sort it out.
           </p>
         </>
       )}

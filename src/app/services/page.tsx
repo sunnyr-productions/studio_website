@@ -28,7 +28,7 @@ export default function ServicesPage() {
           className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700"
         >
           Mixing, mastering, recording, and consultation for artists getting a release ready. Prices
-          below are starting points. Send me your track count, timeline, and goals, and I&apos;ll
+          below are starting points. Send me your track count, timeline, and goals, and I’ll
           reply with a fixed quote.
         </p>
 

@@ -79,7 +79,7 @@ export default function AboutPage() {
               style={{ animationDelay: "110ms" }}
               className="animate-fade-up mt-4 font-display text-lg italic leading-relaxed text-marigold-800"
             >
-              The short version: I teach the way I wish I&apos;d been taught: patiently, and around
+              The short version: I teach the way I wish I’d been taught: patiently, and around
               what you want to play.
             </p>
             <p
@@ -94,26 +94,26 @@ export default function AboutPage() {
               style={{ animationDelay: "140ms" }}
               className="animate-fade-up mt-4 leading-relaxed text-ink-700"
             >
-              I&apos;m Raul, a musician for as long as I can remember. I was singing before I could
-              speak in full sentences, I&apos;ve been playing guitar for 16 years, writing and
+              I’m Raul, a musician for as long as I can remember. I was singing before I could
+              speak in full sentences, I’ve been playing guitar for 16 years, writing and
               producing music for 10, and recording and engineering for 7. Music has never been a
-              side interest for me; it&apos;s just how I&apos;m wired.
+              side interest for me; it’s just how I’m wired.
             </p>
             <p className="mt-4 leading-relaxed text-ink-700">
-              I was Music Director of <em>On the Rocks</em>, a men&apos;s a cappella group at the
+              I was Music Director of <em>On the Rocks</em>, a men’s a cappella group at the
               University of Oregon, where I coached vocal technique alongside performance and stage
               presence. I also sang in a wedding and event band during college. These days I work
               full-time as an audio and software engineer for a podcasting production company, which
               keeps the technical side of my ear sharp day to day.
             </p>
             <p className="mt-4 leading-relaxed text-ink-700">
-              I&apos;m neurodivergent, and I work especially well with students who&apos;ve had a
+              I’m neurodivergent, and I work especially well with students who’ve had a
               hard time learning in more traditional settings. Mostly, though, I just like working
-              with people, so I&apos;m open to teaching anyone. My own music teachers were always my
-              most impactful ones growing up, and I try to pay that forward: I&apos;m not a strict
-              or rigid teacher. Lessons follow <em>your</em> interests and your pace, not a fixed
-              curriculum. Folk, pop, indie, alternative, R&amp;B, funk: whatever you&apos;re into,
-              we&apos;ll build on it.
+              with people, so I’m open to teaching anyone. My own music teachers were always my
+              most impactful ones growing up, and I try to pay that forward: I’m not a strict
+              or rigid teacher. Lessons follow <em>your</em>{" "}interests and your pace, not a fixed
+              curriculum. Folk, pop, indie, alternative, R&amp;B, funk: whatever you’re into,
+              we’ll build on it.
             </p>
             <p className="mt-4 leading-relaxed text-ink-700">
               Lessons happen at my sound-treated home studio in Corvallis, OR, or online, and when a

@@ -32,7 +32,7 @@ export default function TermsPage() {
 
         <Prose className="mt-6">
           <p>
-            The short version: be upfront with me and I&apos;ll be upfront with you. These terms
+            The short version: be upfront with me and I’ll be upfront with you. These terms
             cover using this website and booking lessons, studio work, or downloads from{" "}
             {siteConfig.name}, run by Raul Patel in {siteConfig.location.city},{" "}
             {siteConfig.location.regionName}. Questions about anything here? Email{" "}
@@ -52,7 +52,7 @@ export default function TermsPage() {
             </li>
             <li>
               <strong>Rescheduling and cancelling.</strong> Free with at least{" "}
-              {cancellationNoticeHours} hours&apos; notice. Cancellations with less notice, and
+              {cancellationNoticeHours} hours’ notice. Cancellations with less notice, and
               no-shows, are charged in full (or count as a used lesson from a pack).
             </li>
             <li>
@@ -93,7 +93,7 @@ export default function TermsPage() {
             </li>
             <li>
               <strong>Backups.</strong> Please keep your own copies of everything you send. I take
-              good care of project files, but can&apos;t guarantee long-term storage.
+              good care of project files, but can’t guarantee long-term storage.
             </li>
           </ul>
 
@@ -105,12 +105,12 @@ export default function TermsPage() {
             </li>
             <li>
               <strong>Use.</strong> Downloads are for your personal use: practice, study, covers,
-              and remixes. Please don&apos;t resell or redistribute the files themselves.
+              and remixes. Please don’t resell or redistribute the files themselves.
             </li>
             <li>
-              <strong>Refunds.</strong> Because downloads can&apos;t be returned, sales are final.
+              <strong>Refunds.</strong> Because downloads can’t be returned, sales are final.
               If a file is broken, missing, or not what was described,{" "}
-              <Link href="/contact">get in touch</Link> and I&apos;ll fix it or refund you.
+              <Link href="/contact">get in touch</Link> and I’ll fix it or refund you.
             </li>
             <li>Payments are processed by Stripe; card details never touch this site.</li>
           </ul>
@@ -118,11 +118,11 @@ export default function TermsPage() {
           <h2 id="website">Using this website</h2>
           <p>
             The writing, audio, design, and logo on this site belong to {siteConfig.name}. Feel free
-            to share links; please don&apos;t republish the content without permission.
+            to share links; please don’t republish the content without permission.
           </p>
           <p>
             The site and blog posts are provided as-is, for general information. To the extent the
-            law allows, {siteConfig.name}&apos;s liability for any claim related to its services is
+            law allows, {siteConfig.name}’s liability for any claim related to its services is
             limited to the amount you paid for the service involved.
           </p>
           <p>

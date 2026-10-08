@@ -16,7 +16,7 @@ export function Faq({ mode }: { mode: ModeContent }) {
           title="Questions people ask"
           lede={
             <>
-              Don&apos;t see yours?{" "}
+              Don’t see yours?{" "}
               <Link
                 href="/contact"
                 className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"

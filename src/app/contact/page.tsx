@@ -19,7 +19,7 @@ export default function ContactPage() {
       <div className="grid gap-10 lg:grid-cols-[1fr_280px]">
         <div>
           <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
-            Let&apos;s work together
+            Let’s work together
           </h1>
           <p
             style={{ animationDelay: "80ms" }}
@@ -38,7 +38,7 @@ export default function ContactPage() {
         </div>
 
         <Reveal delay={120} className="text-sm text-ink-700">
-          <p className="font-semibold text-ink-900">When you&apos;ll hear back</p>
+          <p className="font-semibold text-ink-900">When you’ll hear back</p>
           <p className="mt-1">Within {siteConfig.responseTime}.</p>
 
           <p className="mt-6 font-semibold text-ink-900">Prefer email?</p>

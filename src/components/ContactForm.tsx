@@ -203,7 +203,7 @@ export function ContactForm({ initialService }: { initialService?: string | null
         style={{ borderRadius: "var(--radius-sketch)" }}
         className="animate-fade-up border-[1.5px] border-periwinkle-300 bg-periwinkle-50 p-6 text-periwinkle-800"
       >
-        Thanks for reaching out! I&apos;ll get back to you within {siteConfig.responseTime}.
+        Thanks for reaching out! I’ll get back to you within {siteConfig.responseTime}.
       </p>
     );
   }

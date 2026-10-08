@@ -38,7 +38,7 @@ export default function PortfolioPage() {
           <Card accent="periwinkle">
             <p className="leading-relaxed text-ink-700">
               Until there are tracks here, the quickest way to hear what I do is to ask: tell me
-              about your project and I&apos;ll send examples close to the sound you&apos;re going
+              about your project and I’ll send examples close to the sound you’re going
               for.
             </p>
             <div className="mt-5 flex flex-wrap gap-4">
