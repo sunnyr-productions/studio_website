@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Figtree, Fraunces } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -9,8 +9,8 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessSchema } from "@/lib/structured-data";
 import { siteConfig } from "@/lib/site-config";
 
-const inter = Inter({
-  variable: "--font-inter",
+const bodyFont = Figtree({
+  variable: "--font-body",
   subsets: ["latin"],
 });
 
@@ -53,7 +53,7 @@ export default function RootLayout({
       data-theme="light"
       data-mode="lessons"
       suppressHydrationWarning
-      className={`${inter.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${bodyFont.variable} ${fraunces.variable} h-full antialiased`}
     >
       <head>
         {/* Runs synchronously during HTML parse, before first paint, so the

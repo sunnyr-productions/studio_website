@@ -62,7 +62,7 @@ export default function AboutPage() {
           />
         </div>
 
-        <div>
+        <div className="max-w-[68ch]">
           <h1
             style={{ animationDelay: "80ms" }}
             className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900"

@@ -38,7 +38,7 @@
 
   /* Text (was ink: dark → darkest) now warm off-whites */
   --color-ink-500: #928f8a;
-  --color-ink-700: #c9c6bf;
+  --color-ink-700: #d8d4cb;
   --color-ink-900: #f6f1e6;
 
   /* Marigold — brighten the deep shades used as text/wash on the night bg */
@@ -87,7 +87,7 @@
 
   /* Ink — body text (softer than pure black) */
   --color-ink-500: #6b7280;
-  --color-ink-700: #3a4152;
+  --color-ink-700: #2c3342;
   --color-ink-900: #1f2430;
 
   /* Cream — warm off-white backgrounds */
@@ -95,8 +95,13 @@
   --color-cream-100: #fff9ee;
   --color-cream-200: #fef2dd;
 
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-body);
   --font-display: var(--font-fraunces);
+}
+
+/* Body copy runs at 17px; every rem-based size scales with it. */
+html {
+  font-size: 106.25%;
 }
 
 body {
