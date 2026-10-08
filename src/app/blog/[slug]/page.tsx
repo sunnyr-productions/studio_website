@@ -83,6 +83,8 @@ export default async function BlogPostPage({
             day: "numeric",
             timeZone: "UTC",
           })}
+          <span className="mx-2" aria-hidden="true">·</span>
+          By Raul Patel
         </p>
         <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">
           {frontmatter.title}

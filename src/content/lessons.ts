@@ -12,7 +12,7 @@ export const lessonTypes: LessonType[] = [
     slug: "vocal",
     name: "Vocal Lessons",
     blurb:
-      "Technique, range, and performance confidence — drawing on years coaching a cappella singers through both the vocal and stage-presence side of things.",
+      "Technique, range, and performance confidence, drawing on years of coaching a cappella singers through both the vocal and stage-presence side of things.",
     format: "In-person or online",
     accent: "marigold",
     featured: true,
@@ -29,7 +29,7 @@ export const lessonTypes: LessonType[] = [
     slug: "production",
     name: "Music Production / DAW Lessons",
     blurb:
-      "Songwriting, beat-making, and arranging inside Ableton, Logic, or Pro Tools — plus whatever other instruments come up along the way.",
+      "Songwriting, beat-making, and arranging inside Ableton, Logic, or Pro Tools, plus whatever other instruments come up along the way.",
     format: "In-person or online",
     accent: "marigold",
   },
@@ -37,7 +37,7 @@ export const lessonTypes: LessonType[] = [
     slug: "audio-engineering",
     name: "Audio Engineering / Recording Lessons",
     blurb:
-      "Mixing, mic technique, and setting up a home studio that actually sounds good — backed by day-to-day engineering work in podcast production.",
+      "Mixing, mic technique, and setting up a home studio that sounds good, backed by day-to-day engineering work in podcast production.",
     format: "In-person or online",
     accent: "periwinkle",
   },
@@ -76,7 +76,7 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Trial Lesson",
     price: `$${trial.price} / ${trial.minutes} min`,
-    forWho: "A first meeting, face to face, to see if it's a good fit. The fee just holds the time — questions by message are always free.",
+    forWho: "A first meeting, face to face, to see if it's a good fit. The fee just holds the time. Questions by message are always free.",
     accent: "marigold",
   },
   {
@@ -88,7 +88,7 @@ export const pricingTiers: PricingTier[] = [
   {
     name: `${pack.lessons}-Lesson Pack`,
     price: `$${pack.price} ($${packPerLesson} / lesson)`,
-    forWho: `Save $${packSavings} vs. ${pack.lessons} singles — for students ready to commit to steady, regular progress.`,
+    forWho: `Save $${packSavings} vs. ${pack.lessons} singles. For students ready to commit to steady, regular progress.`,
     accent: "marigold",
   },
 ];

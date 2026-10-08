@@ -22,23 +22,12 @@ export default function ContactPage() {
             Let&apos;s work together
           </h1>
           <p
-            data-mode-only="lessons"
             style={{ animationDelay: "80ms" }}
             className="animate-fade-up mt-3 max-w-lg leading-relaxed text-ink-700"
           >
-            Tell me what you&apos;d like to learn — your instrument, where you&apos;re starting
-            from, and what you&apos;re hoping to play. No experience required, and no pressure:
-            the first lesson can be {trialPhrase}, so we can see if it&apos;s a good fit. Just have
-            questions? Ask away — answering them here is free.
-          </p>
-          <p
-            data-mode-only="studio"
-            style={{ animationDelay: "80ms" }}
-            className="animate-fade-up mt-3 max-w-lg leading-relaxed text-ink-700"
-          >
-            Tell me about the project — track count, rough timeline, and what you want it to
-            sound like. I&apos;ll follow up with a quote shaped around the actual work, not a
-            one-size-fits-all rate.
+            Pick what you need help with and the form will ask for the details that matter.
+            Lessons can start with {trialPhrase}; studio projects get a quote shaped around the
+            actual work. Just have questions? Ask away. Answering them here is free.
           </p>
 
           <div style={{ animationDelay: "140ms" }} className="animate-fade-up mt-8 max-w-2xl">

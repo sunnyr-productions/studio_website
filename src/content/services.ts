@@ -29,7 +29,7 @@ export const services: Service[] = [
   {
     slug: "mastering",
     name: "Mastering",
-    blurb: "The final polish — competitive loudness, tonal balance, and consistency across your whole release.",
+    blurb: "The final polish: competitive loudness, tonal balance, and consistency across your whole release.",
     details: [
       "Single track or full EP/album",
       "Reference-track matching on request",
@@ -41,11 +41,11 @@ export const services: Service[] = [
   {
     slug: "recording",
     name: "Recording Sessions",
-    blurb: "Studio time for vocals and instruments, tracked one or two parts at a time and built up in layers — engineered start to finish.",
+    blurb: "Studio time for vocals and instruments, tracked one or two parts at a time and built up in layers, engineered start to finish.",
     details: [
       "Hourly or day-rate blocks",
       "Session files organized and delivered same week",
-      "In person in Corvallis, or remote — you record, I direct over video",
+      "In person in Corvallis, or remote (you record, I direct over video)",
     ],
     startingPrice: "Starting at $75/hour",
     accent: "periwinkle",
@@ -53,19 +53,19 @@ export const services: Service[] = [
   {
     slug: "consultation",
     name: "Production Consultation",
-    blurb: "A focused session going through your project together — arrangement, tone, or a stuck mix.",
+    blurb: "A focused session going through your project together: arrangement, tone, or a stuck mix.",
     details: [
       "60-minute video call",
       "Written notes + marked-up session follow-up",
       "Great before you book a full mix",
     ],
-    startingPrice: "Starting at $60/session",
+    startingPrice: "$60/session",
     accent: "marigold",
   },
   {
     slug: "mix-master-bundle",
     name: "Mixing + Mastering Bundle",
-    blurb: "Book both together for a discount — one engineer, one vision, from raw tracks to final master.",
+    blurb: "Book both together for a discount: one engineer, one vision, from raw tracks to final master.",
     details: [
       "Same deliverables as mixing + mastering separately",
       "~10% savings vs. booking à la carte",

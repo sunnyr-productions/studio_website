@@ -7,7 +7,7 @@ import { getAllPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: "Blog & Resources",
-  description: "Notes on recording, mixing, and mastering.",
+  description: "Plain-English notes on recording, mixing, mastering, gear, and learning music.",
   alternates: { canonical: "/blog" },
 };
 
@@ -20,7 +20,7 @@ export default function BlogPage() {
         Blog &amp; Resources
       </h1>
       <p style={{ animationDelay: "80ms" }} className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700">
-        Notes on recording, mixing, and gear — written for musicians, not other engineers.
+        Notes on recording, mixing, gear, and learning music, written for musicians rather than engineers.
       </p>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">

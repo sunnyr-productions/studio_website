@@ -174,8 +174,9 @@ body::before {
 }
 
 /* Section running order. Lessons mode uses plain DOM order; studio mode
-   re-sequences to lead with client work. No duplicated markup — the same
-   sections simply reorder. */
+   re-sequences to lead with client work. These rules cover the first paint;
+   HomeSections then moves the DOM nodes into the same order so focus and
+   reading order match. Keep the two lists in sync. */
 .home-sections {
   display: flex;
   flex-direction: column;
@@ -368,7 +369,9 @@ body::before {
     animation: drift-bg 12s ease-in-out infinite;
   }
 
-  [data-reveal] {
+  /* Hidden-until-revealed only once the pre-paint script has confirmed JS is
+     running ([data-js] on <html>); without it the content just shows. */
+  [data-js] [data-reveal] {
     opacity: 0;
     transform: translateY(22px);
     transition:
@@ -376,7 +379,7 @@ body::before {
       transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  [data-reveal="in"] {
+  [data-js] [data-reveal="in"] {
     opacity: 1;
     transform: translateY(0);
   }

@@ -109,7 +109,7 @@ function nextSteps(service: string): string {
   if (service === LESSON_SERVICE) {
     return [
       `Most students start with ${trialPhrase}. I'll reply with a few open times for it.`,
-      `Lessons are paid in person — ${lessonPricing.paymentMethods}.`,
+      `Lessons are paid in person by ${lessonPricing.paymentMethods}.`,
     ].join(" ");
   }
   if (isStudioService(service)) {
@@ -147,14 +147,14 @@ export async function sendInquiryConfirmation(submission: ContactSubmission): Pr
     siteConfig.motto,
     "",
     "(You're getting this because this address was entered in the contact form at",
-    `${siteConfig.url}. If that wasn't you, you can ignore this — nothing else will be sent.)`,
+    `${siteConfig.url}. If that wasn't you, you can ignore this. Nothing else will be sent.)`,
   ].join("\n");
 
   await sendEmail({
     from: `${siteConfig.name} <${FROM_ADDRESS}>`,
     to: submission.email,
     replyTo: siteConfig.email,
-    subject: `Got your message — ${siteConfig.name}`,
+    subject: `Got your message | ${siteConfig.name}`,
     text,
   });
   return true;

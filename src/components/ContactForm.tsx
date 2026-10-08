@@ -355,7 +355,7 @@ export function ContactForm({ initialService }: { initialService?: string | null
 
       {status === "error" && (
         <p role="alert" className="text-sm text-red-700">
-          Something went wrong sending your message — please try again, or email me at{" "}
+          Something went wrong sending your message. Please try again, or email me at{" "}
           <a href={`mailto:${siteConfig.email}`} className="font-semibold underline underline-offset-2">
             {siteConfig.email}
           </a>
@@ -368,7 +368,7 @@ export function ContactForm({ initialService }: { initialService?: string | null
           {status === "submitting" ? "Sending…" : "Send message"}
         </Button>
         <p className="text-xs text-ink-500">
-          Your details are only used to reply to you —{" "}
+          Your details are only used to reply to you. See the{" "}
           <Link href="/privacy" className="underline underline-offset-2 hover:text-marigold-600">
             privacy policy
           </Link>

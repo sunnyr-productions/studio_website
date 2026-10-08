@@ -12,8 +12,8 @@ export function HowItWorks({ mode }: { mode: ModeContent }) {
   const numBg = isLessons ? "bg-marigold-500" : "bg-periwinkle-500";
   const heading = isLessons ? "Getting started is easy" : "How a project runs";
   const reassurance = isLessons
-    ? `Start with ${trialPhrase} — no commitment, no pressure.`
-    : "Quotes are free and itemized — no obligation, no surprise fees.";
+    ? `Start with ${trialPhrase}. No commitment, no pressure.`
+    : "Quotes are free and itemized. No obligation, no surprise fees.";
 
   return (
     <div data-mode-only={mode.id}>

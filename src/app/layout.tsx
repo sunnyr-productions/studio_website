@@ -20,13 +20,13 @@ const fraunces = Fraunces({
   axes: ["opsz", "SOFT"],
 });
 
-const title = `${siteConfig.name} — Music Lessons, Mixing & Mastering`;
+const title = `${siteConfig.name} | Music Lessons, Mixing & Mastering`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: title,
-    template: `%s — ${siteConfig.name}`,
+    template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.tagline,
   openGraph: {
@@ -62,7 +62,7 @@ export default function RootLayout({
             private-mode localStorage. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var d=document.documentElement;var t=localStorage.getItem("theme");if(!t){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}d.setAttribute("data-theme",t);var m=localStorage.getItem("mode");if(m==="studio"||m==="lessons"){d.setAttribute("data-mode",m);}}catch(e){}})()`,
+            __html: `(function(){var d=document.documentElement;d.setAttribute("data-js","");try{var t=localStorage.getItem("theme");if(!t){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}d.setAttribute("data-theme",t);var m=localStorage.getItem("mode");if(m==="studio"||m==="lessons"){d.setAttribute("data-mode",m);}}catch(e){}})()`,
           }}
         />
       </head>

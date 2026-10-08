@@ -31,7 +31,7 @@ export function CheckoutButton({ productSlug }: { productSlug: string }) {
       </Button>
       {status === "error" && (
         <p className="animate-fade-up mt-2 text-sm text-red-700">
-          Checkout isn&apos;t available right now — please try again shortly.
+          Checkout isn&apos;t available right now. Please try again shortly.
         </p>
       )}
     </div>

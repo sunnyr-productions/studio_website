@@ -22,8 +22,8 @@ export default function PortfolioPage() {
       </h1>
       <p style={{ animationDelay: "80ms" }} className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700">
         {hasTracks
-          ? "A few tracks to get a feel for the work — click play on any waveform below."
-          : "Mixes and masters are being added here as recent projects wrap up."}
+          ? "A few tracks to get a feel for the work. Click play on any waveform below."
+          : "Nothing is posted here yet. I only feature finished work with the artist's permission."}
       </p>
 
       {hasTracks ? (
@@ -34,9 +34,9 @@ export default function PortfolioPage() {
         <Reveal delay={140} className="mt-10 max-w-2xl">
           <Card accent="periwinkle">
             <p className="leading-relaxed text-ink-700">
-              I&apos;m curating a set of recent mixes and masters to feature here. In the
-              meantime, tell me about your project and I&apos;ll share relevant work directly —
-              matched to the sound you&apos;re going for.
+              Until there are tracks here, the quickest way to hear what I do is to ask: tell
+              me about your project and I&apos;ll send examples close to the sound you&apos;re
+              going for.
             </p>
             <div className="mt-5 flex flex-wrap gap-4">
               <Button href="/contact">Get in touch</Button>

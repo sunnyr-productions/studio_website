@@ -1,5 +1,6 @@
 import type { StudioMode } from "@/content/modes";
 import { products } from "@/lib/products";
+import { portfolioTracks } from "@/content/portfolio/tracks";
 
 export type NavItem = {
   label: string;
@@ -15,7 +16,7 @@ export type NavItem = {
 
 export const siteConfig = {
   name: "The sunny*r Studio",
-  tagline: "Guitar, vocal, production & engineering lessons taught patiently — plus mixing and mastering for musicians ready to level up.",
+  tagline: "Guitar, vocal, production & engineering lessons taught patiently, plus mixing and mastering for musicians ready to level up.",
   motto: "Good things grow on the sunny*r side.",
   email: "raulpatel0224@gmail.com",
   /** Reply-time promise — form success message, contact page, auto-reply. */
@@ -34,20 +35,23 @@ export const siteConfig = {
     { label: "Home", href: "/" },
     { label: "Lessons", href: "/lessons", modes: ["lessons"] },
     { label: "Services", href: "/services", modes: ["studio"] },
-    { label: "Portfolio", href: "/portfolio", modes: ["studio"] },
-    // Hidden from the header until the store has stock — an empty shop in the
-    // main nav is a dead end. It stays linked in the footer.
+    // Portfolio and Store are left out of the menus until they have something
+    // in them — an empty page in the nav is a dead end. Both stay reachable by
+    // URL and in the sitemap.
+    ...(portfolioTracks.length > 0
+      ? [{ label: "Portfolio", href: "/portfolio", modes: ["studio" as const] }]
+      : []),
     ...(products.length > 0 ? [{ label: "Store", href: "/store" }] : []),
     { label: "Blog", href: "/blog" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ] satisfies NavItem[] as NavItem[],
-  /** Every page, always linked, regardless of mode. */
+  /** Every page with content, always linked, regardless of mode. */
   footerLinks: [
     { label: "Lessons", href: "/lessons" },
     { label: "Services", href: "/services" },
-    { label: "Portfolio", href: "/portfolio" },
-    { label: "Store", href: "/store" },
+    ...(portfolioTracks.length > 0 ? [{ label: "Portfolio", href: "/portfolio" }] : []),
+    ...(products.length > 0 ? [{ label: "Store", href: "/store" }] : []),
     { label: "Blog", href: "/blog" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },

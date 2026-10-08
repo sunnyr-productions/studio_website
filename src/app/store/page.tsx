@@ -24,18 +24,18 @@ export default function StorePage() {
         {hasProducts ? (
           <>
             <span data-mode-only="lessons">
-              Practice material to take home — transcriptions and worksheets to work through
+              Practice material to take home: transcriptions and worksheets to work through
               between lessons, plus stems and backing tracks to play along with. Instant delivery
               to your inbox after checkout.
             </span>
             <span data-mode-only="studio">
-              Digital downloads — multitrack stems and backing tracks to remix or practice
+              Digital downloads: multitrack stems and backing tracks to remix or practice
               against, plus transcriptions and worksheets. Instant delivery to your inbox after
               checkout.
             </span>
           </>
         ) : (
-          "Downloadable practice material and stems are on the way — transcriptions, worksheets, backing tracks, and multitracks, delivered straight to your inbox."
+          "Downloadable practice material and stems are on the way: transcriptions, worksheets, backing tracks, and multitracks, delivered straight to your inbox."
         )}
       </p>
 
@@ -61,8 +61,8 @@ export default function StorePage() {
         <Reveal delay={140} className="mt-10 max-w-2xl">
           <Card accent="marigold">
             <p className="leading-relaxed text-ink-700">
-              The shop is being stocked. If there&apos;s something specific you&apos;re after —
-              stems to remix, a backing track, or practice worksheets — let me know and I&apos;ll
+              The shop is being stocked. If there&apos;s something specific you&apos;re after, like
+              stems to remix, a backing track, or practice worksheets, let me know and I&apos;ll
               point you in the right direction.
             </p>
             <div className="mt-5 flex flex-wrap gap-4">

@@ -41,51 +41,51 @@ export const modes: Record<StudioMode, ModeContent> = {
     doorLabel: "Learn with me",
     shortLabel: "Learn",
     crossLinkLabel: "lessons",
-    eyebrow: "Music Lessons — Corvallis, OR & online",
+    eyebrow: "Music Lessons · Corvallis, OR & online",
     headlineLead: "Let's make your sound a little",
     headlineAccent: "sunnier",
     body:
-      "Patient, student-led lessons in guitar, voice, production, and audio engineering. No rigid curriculum, no judgment — just music built around what you actually want to make.",
+      "Patient, student-led lessons in guitar, voice, production, and audio engineering. No rigid curriculum, no judgment, just music built around what you want to make.",
     primaryCta: { label: "Book a lesson", href: "/lessons" },
-    secondaryCta: { label: "See lesson types", href: "/lessons" },
+    secondaryCta: { label: "Ask a question", href: "/contact" },
     valueProps: [
       {
         title: "Room to grow, at your own pace",
-        body: "Neurodivergent-affirming and never rigid — lessons are shaped around what you're interested in, not a fixed curriculum.",
+        body: "Neurodivergent-affirming and never rigid. Lessons are shaped around what you're interested in, not a fixed curriculum.",
       },
       {
         title: "16 years playing, 7 years engineering",
-        body: "Real background behind every lesson — plus day-to-day audio engineering work in podcast production.",
+        body: "Real background behind every lesson, plus day-to-day audio engineering work in podcast production.",
       },
       {
         title: "Any genre, any starting point",
-        body: "Folk, pop, indie, alternative, R&B, funk, and more. First-timers and seasoned musicians both welcome — wherever you're planted, there's room to grow.",
+        body: "First-timers and gigging musicians are both welcome, in whatever style you play. Wherever you're planted, there's room to grow.",
       },
     ],
     stats: [
       { value: "16 yrs", label: "playing guitar" },
       { value: "10 yrs", label: "writing & producing" },
       { value: "Music Director", label: "On the Rocks a cappella (UO)" },
-      { value: "All levels", label: "total beginners to gigging" },
+      { value: `$${lessonPricing.trial.price}`, label: "half-hour trial lesson" },
     ],
     steps: [
       {
         title: "Book a trial",
-        body: `Grab ${trialPhrase} — low pressure, no commitment. We just see if it clicks. Questions first? Send a message — that part's free.`,
+        body: `Grab ${trialPhrase}: low pressure, no commitment. We just see if it clicks. Questions first? Send a message. That part's free.`,
       },
       {
         title: "Shape the plan",
-        body: "We build lessons around what you actually want to play, at a pace that fits your life.",
+        body: "We build lessons around the music you want to play, at a pace that fits your life.",
       },
       {
         title: "Grow at your pace",
-        body: "Weekly, biweekly, or whenever — steady reps pointed at the music you care about.",
+        body: "Weekly, biweekly, or whenever. Steady reps pointed at the music you care about.",
       },
     ],
     faqs: [
       {
         q: "Do I need any experience?",
-        a: "None at all. I teach total beginners through gigging musicians — we start wherever you are and build from there.",
+        a: "None at all. I teach total beginners through gigging musicians. We start wherever you are and build from there.",
       },
       {
         q: "In person or online?",
@@ -93,15 +93,15 @@ export const modes: Record<StudioMode, ModeContent> = {
       },
       {
         q: "What does it cost?",
-        a: `$${lessonPricing.hourlyRate} an hour — one flat rate across every lesson type. A ${lessonPricing.pack.lessons}-lesson pack is $${lessonPricing.pack.price}, and your first lesson can be ${trialPhrase}. Pay in person — ${lessonPricing.paymentMethods}. The trial fee just holds the time and keeps no-shows away; if you only have questions, send them through the contact form and I'll answer what I can, free.`,
+        a: `$${lessonPricing.hourlyRate} an hour, one flat rate across every lesson type. A ${lessonPricing.pack.lessons}-lesson pack is $${lessonPricing.pack.price}, and your first lesson can be ${trialPhrase}. Pay in person by ${lessonPricing.paymentMethods}. The trial fee just holds the time and keeps no-shows away; if you only have questions, send them through the contact form and I'll answer what I can, free.`,
       },
       {
         q: "What can you teach?",
-        a: "Guitar and voice, plus music production / DAW work and audio engineering. Any genre — folk, pop, indie, alternative, R&B, funk, and more.",
+        a: "Guitar and voice, plus music production / DAW work and audio engineering. Any genre: folk, pop, indie, alternative, R&B, funk, and more.",
       },
       {
         q: "What if lessons haven't worked for me before?",
-        a: "That's honestly my specialty. I'm neurodivergent, I teach patiently and without rigid curriculum, and I shape everything around how you actually learn.",
+        a: "That's my specialty. I'm neurodivergent, I teach patiently and without a fixed curriculum, and I shape everything around how you learn.",
       },
     ],
   },
@@ -110,11 +110,11 @@ export const modes: Record<StudioMode, ModeContent> = {
     doorLabel: "Create with me",
     shortLabel: "Create",
     crossLinkLabel: "mixing & mastering",
-    eyebrow: "Mixing, Mastering & Recording — Corvallis, OR",
+    eyebrow: "Mixing, Mastering & Recording · Corvallis, OR",
     headlineLead: "Let's make your mix hit a little",
     headlineAccent: "harder",
     body:
-      "Mixing, mastering, recording, and production consultation — for artists ready to release something that holds up next to anything else on the playlist.",
+      "Mixing, mastering, recording, and production consultation for artists ready to release something that holds up next to anything else on the playlist.",
     primaryCta: { label: "Get a quote", href: "/contact" },
     secondaryCta: { label: "Hear the work", href: "/portfolio" },
     valueProps: [
@@ -124,27 +124,27 @@ export const modes: Record<StudioMode, ModeContent> = {
       },
       {
         title: "Engineering is the day job",
-        body: "I work full-time as an audio and software engineer in podcast production — mixing isn't a weekend hobby, it's the craft I practice daily.",
+        body: "I work full-time as an audio and software engineer in podcast production. Mixing isn't a weekend hobby; it's the craft I practice daily.",
       },
       {
         title: "Clear scope, revisions included",
-        body: "Two rounds of revisions come standard on a mix, with organized session files and streaming-ready deliverables — no surprise line items.",
+        body: "Two rounds of revisions come standard on a mix, with organized session files and streaming-ready deliverables. No surprise line items.",
       },
     ],
     stats: [
       { value: "7 yrs", label: "recording & mixing" },
-      { value: "Full-time", label: "audio & software engineer" },
-      { value: "Cross-checked", label: "monitors, headphones & everyday speakers" },
+      { value: "10 yrs", label: "writing & producing" },
+      { value: "~1 week", label: "typical mix turnaround" },
       { value: "2 rounds", label: "revisions on every mix" },
     ],
     steps: [
       {
         title: "Send the project",
-        body: "Tell me the track count, your timeline, and the sound you're chasing — references welcome.",
+        body: "Tell me the track count, your timeline, and the sound you're chasing. References welcome.",
       },
       {
         title: "Get a quote",
-        body: `A clear, itemized quote shaped around the actual work — no surprise fees. A ${studioTerms.depositPercent}% deposit books your spot.`,
+        body: `A clear, itemized quote shaped around the actual work, with no surprise fees. A ${studioTerms.depositPercent}% deposit books your spot.`,
       },
       {
         title: "Mix, revise, release",
@@ -154,7 +154,7 @@ export const modes: Record<StudioMode, ModeContent> = {
     faqs: [
       {
         q: "What's your turnaround?",
-        a: "Most mixes come back in about a week. For larger projects — an EP or album — we'll set a realistic timeline up front.",
+        a: "Most mixes come back in about a week. For larger projects like an EP or album, we'll set a realistic timeline up front.",
       },
       {
         q: "How many revisions do I get?",
@@ -162,7 +162,7 @@ export const modes: Record<StudioMode, ModeContent> = {
       },
       {
         q: "Do you work remotely?",
-        a: "Yes — send stems from anywhere and I'll handle the rest. Recording happens in person at the Corvallis studio, or remotely: you record at home while I direct and engineer the take over video.",
+        a: "Yes. Send stems from anywhere and I'll handle the rest. Recording happens in person at the Corvallis studio, or remotely: you record at home while I direct and engineer the take over video.",
       },
       {
         q: "What will it cost?",

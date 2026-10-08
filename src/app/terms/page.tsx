@@ -80,7 +80,7 @@ export default function TermsPage() {
             <li>
               <strong>Revisions.</strong> Two rounds of revisions are included on every mix.
               Additional rounds, or changes outside the original scope, are quoted case by case
-              before any extra work starts — no surprise charges.
+              before any extra work starts, so there are no surprise charges.
             </li>
             <li>
               <strong>Your music stays yours.</strong> You keep all rights to your songs and
@@ -92,7 +92,7 @@ export default function TermsPage() {
               with your permission.
             </li>
             <li>
-              <strong>Backups.</strong> Please keep your own copies of everything you send — I take
+              <strong>Backups.</strong> Please keep your own copies of everything you send. I take
               good care of project files, but can&apos;t guarantee long-term storage.
             </li>
           </ul>
@@ -104,7 +104,7 @@ export default function TermsPage() {
               expires after 48 hours, so save the file once it arrives.
             </li>
             <li>
-              <strong>Use.</strong> Downloads are for your personal use — practice, study, covers,
+              <strong>Use.</strong> Downloads are for your personal use: practice, study, covers,
               and remixes. Please don&apos;t resell or redistribute the files themselves.
             </li>
             <li>

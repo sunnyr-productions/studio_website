@@ -68,7 +68,7 @@ export function localBusinessSchema() {
       itemListElement: [
         serviceOffer(
           "Music lessons",
-          "One-on-one guitar, vocal, production, and audio engineering lessons — one flat rate.",
+          "One-on-one guitar, vocal, production, and audio engineering lessons at one flat rate.",
           45,
         ),
         serviceOffer("Mixing", "A balanced, release-ready mix from your raw tracks.", 175),

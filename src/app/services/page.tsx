@@ -7,8 +7,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { services } from "@/content/services";
 
 export const metadata: Metadata = {
-  title: "Services",
-  description: "Mixing, mastering, recording, and consultation services.",
+  title: "Mixing, Mastering & Recording in Corvallis, OR",
+  description:
+    "Mixing from $175/song, mastering from $60/track, and recording sessions in Corvallis, Oregon or remote. Two revision rounds on every mix.",
   alternates: { canonical: "/services" },
 };
 
@@ -19,10 +20,9 @@ export default function ServicesPage() {
         Mixing &amp; Mastering
       </h1>
       <p style={{ animationDelay: "80ms" }} className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700">
-        Client audio services, separate from lessons — good fit for lesson students ready to
-        release something, or anyone who just needs a track to sound its best. Every project is
-        different, so pricing below is a starting point — get in touch for a quote tailored to
-        your track count, timeline, and goals.
+        Mixing, mastering, recording, and consultation for artists getting a release ready.
+        Prices below are starting points. Send me your track count, timeline, and goals, and
+        I&apos;ll reply with a fixed quote.
       </p>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
@@ -66,7 +66,7 @@ export default function ServicesPage() {
 
       <Reveal delay={80}>
         <p className="mt-8 text-center text-sm text-ink-500">
-          Mixing and mastering is the studio side of the practice — the other door is{" "}
+          Mixing and mastering is the studio side of the practice. The other door is{" "}
           <Link href="/lessons" className="font-semibold text-periwinkle-700 underline decoration-periwinkle-300 underline-offset-2 transition-colors hover:text-periwinkle-600">
             teaching
           </Link>

@@ -4,6 +4,7 @@ import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { portfolioTracks } from "@/content/portfolio/tracks";
 import raulHeadshot from "../../../public/images/raul-headshot.jpg";
 
 export const metadata: Metadata = {
@@ -38,8 +39,8 @@ const gearGroups = [
     title: "Software & plugins",
     items: [
       "Logic Pro X",
-      "FabFilter — complete collection",
-      "SoundToys — complete collection",
+      "FabFilter (complete collection)",
+      "SoundToys (complete collection)",
       "Waves, UAD, GoodHertz, and classic analog-gear emulations",
     ],
   },
@@ -73,8 +74,8 @@ export default function AboutPage() {
             style={{ animationDelay: "110ms" }}
             className="animate-fade-up mt-4 font-display text-lg italic leading-relaxed text-marigold-800"
           >
-            The short version: I teach the way I wish I&apos;d been taught — patiently, and
-            around what you actually want to play.
+            The short version: I teach the way I wish I&apos;d been taught: patiently, and
+            around what you want to play.
           </p>
           <p
             data-mode-only="studio"
@@ -85,7 +86,7 @@ export default function AboutPage() {
             to your record.
           </p>
           <p style={{ animationDelay: "140ms" }} className="animate-fade-up mt-4 leading-relaxed text-ink-700">
-            I&apos;m Raul — a musician for as long as I can remember. I was singing before I
+            I&apos;m Raul, a musician for as long as I can remember. I was singing before I
             could speak in full sentences, I&apos;ve been playing guitar for 16 years, writing
             and producing music for 10, and recording and engineering for 7. Music has never
             been a side interest for me; it&apos;s just how I&apos;m wired.
@@ -93,21 +94,21 @@ export default function AboutPage() {
           <p className="mt-4 leading-relaxed text-ink-700">
             I was Music Director of <em>On the Rocks</em>, a men&apos;s a cappella group at the
             University of Oregon, where I coached vocal technique alongside performance and
-            stage presence — and I sang in a wedding and event band during college. These days I
+            stage presence. I also sang in a wedding and event band during college. These days I
             work full-time as an audio and software engineer for a podcasting production
             company, which keeps the technical side of my ear sharp day to day.
           </p>
           <p className="mt-4 leading-relaxed text-ink-700">
             I&apos;m neurodivergent, and I work especially well with students who&apos;ve had a
-            hard time learning in more traditional settings — but honestly, I just like working
+            hard time learning in more traditional settings. Mostly, though, I just like working
             with people, so I&apos;m open to teaching anyone. My own music teachers were always
             my most impactful ones growing up, and I try to pay that forward: I&apos;m not a
             strict or rigid teacher. Lessons follow <em>your</em> interests and your pace, not a
-            fixed curriculum. Folk, pop, indie, alternative, R&amp;B, funk — whatever you&apos;re
+            fixed curriculum. Folk, pop, indie, alternative, R&amp;B, funk: whatever you&apos;re
             into, we&apos;ll build on it.
           </p>
           <p className="mt-4 leading-relaxed text-ink-700">
-            Lessons happen at my sound-treated home studio in Corvallis, OR, or online — and
+            Lessons happen at my sound-treated home studio in Corvallis, OR, or online, and
             when a student (or anyone else) is ready to record, mix, or master something, that
             same studio and experience carries over into client work.
           </p>
@@ -138,7 +139,7 @@ export default function AboutPage() {
           </Reveal>
 
           <p className="mt-8 font-display text-lg italic text-marigold-800">
-            Good things grow on the sunny*r side — bring whatever you&apos;re working on, and
+            Good things grow on the sunny*r side. Bring whatever you&apos;re working on, and
             let&apos;s see what it grows into.
           </p>
 
@@ -151,9 +152,15 @@ export default function AboutPage() {
             </span>
             <span data-mode-only="studio" className="contents">
               <Button href="/contact">Get a quote</Button>
-              <Button href="/portfolio" variant="secondary">
-                Hear the work
-              </Button>
+              {portfolioTracks.length > 0 ? (
+                <Button href="/portfolio" variant="secondary">
+                  Hear the work
+                </Button>
+              ) : (
+                <Button href="/services" variant="secondary">
+                  See services
+                </Button>
+              )}
             </span>
           </div>
         </div>

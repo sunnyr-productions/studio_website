@@ -37,7 +37,7 @@ export default function PrivacyPage() {
             <li>
               <strong>Contact form.</strong> Your name, email, the service you pick, any project
               or lesson details, links you include, and your message. It&apos;s sent to my inbox by
-              email (via Resend) — it isn&apos;t stored in a database on this site.
+              email (via Resend). It isn&apos;t stored in a database on this site.
             </li>
             <li>
               <strong>Lesson booking.</strong> Bookings are handled by Cal.com, which collects your
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
           <h2 id="use">How it&apos;s used</h2>
           <p>
             To answer your message, schedule and teach lessons, deliver studio work and downloads,
-            and keep basic business records. That&apos;s it — no mailing lists unless you
+            and keep basic business records. That&apos;s it: no mailing lists unless you
             explicitly sign up for one.
           </p>
 

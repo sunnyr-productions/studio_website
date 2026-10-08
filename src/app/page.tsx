@@ -5,6 +5,7 @@ import { GrowthDivider } from "@/components/ui/GrowthDivider";
 import { Reveal } from "@/components/ui/Reveal";
 import { Scribble } from "@/components/ui/Scribble";
 import { ModeToggle } from "@/components/ui/ModeToggle";
+import { HomeSections } from "@/components/layout/HomeSections";
 import { StatStrip } from "@/components/ui/StatStrip";
 import { HowItWorks } from "@/components/ui/HowItWorks";
 import { Faq } from "@/components/ui/Faq";
@@ -24,50 +25,75 @@ export const metadata: Metadata = {
 };
 
 /**
- * Hero copy for one door. Both are rendered; CSS shows the active one (see
- * the `data-mode` rules in globals.css), which keeps this page static and
- * flash-free.
+ * Hero copy for both doors. Each element holds both versions and CSS shows the
+ * active one (see the `data-mode` rules in globals.css), which keeps this page
+ * static and flash-free while the document still has a single <h1>.
  */
-function ModeHero({ mode }: { mode: ModeContent }) {
-  const isLessons = mode.id === "lessons";
-  const accentText = isLessons ? "text-marigold-800" : "text-periwinkle-700";
-  const scribbleColor = isLessons
-    ? "var(--color-marigold-500)"
-    : "var(--color-periwinkle-500)";
+function Hero() {
+  const doors = [modes.lessons, modes.studio].map((mode) => {
+    const isLessons = mode.id === "lessons";
+    return {
+      mode,
+      accentText: isLessons ? "text-marigold-800" : "text-periwinkle-700",
+      scribbleColor: isLessons ? "var(--color-marigold-500)" : "var(--color-periwinkle-500)",
+      // An empty portfolio is a dead end, so the studio door points at
+      // services until there are tracks to hear.
+      secondaryCta:
+        mode.secondaryCta.href === "/portfolio" && portfolioTracks.length === 0
+          ? { label: "See services", href: "/services" }
+          : mode.secondaryCta,
+    };
+  });
 
   return (
-    <div data-mode-only={mode.id} className="max-w-2xl">
-      <p className={`animate-fade-up font-semibold tracking-[0.08em] ${accentText}`}>
-        {mode.eyebrow}
+    <div className="max-w-2xl">
+      <p className="animate-fade-up font-semibold tracking-[0.08em]">
+        {doors.map(({ mode, accentText }) => (
+          <span key={mode.id} data-mode-only={mode.id} className={accentText}>
+            {mode.eyebrow}
+          </span>
+        ))}
       </p>
       <h1
         style={{ animationDelay: "80ms" }}
         className="animate-fade-up mt-3 text-[clamp(2.75rem,3vw+2rem,4.5rem)] font-display font-semibold leading-[1.05] tracking-tight text-ink-900"
       >
-        {mode.headlineLead}{" "}
-        <Scribble color={scribbleColor}>{mode.headlineAccent}</Scribble>.
+        {doors.map(({ mode, scribbleColor }) => (
+          <span key={mode.id} data-mode-only={mode.id}>
+            {mode.headlineLead} <Scribble color={scribbleColor}>{mode.headlineAccent}</Scribble>.
+          </span>
+        ))}
       </h1>
       <p
         style={{ animationDelay: "160ms" }}
         className="animate-fade-up mt-5 text-lg leading-relaxed text-ink-700"
       >
-        {mode.body}
+        {doors.map(({ mode }) => (
+          <span key={mode.id} data-mode-only={mode.id}>
+            {mode.body}
+          </span>
+        ))}
       </p>
-      <p
-        style={{ animationDelay: "220ms" }}
-        className={`animate-fade-up mt-3 font-display text-lg italic ${accentText}`}
-      >
-        {siteConfig.motto}
+      <p style={{ animationDelay: "220ms" }} className="animate-fade-up mt-3 font-display text-lg italic">
+        {doors.map(({ mode, accentText }) => (
+          <span key={mode.id} data-mode-only={mode.id} className={accentText}>
+            {siteConfig.motto}
+          </span>
+        ))}
       </p>
-      <div
-        style={{ animationDelay: "280ms" }}
-        className="animate-fade-up mt-8 flex flex-wrap gap-4"
-      >
-        <Button href={mode.primaryCta.href}>{mode.primaryCta.label}</Button>
-        <Button href={mode.secondaryCta.href} variant="secondary">
-          {mode.secondaryCta.label}
-        </Button>
-      </div>
+      {doors.map(({ mode, secondaryCta }) => (
+        <div
+          key={mode.id}
+          data-mode-only={mode.id}
+          style={{ animationDelay: "280ms" }}
+          className="animate-fade-up mt-8 flex flex-wrap gap-4"
+        >
+          <Button href={mode.primaryCta.href}>{mode.primaryCta.label}</Button>
+          <Button href={secondaryCta.href} variant="secondary">
+            {secondaryCta.label}
+          </Button>
+        </div>
+      ))}
     </div>
   );
 }
@@ -90,17 +116,16 @@ function ValueProps({ mode }: { mode: ModeContent }) {
 export default function Home() {
   return (
     <>
-      <JsonLd data={faqPageSchema(modes.lessons.faqs)} />
+      <JsonLd data={faqPageSchema([...modes.lessons.faqs, ...modes.studio.faqs])} />
       <Section pattern="dots" className="pt-20 sm:pt-28">
         <div className="animate-fade-up mb-10">
           <p className="mb-2.5 text-sm text-ink-500">
             <span className="font-semibold text-ink-700">What brings you here?</span>{" "}
-            Pick a side — the whole page follows your lead.
+            Pick a side and the whole page follows your lead.
           </p>
           <ModeToggle />
         </div>
-        <ModeHero mode={modes.lessons} />
-        <ModeHero mode={modes.studio} />
+        <Hero />
         <div className="mt-14">
           <StatStrip mode={modes.lessons} />
           <StatStrip mode={modes.studio} />
@@ -108,7 +133,18 @@ export default function Home() {
         <GrowthDivider className="mt-14" />
       </Section>
 
-      <div className="home-sections">
+      <HomeSections
+        ids={[
+          "why",
+          "how",
+          "lessons",
+          "services",
+          ...(portfolioTracks.length > 0 ? ["portfolio"] : []),
+          ...(testimonials.length > 0 ? ["testimonials"] : []),
+          "faq",
+          "cta",
+        ]}
+      >
         <Section data-sect="why" className="py-14 sm:py-16">
           <ValueProps mode={modes.lessons} />
           <ValueProps mode={modes.studio} />
@@ -162,7 +198,7 @@ export default function Home() {
                 to sound its best.
               </span>
               <span data-mode-only="studio">
-                Every project is different — pricing below is a starting point, and a quote comes
+                Every project is different. Pricing below is a starting point, and a quote comes
                 back shaped around your track count, timeline, and goals.
               </span>
             </p>
@@ -247,14 +283,11 @@ export default function Home() {
           className="animate-drift-bg bg-gradient-to-br from-periwinkle-100 via-cream-100 to-marigold-100 text-center"
         >
           <Reveal>
-            <p className="font-display text-2xl italic text-marigold-800 sm:text-3xl">
-              {siteConfig.motto}
-            </p>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-ink-900">
+            <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
               Ready to get started?
             </h2>
             <p className="mx-auto mt-3 max-w-xl leading-relaxed text-ink-700">
-              Book a first lesson, or tell me about a project you need mixed or mastered — either
+              Book a first lesson, or tell me about a project you need mixed or mastered. Either
               way, I&apos;ll get back to you with next steps.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -266,7 +299,7 @@ export default function Home() {
             <GrowthDivider className="mx-auto mt-12 max-w-xs" />
           </Reveal>
         </Section>
-      </div>
+      </HomeSections>
     </>
   );
 }
