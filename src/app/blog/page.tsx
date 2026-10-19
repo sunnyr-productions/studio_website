@@ -6,7 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { getAllPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
-  title: "Blog & Resources",
+  title: "Blog: Recording, Mixing & Learning Music",
   description: "Plain-English notes on recording, mixing, mastering, gear, and learning music.",
   alternates: { canonical: "/blog" },
 };

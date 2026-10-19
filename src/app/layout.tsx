@@ -20,7 +20,7 @@ const fraunces = Fraunces({
   axes: ["opsz", "SOFT"],
 });
 
-const title = `${siteConfig.name} | Music Lessons, Mixing & Mastering`;
+const title = `Music Lessons, Mixing & Mastering in Corvallis, OR | ${siteConfig.name}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -67,9 +67,17 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col font-sans text-ink-900">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] focus:rounded-md focus:bg-marigold-500 focus:px-4 focus:py-2 focus:font-semibold focus:text-[color:var(--color-ink-fixed)]"
+        >
+          Skip to content
+        </a>
         <JsonLd data={localBusinessSchema()} />
         <Header />
-        <main className="flex-1">{children}</main>
+        <main id="main" className="flex-1">
+          {children}
+        </main>
         <Footer />
         <Analytics />
         <SpeedInsights />

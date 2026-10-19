@@ -30,7 +30,7 @@ export default function NotFound() {
       >
         <Button href="/">Back to home</Button>
         <span data-mode-only="lessons" className="contents">
-          <Button href="/lessons" variant="secondary">
+          <Button href="/lessons#book" variant="secondary">
             See lessons
           </Button>
         </span>

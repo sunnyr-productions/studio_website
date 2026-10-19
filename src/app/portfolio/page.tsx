@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   title: "Portfolio",
   description: "Mixing, mastering, and production work.",
   alternates: { canonical: "/portfolio" },
+  // Stays out of search until there is something to hear.
+  robots: portfolioTracks.length === 0 ? { index: false, follow: true } : undefined,
 };
 
 export default function PortfolioPage() {

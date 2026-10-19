@@ -12,8 +12,9 @@ import { portfolioTracks } from "@/content/portfolio/tracks";
 import raulHeadshot from "../../../public/images/raul-headshot.jpg";
 
 export const metadata: Metadata = {
-  title: "About",
-  description: "Get to know Raul, the teacher and engineer behind The sunny*r Studio.",
+  title: "About Raul, Music Teacher & Audio Engineer in Corvallis",
+  description:
+    "Meet Raul: guitarist, singer, and audio engineer teaching lessons and mixing records from a home studio in Corvallis, Oregon.",
   alternates: { canonical: "/about" },
 };
 
@@ -161,7 +162,7 @@ export default function AboutPage() {
           body="Bring whatever you're working on, and let's see what it grows into."
         >
           <span data-mode-only="lessons" className="contents">
-            <Button href="/lessons">Book a lesson</Button>
+            <Button href="/lessons#book">Book a lesson</Button>
             <Button href="/contact" variant="secondary">
               Say hello
             </Button>

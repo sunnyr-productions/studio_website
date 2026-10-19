@@ -13,9 +13,9 @@ import { siteConfig } from "@/lib/site-config";
 import { lessonPricing, lessonTypes, pricingTiers } from "@/content/lessons";
 
 export const metadata: Metadata = {
-  title: "Lessons",
+  title: "Guitar, Voice & Production Lessons in Corvallis, OR",
   description:
-    "Guitar, vocal, production, and audio engineering lessons, taught patiently, for any kind of student.",
+    "One-on-one guitar, voice, production, and audio engineering lessons in Corvallis, Oregon and online. Patient, student-led, any genre. $20 half-hour trial.",
   alternates: { canonical: "/lessons" },
 };
 
@@ -104,7 +104,7 @@ export default function LessonsPage() {
         </p>
       </Section>
 
-      <Section id="book">
+      <Section id="book" className="scroll-mt-4">
         <Reveal>
           <SectionHeading title="Pick a time that works for you" />
           {siteConfig.calLink ? (

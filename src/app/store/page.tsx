@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Store",
   description: "Stems, backing tracks, transcriptions, and worksheets.",
   alternates: { canonical: "/store" },
+  robots: products.length === 0 ? { index: false, follow: true } : undefined,
 };
 
 export default function StorePage() {
@@ -69,7 +70,7 @@ export default function StorePage() {
             </p>
             <div className="mt-5 flex flex-wrap gap-4">
               <Button href="/contact">Ask about material</Button>
-              <Button href="/lessons" variant="secondary">
+              <Button href="/lessons#book" variant="secondary">
                 Book a lesson
               </Button>
             </div>

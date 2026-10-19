@@ -8,8 +8,9 @@ import { siteConfig } from "@/lib/site-config";
 import { trialPhrase } from "@/content/lessons";
 
 export const metadata: Metadata = {
-  title: "Contact",
-  description: "Get in touch about mixing, mastering, lessons, or a custom quote.",
+  title: "Contact: Book Lessons or Get a Mixing Quote",
+  description:
+    "Ask a question, book a trial lesson, or request a quote for mixing, mastering, or recording. Raul replies personally.",
   alternates: { canonical: "/contact" },
 };
 
@@ -50,7 +51,7 @@ export default function ContactPage() {
           </a>
 
           <p className="mt-6 font-semibold text-ink-900">Booking a lesson instead?</p>
-          <Link href="/lessons" className="mt-1 block transition-colors hover:text-marigold-600">
+          <Link href="/lessons#book" className="mt-1 block transition-colors hover:text-marigold-600">
             Go straight to scheduling
           </Link>
         </Reveal>

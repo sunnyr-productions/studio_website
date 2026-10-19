@@ -35,7 +35,6 @@ export const products: Product[] = [];
     priceDisplay: "$25.00",
     fileKey: "products/midnight-drive-stems-UdIxu9TQJzXFra0cYYYfwmg58nqZED.zip",
     fileType: "stems",
-    previewAudioUrl: "/audio/sample-mix-01.wav",
   },
   {
     slug: "midnight-drive-backing-track",
@@ -45,7 +44,6 @@ export const products: Product[] = [];
     priceDisplay: "$8.00",
     fileKey: "products/midnight-drive-backing.wav",
     fileType: "backing-track",
-    previewAudioUrl: "/audio/sample-master-02.wav",
   },
   {
     slug: "midnight-drive-transcription",

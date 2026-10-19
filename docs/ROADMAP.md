@@ -55,7 +55,7 @@ settled; several Phase 0 and 1 items are better with D3 to D5 answered.
 _Mostly code, about a day in total. Safe to do before any decision except where
 noted. Each item is independent; ship them as one or two commits._
 
-- [ ] **0.1 Local titles, H1s and descriptions** · `Code` · `S`
+- [x] **0.1 Local titles, H1s and descriptions** · `Code` · `S`
   - Every page title and description should say what it is and where. Today
     Lessons is "Lessons | The sunny*r Studio" and the homepage never says
     Corvallis.
@@ -67,7 +67,7 @@ noted. Each item is independent; ship them as one or two commits._
   - Done when: every indexable page's `<title>` and meta description names the
     service and, where local, Corvallis.
 
-- [ ] **0.2 Book buttons go straight to the calendar** · `Code` · `S`
+- [x] **0.2 Book buttons go straight to the calendar** · `Code` · `S`
   - "Book a lesson" lands at the top of `/lessons`; it should land on the
     booking widget.
   - Change `href: "/lessons"` to `"/lessons#book"` for booking CTAs in
@@ -76,9 +76,9 @@ noted. Each item is independent; ship them as one or two commits._
     `src/app/store/page.tsx`, and the "Go straight to scheduling" link in
     `src/app/contact/page.tsx`. The `id="book"` section already exists.
   - Check the section lands with a little breathing room above it (add `scroll-mt-*` if not).
-  - Done when: every "Book" button scrolls to the calendar.
+  - Done when: every "Book" button scrolls to the calendar. (Done 2026-10-19.)
 
-- [ ] **0.3 Sitemap only lists pages with content** · `Code` · `S`
+- [x] **0.3 Sitemap only lists pages with content** · `Code` · `S`
   - `src/app/sitemap.ts` lists Portfolio and Store while they're empty, and
     stamps every page with today's date.
   - Gate Portfolio on `portfolioTracks.length` and Store on `products.length`
@@ -87,18 +87,18 @@ noted. Each item is independent; ship them as one or two commits._
   - Replace `lastModified: now` with real dates (a `contentUpdated` constant
     per page, or omit the field).
 
-- [ ] **0.4 Remove placeholder audio** · `Code` · `S`
+- [x] **0.4 Remove placeholder audio** · `Code` · `S`
   - `public/audio/sample-*.wav` (1.6 MB) are placeholders from July, publicly
     reachable at `/audio/...`, and only referenced from the commented-out
     catalogue in `src/lib/products.ts`.
   - Delete the files and the two `previewAudioUrl` lines in the template.
 
-- [ ] **0.5 Line endings** · `Code` · `S`
+- [x] **0.5 Line endings** · `Code` · `S`
   - Add `.gitattributes` with `* text=auto eol=lf`, then
     `git add --renormalize .` in its own commit. Stops the CRLF warnings on
     every git command.
 
-- [ ] **0.6 Skip link** · `Code` · `S`
+- [x] **0.6 Skip link** · `Code` · `S`
   - Add a visually-hidden "Skip to content" link as the first focusable element
     in `src/app/layout.tsx`, targeting `<main id="main">`.
 

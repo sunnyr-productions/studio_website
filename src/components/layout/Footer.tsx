@@ -44,7 +44,7 @@ export function Footer() {
         <div className="flex flex-col gap-6 sm:items-end">
           <div>
             <span data-mode-only="lessons">
-              <Button href="/lessons" variant="primary" className="text-sm">
+              <Button href="/lessons#book" variant="primary" className="text-sm">
                 Book a lesson
               </Button>
             </span>
