@@ -267,7 +267,7 @@ both doors, ~166 KB of HTML), and per-side SEO._
     FAQ, with only that page's questions. Keep `LocalBusiness` sitewide.
   - Builders in `src/lib/structured-data.ts`.
 
-- [ ] **2.6 Per-page social images** · `Code` · `M`
+- [x] **2.6 Per-page social images** · `Code` · `M` · done 2026-10-19 (default sans font; load Fraunces later if you want the brand type)
   - Replace the single `src/app/opengraph-image.png` with generated images:
     `opengraph-image.tsx` (`ImageResponse` from `next/og`) at the root, in
     `/lessons`, `/studio`, and `blog/[slug]` (post title on the brand
