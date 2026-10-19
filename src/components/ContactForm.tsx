@@ -330,8 +330,18 @@ export function ContactForm({ initialService }: { initialService?: string | null
 
       {isStudio && (
         <details className="group border-[1.5px] border-ink-900/15 px-5 py-4" style={inputStyle}>
-          <summary className="cursor-pointer list-none text-sm font-semibold text-ink-900 [&::-webkit-details-marker]:hidden">
-            Add details <span className="font-normal text-ink-500">(optional, but it helps me quote)</span>
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-ink-900 [&::-webkit-details-marker]:hidden">
+            <span>
+              Add details <span className="font-normal text-ink-500">(optional, but it helps me quote)</span>
+            </span>
+            <span
+              aria-hidden="true"
+              className="shrink-0 text-marigold-600 transition-transform duration-300 group-open:rotate-45"
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M9 3v12M3 9h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </span>
           </summary>
           <div className="mt-5 space-y-5">
             <div className="grid gap-5 sm:grid-cols-3">

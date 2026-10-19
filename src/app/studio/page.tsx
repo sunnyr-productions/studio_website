@@ -77,20 +77,22 @@ export default function StudioPage() {
                 </ul>
                 <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-5">
                   <p className="text-sm font-semibold text-marigold-800">{service.startingPrice}</p>
-                  <Link
-                    href={`/studio/${service.slug}`}
-                    className="text-sm font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
-                  >
-                    Details
-                    <span className="sr-only"> for {service.name.toLowerCase()}</span>
-                  </Link>
-                  <Link
-                    href={`/contact?service=${service.slug}`}
-                    className="text-sm font-semibold text-periwinkle-700 underline decoration-periwinkle-300 underline-offset-2 transition-colors hover:text-periwinkle-600"
-                  >
-                    Get a quote
-                    <span className="sr-only"> for {service.name.toLowerCase()}</span>
-                  </Link>
+                  <div className="flex gap-4">
+                    <Link
+                      href={`/studio/${service.slug}`}
+                      className="inline-block py-2 text-sm font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
+                    >
+                      Details
+                      <span className="sr-only"> for {service.name.toLowerCase()}</span>
+                    </Link>
+                    <Link
+                      href={`/contact?service=${service.slug}`}
+                      className="inline-block py-2 text-sm font-semibold text-periwinkle-700 underline decoration-periwinkle-300 underline-offset-2 transition-colors hover:text-periwinkle-600"
+                    >
+                      Get a quote
+                      <span className="sr-only"> for {service.name.toLowerCase()}</span>
+                    </Link>
+                  </div>
                 </div>
               </Card>
             </Reveal>

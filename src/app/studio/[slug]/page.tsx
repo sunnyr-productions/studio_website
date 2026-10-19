@@ -75,7 +75,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
 
       <Section pattern="dots" surface="sky" space="page">
         <nav aria-label="Breadcrumb" className="animate-fade-up text-sm text-ink-500">
-          <Link href="/studio" className="font-semibold text-periwinkle-700 hover:underline">
+          <Link href="/studio" className="font-semibold text-periwinkle-700 inline-block py-2 hover:underline">
             ← Studio
           </Link>
         </nav>

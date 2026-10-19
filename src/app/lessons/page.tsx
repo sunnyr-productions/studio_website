@@ -91,7 +91,7 @@ export default function LessonsPage() {
                 <p className="mt-4 text-xs font-semibold text-ink-500">{lesson.format}</p>
                 <Link
                   href={`/lessons/${lessonPages[lesson.slug].pageSlug}`}
-                  className="mt-3 inline-block text-sm font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
+                  className="-mb-2 mt-1 inline-block py-2 text-sm font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
                 >
                   Learn more
                   <span className="sr-only"> about {lesson.name.toLowerCase()}</span>
