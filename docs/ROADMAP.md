@@ -250,7 +250,7 @@ both doors, ~166 KB of HTML), and per-side SEO._
     from D3), what a first lesson looks like, what to bring, in-person vs
     online, price, booking.
 
-- [~] **2.4 Neurodivergent learners page** · `Both` · `M` · scaffolded 2026-10-19 in `src/content/neurodivergent-page.ts`; noindexed and unlinked until Raul rewrites it and sets `published: true`
+- [~] **2.4 Neurodivergent learners page** · `Both` · `M` · scaffolded 2026-10-19 in `src/content/neurodivergent-page.ts`; published 2026-10-19 with placeholder copy ([REWRITE]/[CONFIRM] markers still in `src/content/neurodivergent-page.ts`; Raul to revise)
   - `/lessons/neurodivergent-learners`. Your strongest differentiator, and a
     real search from parents and adults.
   - Content (Raul's own words matter most here): your own experience, what you

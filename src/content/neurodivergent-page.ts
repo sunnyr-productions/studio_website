@@ -17,7 +17,7 @@ export const neurodivergentPage = {
    * the page is noindexed, left out of the sitemap, and not linked from
    * /lessons, so placeholder text never reaches visitors or search.
    */
-  published: false,
+  published: true,
   metaTitle: "Music Lessons for Neurodivergent Learners in Corvallis, OR",
   metaDescription:
     "Patient, flexible guitar, voice, and production lessons from a neurodivergent teacher in Corvallis, Oregon and online. No fixed curriculum, and you set the pace.",
