@@ -135,6 +135,9 @@ export function ContactForm({ initialService }: { initialService?: string | null
     (presetIsValid ? (initialService as string) : "");
   const isLesson = service === LESSON_SERVICE;
   const isStudio = isStudioService(service);
+  // Mixing and mastering can't be quoted without hearing the song; recording
+  // and consultations often have nothing to link yet.
+  const needsFiles = ["mixing", "mastering", "mix-master-bundle"].includes(service);
 
   // When the form was first rendered — lets the server reject submissions that
   // arrive implausibly fast (a human can't fill these fields in under a couple
@@ -260,6 +263,22 @@ export function ContactForm({ initialService }: { initialService?: string | null
       </Field>
 
       {isLesson && (
+        <p
+          style={inputStyle}
+          className="animate-fade-up border-[1.5px] border-marigold-300 bg-marigold-50 px-4 py-3 text-sm text-ink-700"
+        >
+          Want to just book? Skip the message and{" "}
+          <Link
+            href="/lessons#book"
+            className="font-semibold text-marigold-800 underline underline-offset-2 hover:text-marigold-600"
+          >
+            pick a time on the calendar
+          </Link>
+          .
+        </p>
+      )}
+
+      {isLesson && (
         <fieldset className="animate-fade-up grid gap-5 sm:grid-cols-3">
           <legend className="sr-only">Lesson details</legend>
           <Field id="lessonTopic" label="Lesson" optional>
@@ -277,61 +296,18 @@ export function ContactForm({ initialService }: { initialService?: string | null
       {isStudio && (
         <fieldset className="animate-fade-up space-y-5">
           <legend className="sr-only">Project details</legend>
-          <div className="grid gap-5 sm:grid-cols-3">
-            <Field id="songCount" label="Songs" optional>
-              <input
-                id="songCount"
-                name="songCount"
-                type="number"
-                inputMode="numeric"
-                min={1}
-                max={100}
-                style={inputStyle}
-                className={inputClass}
-              />
-            </Field>
-            <Field id="deadline" label="Deadline" optional>
-              <input
-                id="deadline"
-                name="deadline"
-                type="text"
-                placeholder="e.g. mid-November"
-                maxLength={100}
-                style={inputStyle}
-                className={inputClass}
-              />
-            </Field>
-            <Field id="budget" label="Budget" optional>
-              <Select id="budget" options={budgetOptions} />
-            </Field>
-          </div>
-          <Field
-            id="referenceUrl"
-            label="Reference track"
-            hint="A Spotify, YouTube, or SoundCloud link to the sound you're chasing."
-            optional
-          >
-            <input
-              id="referenceUrl"
-              name="referenceUrl"
-              type="url"
-              placeholder="https://"
-              aria-describedby="referenceUrl-hint"
-              style={inputStyle}
-              className={inputClass}
-            />
-          </Field>
           <Field
             id="filesUrl"
-            label="Your files"
-            hint="A Dropbox, Google Drive, or WeTransfer link to your rough mix or stems. Not ready yet? Leave it blank."
-            optional
+            label="Link to your song or project"
+            hint="A Dropbox, Google Drive, WeTransfer, or streaming link to your rough mix, stems, or the finished track."
+            optional={!needsFiles}
           >
             <input
               id="filesUrl"
               name="filesUrl"
               type="url"
               placeholder="https://"
+              required={needsFiles}
               aria-describedby="filesUrl-hint"
               style={inputStyle}
               className={inputClass}
@@ -351,6 +327,60 @@ export function ContactForm({ initialService }: { initialService?: string | null
           className={inputClass}
         />
       </Field>
+
+      {isStudio && (
+        <details className="group border-[1.5px] border-ink-900/15 px-5 py-4" style={inputStyle}>
+          <summary className="cursor-pointer list-none text-sm font-semibold text-ink-900 [&::-webkit-details-marker]:hidden">
+            Add details <span className="font-normal text-ink-500">(optional, but it helps me quote)</span>
+          </summary>
+          <div className="mt-5 space-y-5">
+            <div className="grid gap-5 sm:grid-cols-3">
+              <Field id="songCount" label="Songs" optional>
+                <input
+                  id="songCount"
+                  name="songCount"
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={100}
+                  style={inputStyle}
+                  className={inputClass}
+                />
+              </Field>
+              <Field id="deadline" label="Deadline" optional>
+                <input
+                  id="deadline"
+                  name="deadline"
+                  type="text"
+                  placeholder="e.g. mid-November"
+                  maxLength={100}
+                  style={inputStyle}
+                  className={inputClass}
+                />
+              </Field>
+              <Field id="budget" label="Budget" optional>
+                <Select id="budget" options={budgetOptions} />
+              </Field>
+            </div>
+            <Field
+              id="referenceUrl"
+              label="Reference track"
+              hint="A Spotify, YouTube, or SoundCloud link to the sound you're chasing."
+              optional
+            >
+              <input
+                id="referenceUrl"
+                name="referenceUrl"
+                type="url"
+                placeholder="https://"
+                aria-describedby="referenceUrl-hint"
+                style={inputStyle}
+                className={inputClass}
+              />
+            </Field>
+          </div>
+        </details>
+      )}
 
       {status === "error" && (
         <p role="alert" className="text-sm text-red-700">

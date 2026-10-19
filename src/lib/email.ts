@@ -108,14 +108,14 @@ function safeFirstName(name: string): string | null {
 function nextSteps(service: string): string {
   if (service === LESSON_SERVICE) {
     return [
-      `Most students start with ${trialPhrase}. I'll reply with a few open times for it.`,
-      `Lessons are paid in person by ${lessonPricing.paymentMethods}.`,
+      `Most people start with ${trialPhrase}. I'll write back with a few open times, or you can grab one yourself at ${siteConfig.url}/lessons#book.`,
+      `You pay at the lesson, by ${lessonPricing.paymentMethods}.`,
     ].join(" ");
   }
   if (isStudioService(service)) {
     return [
-      "I'll listen to anything you linked and send back a written, itemized quote.",
-      `Projects are booked with a ${studioTerms.depositPercent}% deposit, with the balance due before final delivery.`,
+      "I'll listen to anything you linked and send you a fixed price and a timeline.",
+      `If it looks good, a ${studioTerms.depositPercent}% deposit holds your spot, and the rest is due before I send final files.`,
     ].join(" ");
   }
   return "I'll read through your message and point you in the right direction.";
@@ -135,7 +135,7 @@ export async function sendInquiryConfirmation(submission: ContactSubmission): Pr
   const text = [
     firstName ? `Hi ${firstName},` : "Hi there,",
     "",
-    `Thanks for reaching out to ${siteConfig.name}! Your message about ${serviceLabel?.toLowerCase()} came through, and I'll get back to you within ${
+    `Thanks for getting in touch! Your message about ${serviceLabel?.toLowerCase()} came through, and I'll get back to you within ${
       isStudioService(submission.service)
         ? siteConfig.responseTime.studio
         : submission.service === LESSON_SERVICE
@@ -145,7 +145,7 @@ export async function sendInquiryConfirmation(submission: ContactSubmission): Pr
     "",
     nextSteps(submission.service),
     "",
-    "If you think of anything else in the meantime, just reply to this email.",
+    "If you think of anything else in the meantime, just reply to this email and it comes straight to me.",
     "",
     "Talk soon,",
     "Raul",

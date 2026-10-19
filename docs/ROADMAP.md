@@ -285,7 +285,7 @@ search or a link.
 _Code with Raul input. Can start in parallel with Phase 2 (3.3 and 3.4 have no
 dependency on it)._
 
-- [ ] **3.1 Lessons: book first, ask second** · `Code` · `M`
+- [x] **3.1 Lessons: book first, ask second** · `Code` · `M` · done 2026-10-19
   - The primary lessons path is the Cal.com booking, not the form. On
     `/lessons`, put the calendar higher (after the pricing cards) and make
     "Book a trial" the hero CTA.
@@ -294,7 +294,7 @@ dependency on it)._
   - Load the Cal embed only when its section scrolls into view (it's the
     heaviest script on the page).
 
-- [ ] **3.2 Shorter studio form** · `Code` · `M`
+- [x] **3.2 Shorter studio form** · `Code` · `M` · done 2026-10-19 (link is required only for mixing and mastering)
   - Required: name, email, a link to the song or project, a message. Everything
     else (song count, deadline, budget, reference, files) goes behind an
     "Add details (optional)" disclosure.
@@ -319,7 +319,7 @@ dependency on it)._
     for Inquiry Sent, Lesson Booked, Door Clicked, Audio Played.
   - Update `src/app/privacy/page.tsx` to name the tool.
 
-- [ ] **3.5 Auto-reply and notification copy** · `Code` · `S`
+- [x] **3.5 Auto-reply and notification copy** · `Code` · `S` · done 2026-10-19
   - `src/lib/email.ts` still uses older phrasing ("written, itemized quote").
     Rewrite in the site voice and match the response times from 0.7.
 

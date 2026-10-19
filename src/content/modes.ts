@@ -40,7 +40,7 @@ export const modes: Record<StudioMode, ModeContent> = {
     headlineAccent: "sunnier",
     body:
       "I teach guitar, voice, production, and audio engineering, and I teach them patiently. There's no set curriculum and nobody's judging. We start with the music you want to make and go from there.",
-    primaryCta: { label: "Book a lesson", href: "/lessons#book" },
+    primaryCta: { label: "Book a trial", href: "/lessons#book" },
     secondaryCta: { label: "Ask a question", href: "/contact?service=lessons" },
     valueProps: [
       {

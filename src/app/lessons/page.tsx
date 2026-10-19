@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { CalEmbed } from "@/components/booking/CalEmbed";
+import { LazyCalEmbed } from "@/components/booking/LazyCalEmbed";
 import { CtaPanel } from "@/components/ui/CtaPanel";
 import { DoorHero } from "@/components/ui/DoorHero";
 import { Faq } from "@/components/ui/Faq";
@@ -139,10 +139,6 @@ export default function LessonsPage() {
         </p>
       </Section>
 
-      <Section surface="ink">
-        <HowItWorks mode={mode} />
-      </Section>
-
       <Section id="book" className="scroll-mt-4">
         <Reveal>
           <SectionHeading title="Pick a time that works for you" />
@@ -155,7 +151,7 @@ export default function LessonsPage() {
                 style={{ borderRadius: "var(--radius-sketch-sm)" }}
                 className="mt-8 overflow-hidden border-[1.5px] border-ink-900/20 bg-cream-50 shadow-[3px_4px_0_0_var(--sketch-shadow)]"
               >
-                <CalEmbed calLink={siteConfig.calLink} />
+                <LazyCalEmbed calLink={siteConfig.calLink} />
               </div>
             </>
           ) : (
@@ -171,6 +167,10 @@ export default function LessonsPage() {
             </Card>
           )}
         </Reveal>
+      </Section>
+
+      <Section surface="ink">
+        <HowItWorks mode={mode} />
       </Section>
 
       {testimonials.length > 0 && (
