@@ -212,7 +212,7 @@ both doors, ~166 KB of HTML), and per-side SEO._
 `/services` → 301 to `/studio` (and `/services/*` to `/studio/*`) via
 `redirects()` in `next.config.ts`.
 
-- [ ] **2.1 Homepage becomes a fork; `/studio` becomes a landing page** · `Code` · `L`
+- [x] **2.1 Homepage becomes a fork; `/studio` becomes a landing page** · `Code` · `L` · done 2026-10-19
   - Homepage: hero with one clear line about what you do and where, two large
     door cards (each with a photo, one-line pitch, one proof point, CTA), a
     short About strip, one FAQ link, closing panel. Lead with the D1 side.

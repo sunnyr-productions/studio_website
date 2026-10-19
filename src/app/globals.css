@@ -272,65 +272,7 @@ body::before {
   background: var(--color-marigold-400);
 }
 
-/* ---- Studio modes: the two doors ---------------------------------------
-   `data-mode` on <html> is "lessons" (teaching side) or "studio" (client
-   work). Switching is pure CSS on purpose: both variants are server-rendered
-   and the mode attribute is set pre-paint, so the homepage stays statically
-   rendered, there's no hydration mismatch, and flipping doors is instant. */
-
-/* Copy that belongs to only one door. */
-[data-mode="lessons"] [data-mode-only="studio"],
-[data-mode="studio"] [data-mode-only="lessons"] {
-  display: none;
-}
-
-/* Section running order. Lessons mode uses plain DOM order; studio mode
-   re-sequences to lead with client work. These rules cover the first paint;
-   HomeSections then moves the DOM nodes into the same order so focus and
-   reading order match. Keep the two lists in sync. */
-.home-sections {
-  display: flex;
-  flex-direction: column;
-}
-
-[data-mode="studio"] .home-sections > [data-sect="services"] {
-  order: 1;
-}
-[data-mode="studio"] .home-sections > [data-sect="portfolio"] {
-  order: 2;
-}
-[data-mode="studio"] .home-sections > [data-sect="why"] {
-  order: 3;
-}
-[data-mode="studio"] .home-sections > [data-sect="how"] {
-  order: 4;
-}
-[data-mode="studio"] .home-sections > [data-sect="lessons"] {
-  order: 5;
-}
-[data-mode="studio"] .home-sections > [data-sect="testimonials"] {
-  order: 6;
-}
-[data-mode="studio"] .home-sections > [data-sect="faq"] {
-  order: 7;
-}
-[data-mode="studio"] .home-sections > [data-sect="cta"] {
-  order: 8;
-}
-
-/* Store: float the current door's products to the front. Nothing is hidden —
-   both doors buy from the same shelf, the order just reflects intent. */
-.store-grid > [data-audience] {
-  order: 1;
-}
-
-[data-mode="lessons"] .store-grid > [data-audience="lessons"],
-[data-mode="studio"] .store-grid > [data-audience="studio"] {
-  order: 0;
-}
-
 /* The ambigram pays off here: the wordmark reads identically upside down, so
-   flipping the studio into its other mode literally rotates the mark, and
    hovering the header logo spins it a full 180° to show that off. */
 .logo-mark {
   display: block;
@@ -339,34 +281,20 @@ body::before {
   transition: transform 800ms cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* Mode flip: the studio door rests the mark at 180°. */
-[data-mode="studio"] .logo-mark {
-  transform: rotate(180deg);
-}
-
-/* Hover: complete 180° turn from whatever the current resting angle is —
-   0→180 in lessons mode, 180→360 in studio mode — so it always lands back on
-   a legible ambigram. (No hover-media gate: the mark is a home link, so a
+/* Hover: a half turn, which lands on a legible ambigram. (No hover-media gate: the mark is a home link, so a
    touch tap that briefly spins it before navigating is harmless — gating it
    off silently broke the effect on touchscreen laptops and hybrids.) */
 .group:hover .logo-mark {
   transform: rotate(180deg);
 }
-[data-mode="studio"] .group:hover .logo-mark {
-  transform: rotate(360deg);
-}
 
-/* Reduced motion: no transition, and don't spin on hover — hold the resting
-   angle for each mode so nothing jumps. */
+/* Reduced motion: no transition, and don't spin on hover. */
 @media (prefers-reduced-motion: reduce) {
   .logo-mark {
     transition: none;
   }
   .group:hover .logo-mark {
     transform: rotate(0deg);
-  }
-  [data-mode="studio"] .group:hover .logo-mark {
-    transform: rotate(180deg);
   }
 }
 

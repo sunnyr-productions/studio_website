@@ -41,7 +41,7 @@ Portfolio, testimonials, and store are empty on purpose: each section stays hidd
 2. You get the inquiry by email (service in the subject, all details listed); replying goes straight to the sender.
 3. Once `RESEND_FROM_EMAIL` is set, the sender also gets an auto-reply with your response time and next steps. It contains only fixed copy — never text they typed — so the form can't be used to send spam to strangers.
 
-Conversion events (`Inquiry Sent`, `Lesson Booked`, `Checkout Started`, `Door Chosen`) go to Vercel Web Analytics via `src/lib/analytics.ts`. Custom events appear in the dashboard on Vercel's Pro plan.
+Conversion events (`Inquiry Sent`, `Lesson Booked`, `Checkout Started`, `Door Clicked`) go to Vercel Web Analytics via `src/lib/analytics.ts`. Custom events appear in the dashboard on Vercel's Pro plan.
 
 ## Store fulfillment flow
 

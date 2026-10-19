@@ -6,11 +6,11 @@ import type { ModeContent } from "@/content/modes";
 /**
  * FAQ accordion — native <details>/<summary>, no client JS needed. Cuts
  * pre-contact friction and gives crawlers real Q&A text. Heading on the left,
- * questions on the right. Rendered per door; CSS shows the active one.
+ * questions on the right.
  */
 export function Faq({ mode }: { mode: ModeContent }) {
   return (
-    <div data-mode-only={mode.id} className="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
+    <div className="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
       <Reveal>
         <SectionHeading
           title="Questions people ask"

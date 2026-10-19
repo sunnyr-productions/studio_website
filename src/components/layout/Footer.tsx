@@ -42,22 +42,16 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col gap-6 sm:items-end">
-          <div>
-            <span data-mode-only="lessons">
-              <Button href="/lessons#book" variant="primary" className="text-sm">
-                Book a lesson
-              </Button>
-            </span>
-            <span data-mode-only="studio">
-              <Button href="/contact" variant="primary" className="text-sm">
-                Get a quote
-              </Button>
-            </span>
+          <div className="flex flex-wrap gap-3 sm:justify-end">
+            <Button href="/lessons#book" variant="primary" className="text-sm">
+              Book a lesson
+            </Button>
+            <Button href="/contact" variant="secondary" className="text-sm">
+              Get a quote
+            </Button>
           </div>
 
-          {/* Full sitemap — every page stays linked in both modes, so the
-              mode-filtered header never orphans a page for a visitor or a
-              crawler. */}
+          {/* Full sitemap, so every page stays linked for visitors and crawlers. */}
           <nav aria-label="All pages">
             <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-700 sm:justify-end">
               {siteConfig.footerLinks.map((item) => (

@@ -1,5 +1,4 @@
 import { track } from "@vercel/analytics";
-import type { StudioMode } from "@/content/modes";
 
 /**
  * Conversion events sent to Vercel Web Analytics — the moments that turn a
@@ -16,8 +15,8 @@ type ConversionEvents = {
   "Lesson Booked": { event: string };
   /** Store "Buy Now" clicked (before the redirect to Stripe). */
   "Checkout Started": { product: string };
-  /** Visitor picked a door on the mode toggle. */
-  "Door Chosen": { door: StudioMode };
+  /** Visitor clicked one of the two door cards on the homepage. */
+  "Door Clicked": { door: "lessons" | "studio" };
 };
 
 export function trackEvent<Name extends keyof ConversionEvents>(

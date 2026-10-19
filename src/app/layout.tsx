@@ -51,18 +51,17 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="light"
-      data-mode="lessons"
       suppressHydrationWarning
       className={`${bodyFont.variable} ${fraunces.variable} h-full antialiased`}
     >
       <head>
         {/* Runs synchronously during HTML parse, before first paint, so the
-            saved theme (or the OS preference when none is saved) and the saved
-            studio mode are applied with no flash. try/catch guards
+            saved theme (or the OS preference when none is saved) is applied with
+            no flash. try/catch guards
             private-mode localStorage. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var d=document.documentElement;d.setAttribute("data-js","");try{var t=localStorage.getItem("theme");if(!t){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}d.setAttribute("data-theme",t);var m=localStorage.getItem("mode");if(m==="studio"||m==="lessons"){d.setAttribute("data-mode",m);}}catch(e){}})()`,
+            __html: `(function(){var d=document.documentElement;d.setAttribute("data-js","");try{var t=localStorage.getItem("theme");if(!t){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}d.setAttribute("data-theme",t);}catch(e){}})()`,
           }}
         />
       </head>

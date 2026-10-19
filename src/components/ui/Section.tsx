@@ -115,7 +115,6 @@ export function Section({
   space = "default",
   className = "",
   id,
-  "data-sect": dataSect,
 }: {
   children: ReactNode;
   pattern?: Pattern;
@@ -125,13 +124,10 @@ export function Section({
   /** Extras only (alignment etc.) — padding and background belong to the props above. */
   className?: string;
   id?: string;
-  /** Names the section so `data-mode` CSS can re-order it per studio mode. */
-  "data-sect"?: string;
 }) {
   return (
     <section
       id={id}
-      data-sect={dataSect}
       className={`relative overflow-hidden ${surfaceClasses[surface]} ${className}`}
     >
       {pattern === "dots" && <DotsPattern />}

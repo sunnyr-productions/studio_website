@@ -11,7 +11,6 @@ import {
   type ReactNode,
 } from "react";
 import { Button } from "@/components/ui/Button";
-import { useStudioMode } from "@/lib/use-studio-mode";
 import { siteConfig } from "@/lib/site-config";
 import { trackEvent } from "@/lib/analytics";
 import {
@@ -124,17 +123,16 @@ function read(form: HTMLFormElement, name: string): string | undefined {
  * follow-up questions.
  *
  * `initialService` comes from `/contact?service=<value>` (see the Suspense
- * wrapper on the contact page); without it, the form defaults to Lessons for
- * visitors on the lessons door and asks studio visitors to choose.
+ * wrapper on the contact page); without it, the visitor chooses.
+ * Lesson links pass `?service=lessons`, service cards pass their slug.
  */
 export function ContactForm({ initialService }: { initialService?: string | null }) {
   const [status, setStatus] = useState<Status>("idle");
-  const mode = useStudioMode();
   const [pickedService, setPickedService] = useState<string | null>(null);
   const presetIsValid = serviceOptions.some((o) => o.value === initialService);
   const service =
     pickedService ??
-    (presetIsValid ? (initialService as string) : mode === "lessons" ? LESSON_SERVICE : "");
+    (presetIsValid ? (initialService as string) : "");
   const isLesson = service === LESSON_SERVICE;
   const isStudio = isStudioService(service);
 

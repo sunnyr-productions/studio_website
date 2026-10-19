@@ -7,10 +7,6 @@ type RevealProps = {
   className?: string;
   /** Stagger delay in ms — pass i * 80 or similar when mapping a list. */
   delay?: number;
-  /** Marks which studio door this item belongs to, for mode-aware ordering. */
-  "data-audience"?: string;
-  /** Shows this element only in the given door — see [data-mode-only] in globals.css. */
-  "data-mode-only"?: string;
 };
 
 /**
@@ -22,8 +18,6 @@ export function Reveal({
   children,
   className = "",
   delay = 0,
-  "data-audience": dataAudience,
-  "data-mode-only": dataModeOnly,
 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -48,8 +42,6 @@ export function Reveal({
     <div
       ref={ref}
       data-reveal={visible ? "in" : "out"}
-      data-audience={dataAudience}
-      data-mode-only={dataModeOnly}
       style={{ transitionDelay: visible ? `${delay}ms` : undefined }}
       className={className}
     >

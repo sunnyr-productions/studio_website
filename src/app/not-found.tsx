@@ -29,16 +29,12 @@ export default function NotFound() {
         className="animate-fade-up mt-8 flex flex-wrap gap-4"
       >
         <Button href="/">Back to home</Button>
-        <span data-mode-only="lessons" className="contents">
-          <Button href="/lessons#book" variant="secondary">
-            See lessons
-          </Button>
-        </span>
-        <span data-mode-only="studio" className="contents">
-          <Button href="/services" variant="secondary">
-            See services
-          </Button>
-        </span>
+        <Button href="/lessons" variant="secondary">
+          See lessons
+        </Button>
+        <Button href="/studio" variant="secondary">
+          See the studio
+        </Button>
         <Button href="/contact" variant="ghost">
           Get in touch
         </Button>

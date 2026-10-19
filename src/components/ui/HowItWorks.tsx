@@ -6,16 +6,9 @@ import { trialPhrase } from "@/content/lessons";
 /**
  * Three plain steps to lower first-contact anxiety — the "how it works" every
  * lessons/service competitor front-loads. Big sticker-circle numerals in the
- * door's accent color. Rendered per door; CSS shows the active one.
+ * door's accent color.
  */
-export function HowItWorks({
-  mode,
-  always = false,
-}: {
-  mode: ModeContent;
-  /** Show regardless of the current door (a page that belongs to one side). */
-  always?: boolean;
-}) {
+export function HowItWorks({ mode }: { mode: ModeContent }) {
   const isLessons = mode.id === "lessons";
   const numBg = isLessons ? "bg-marigold-500" : "bg-periwinkle-500";
   const heading = isLessons ? "Getting started is easy" : "How a project runs";
@@ -24,7 +17,7 @@ export function HowItWorks({
     : "Quotes are free, and asking for one doesn't commit you to anything.";
 
   return (
-    <div data-mode-only={always ? undefined : mode.id}>
+    <div>
       <Reveal>
         <SectionHeading title={heading} lede={reassurance} />
       </Reveal>

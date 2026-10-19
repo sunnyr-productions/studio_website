@@ -27,15 +27,9 @@ export default function StorePage() {
       >
         {hasProducts ? (
           <>
-            <span data-mode-only="lessons">
-              Practice material to take home: transcriptions and worksheets to work through between
-              lessons, plus stems and backing tracks to play along with. Instant delivery to your
-              inbox after checkout.
-            </span>
-            <span data-mode-only="studio">
-              Digital downloads: multitrack stems and backing tracks to remix or practice against,
-              plus transcriptions and worksheets. Instant delivery to your inbox after checkout.
-            </span>
+            Digital downloads: transcriptions and worksheets to work through between lessons, plus
+            stems and backing tracks to play along with or remix. Instant delivery to your inbox
+            after checkout.
           </>
         ) : (
           "Downloadable practice material and stems are on the way: transcriptions, worksheets, backing tracks, and multitracks, delivered straight to your inbox."
@@ -43,18 +37,11 @@ export default function StorePage() {
       </p>
 
       {hasProducts ? (
-        /* Products relevant to the current door float to the front (CSS order —
-           see globals.css); nothing is hidden, since both doors buy from here. */
-        <div className="store-grid mt-10 grid gap-6 sm:grid-cols-2">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2">
           {products.map((product, i) => (
             <Reveal
               key={product.slug}
               delay={i * 70}
-              data-audience={
-                product.fileType === "stems" || product.fileType === "backing-track"
-                  ? "studio"
-                  : "lessons"
-              }
             >
               <ProductCard product={product} accent={i % 2 === 0 ? "marigold" : "periwinkle"} />
             </Reveal>

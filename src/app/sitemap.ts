@@ -16,7 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: new Date("2026-10-15"), changeFrequency: "weekly", priority: 1 },
     { url: `${base}/lessons`, lastModified: new Date("2026-10-15"), changeFrequency: "monthly", priority: 0.9 },
-    { url: `${base}/services`, lastModified: new Date("2026-10-15"), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/studio`, lastModified: new Date("2026-10-15"), changeFrequency: "monthly", priority: 0.9 },
     // Empty pages stay out of the sitemap (and are noindexed) until they have content.
     ...(portfolioTracks.length > 0
       ? [{ url: `${base}/portfolio`, lastModified: new Date("2026-10-15"), changeFrequency: "monthly" as const, priority: 0.7 }]

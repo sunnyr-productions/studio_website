@@ -4,13 +4,24 @@ import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { CalEmbed } from "@/components/booking/CalEmbed";
+import { CtaPanel } from "@/components/ui/CtaPanel";
+import { DoorHero } from "@/components/ui/DoorHero";
+import { Faq } from "@/components/ui/Faq";
 import { GrowthDivider } from "@/components/ui/GrowthDivider";
+import { HowItWorks } from "@/components/ui/HowItWorks";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { PhotoStrip } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { PhotoStrip } from "@/components/ui/Photo";
-import { getStudioPhotos } from "@/content/media";
-import { siteConfig } from "@/lib/site-config";
+import { StatStrip } from "@/components/ui/StatStrip";
+import { Testimonials } from "@/components/ui/Testimonials";
+import { ValueProps } from "@/components/ui/ValueProps";
+import { getHeroPhotos, getStudioPhotos } from "@/content/media";
 import { lessonPricing, lessonTypes, pricingTiers } from "@/content/lessons";
+import { modes } from "@/content/modes";
+import { testimonials } from "@/content/testimonials";
+import { faqPageSchema } from "@/lib/structured-data";
+import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Guitar, Voice & Production Lessons in Corvallis, OR",
@@ -19,46 +30,49 @@ export const metadata: Metadata = {
   alternates: { canonical: "/lessons" },
 };
 
+const mode = modes.lessons;
+
 export default function LessonsPage() {
   return (
     <>
-      <Section pattern="dots" surface="sky" space="page">
-        <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
-          Lessons
-        </h1>
-        <p
-          style={{ animationDelay: "80ms" }}
-          className="animate-fade-up mt-4 max-w-2xl text-lg leading-relaxed text-ink-700"
-        >
-          I teach guitar, voice, production, and audio engineering, one-on-one and without a
-          script. Each lesson goes wherever <em>you</em> want to take it, whether that’s your
-          first chord or your tenth release. Nobody’s rushing you here. Growth just needs <span className="marker">consistent sunlight</span>.
-        </p>
-        <p
-          style={{ animationDelay: "140ms" }}
-          className="animate-fade-up mt-3 max-w-2xl leading-relaxed text-ink-700"
-        >
-          I’m neurodivergent myself, and I work especially well with students who’ve had
-          trouble learning in more traditional settings. Any genre, any starting point.
-        </p>
+      <JsonLd data={faqPageSchema(mode.faqs)} />
 
-        <GrowthDivider className="mt-10 max-w-sm" />
+      <Section pattern="dots" surface="sky" space="hero">
+        <DoorHero
+          mode={mode}
+          secondaryCta={mode.secondaryCta}
+          photo={getHeroPhotos().lessons}
+        >
+          <p
+            style={{ animationDelay: "340ms" }}
+            className="animate-fade-up mt-6 leading-relaxed text-ink-700"
+          >
+            I’m neurodivergent myself, and I work especially well with students who’ve had
+            trouble learning in more traditional settings.
+          </p>
+        </DoorHero>
+        <div className="mt-14">
+          <StatStrip mode={mode} />
+        </div>
+        <GrowthDivider className="mt-14" />
+      </Section>
 
+      <Section>
+        <ValueProps mode={mode} />
+      </Section>
+
+      <Section pattern="sprout" id="lesson-types">
+        <Reveal>
+          <SectionHeading
+            title="What we can work on"
+            lede="Pick whichever is closest to what you want to do. They’re all the same price."
+          />
+        </Reveal>
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
           {lessonTypes.map((lesson, i) => (
             <Reveal key={lesson.slug} delay={i * 80}>
-              <Card
-                accent={lesson.accent}
-                className={`h-full ${lesson.featured ? "ring-2 ring-marigold-300" : ""}`}
-              >
-                {lesson.featured && (
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-marigold-800">
-                    Most requested
-                  </p>
-                )}
-                <h2 className="mt-1 font-display text-xl font-semibold text-ink-900">
-                  {lesson.name}
-                </h2>
+              <Card accent={lesson.accent} className="h-full">
+                <h3 className="font-display text-xl font-semibold text-ink-900">{lesson.name}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-700">{lesson.blurb}</p>
                 <p className="mt-4 text-xs font-semibold text-ink-500">{lesson.format}</p>
               </Card>
@@ -104,6 +118,10 @@ export default function LessonsPage() {
         </p>
       </Section>
 
+      <Section surface="ink">
+        <HowItWorks mode={mode} />
+      </Section>
+
       <Section id="book" className="scroll-mt-4">
         <Reveal>
           <SectionHeading title="Pick a time that works for you" />
@@ -126,22 +144,44 @@ export default function LessonsPage() {
                 you’re interested in and a few times that work for you. I’ll reply with an
                 open slot for your trial lesson.
               </p>
-              <Button href="/contact" className="mt-5">
+              <Button href="/contact?service=lessons" className="mt-5">
                 Request a lesson
               </Button>
             </Card>
           )}
-          <p className="mt-8 text-sm text-ink-500">
-            Teaching is one side of the practice. The other door is{" "}
-            <Link
-              href="/services"
-              className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
-            >
-              mixing &amp; mastering
-            </Link>
-            .
-          </p>
         </Reveal>
+      </Section>
+
+      {testimonials.length > 0 && (
+        <Section>
+          <Testimonials />
+        </Section>
+      )}
+
+      <Section surface="tint" id="faq">
+        <Faq mode={mode} />
+      </Section>
+
+      <Section space="tight">
+        <CtaPanel
+          title="Want to give it a try?"
+          body={`Book a trial lesson, or send me a question first. Either way, I’ll write back myself, usually within ${siteConfig.responseTime.lessons}.`}
+        >
+          <Button href="#book">Book a lesson</Button>
+          <Button href="/contact?service=lessons" variant="secondary">
+            Ask a question
+          </Button>
+        </CtaPanel>
+        <p className="mt-8 text-center text-sm text-ink-500">
+          Teaching is one side of the practice. The other is{" "}
+          <Link
+            href="/studio"
+            className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
+          >
+            mixing &amp; mastering
+          </Link>
+          .
+        </p>
       </Section>
     </>
   );

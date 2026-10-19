@@ -1,17 +1,9 @@
-import type { StudioMode } from "@/content/modes";
 import { products } from "@/lib/products";
 import { portfolioTracks } from "@/content/portfolio/tracks";
 
 export type NavItem = {
   label: string;
   href: string;
-  /**
-   * Which door this page belongs to. Omitted = shown in both.
-   * Mode-specific items are hidden (CSS, not JS) in the other mode to cut the
-   * nav clutter of mixing both functions — every page stays reachable from
-   * the footer sitemap, so nothing is orphaned for visitors or crawlers.
-   */
-  modes?: StudioMode[];
 };
 
 export const siteConfig = {
@@ -38,23 +30,23 @@ export const siteConfig = {
   calLink: process.env.NEXT_PUBLIC_CAL_LINK?.trim() || null,
   nav: [
     { label: "Home", href: "/" },
-    { label: "Lessons", href: "/lessons", modes: ["lessons"] },
-    { label: "Services", href: "/services", modes: ["studio"] },
+    { label: "Lessons", href: "/lessons" },
+    { label: "Studio", href: "/studio" },
     // Portfolio and Store are left out of the menus until they have something
     // in them — an empty page in the nav is a dead end. Both stay reachable by
     // URL and in the sitemap.
     ...(portfolioTracks.length > 0
-      ? [{ label: "Portfolio", href: "/portfolio", modes: ["studio" as const] }]
+      ? [{ label: "Portfolio", href: "/portfolio" }]
       : []),
     ...(products.length > 0 ? [{ label: "Store", href: "/store" }] : []),
     { label: "Blog", href: "/blog" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ] satisfies NavItem[] as NavItem[],
-  /** Every page with content, always linked, regardless of mode. */
+  /** Every page with content, always linked. */
   footerLinks: [
     { label: "Lessons", href: "/lessons" },
-    { label: "Services", href: "/services" },
+    { label: "Studio", href: "/studio" },
     ...(portfolioTracks.length > 0 ? [{ label: "Portfolio", href: "/portfolio" }] : []),
     ...(products.length > 0 ? [{ label: "Store", href: "/store" }] : []),
     { label: "Blog", href: "/blog" },

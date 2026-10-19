@@ -1,9 +1,8 @@
 /**
- * The studio runs in two modes — two doors into the same practice.
+ * Copy for the two doors into the same practice, each with its own page.
  *
- * "lessons" is the teaching side (warm, marigold-forward); "studio" is the
- * client-work side (periwinkle-forward). The visitor picks a door; the choice
- * persists and reframes the homepage. Both headlines share a deliberate
+ * "lessons" is the teaching side (warm, marigold-forward) at /lessons; "studio"
+ * is the client-work side (periwinkle-forward) at /studio. Both headlines share a deliberate
  * cadence ("Let's make your ___ a little ___er") so the doors read as
  * siblings rather than two unrelated businesses.
  */
@@ -14,12 +13,8 @@ export type StudioMode = "lessons" | "studio";
 
 export type ModeContent = {
   id: StudioMode;
-  /** Label on the segmented control — framed by visitor intent, not jargon. */
+  /** Label on this door's card on the homepage. */
   doorLabel: string;
-  /** Tight version for the header toggle. */
-  shortLabel: string;
-  /** How the other door refers to this one in cross-links. */
-  crossLinkLabel: string;
   eyebrow: string;
   /** Headline is split so the final word can carry the hand-drawn Scribble. */
   headlineLead: string;
@@ -39,15 +34,13 @@ export const modes: Record<StudioMode, ModeContent> = {
   lessons: {
     id: "lessons",
     doorLabel: "Learn with me",
-    shortLabel: "Learn",
-    crossLinkLabel: "lessons",
     eyebrow: "Music Lessons · Corvallis, OR & online",
     headlineLead: "Let's make your sound a little",
     headlineAccent: "sunnier",
     body:
       "I teach guitar, voice, production, and audio engineering, and I teach them patiently. There's no set curriculum and nobody's judging. We start with the music you want to make and go from there.",
     primaryCta: { label: "Book a lesson", href: "/lessons#book" },
-    secondaryCta: { label: "Ask a question", href: "/contact" },
+    secondaryCta: { label: "Ask a question", href: "/contact?service=lessons" },
     valueProps: [
       {
         title: "You set the pace",
@@ -120,8 +113,6 @@ export const modes: Record<StudioMode, ModeContent> = {
   studio: {
     id: "studio",
     doorLabel: "Create with me",
-    shortLabel: "Create",
-    crossLinkLabel: "mixing & mastering",
     eyebrow: "Mixing, Mastering & Recording · Corvallis, OR",
     headlineLead: "Let's make your mix hit a little",
     headlineAccent: "harder",

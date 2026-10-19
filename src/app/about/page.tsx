@@ -8,7 +8,6 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CtaPanel } from "@/components/ui/CtaPanel";
 import { PhotoStrip } from "@/components/ui/Photo";
 import { getStudioPhotos } from "@/content/media";
-import { portfolioTracks } from "@/content/portfolio/tracks";
 import raulHeadshot from "../../../public/images/raul-headshot.jpg";
 
 export const metadata: Metadata = {
@@ -76,20 +75,12 @@ export default function AboutPage() {
               About The sunny*r Studio
             </h1>
             <p
-              data-mode-only="lessons"
               style={{ animationDelay: "110ms" }}
               className="animate-fade-up mt-4 font-display text-lg italic leading-relaxed text-marigold-800"
             >
-              The short version: I teach the way I wish I’d been taught: patiently, and around
-              what you want to play.
-            </p>
-            <p
-              data-mode-only="studio"
-              style={{ animationDelay: "110ms" }}
-              className="animate-fade-up mt-4 font-display text-lg italic leading-relaxed text-periwinkle-700"
-            >
-              The short version: audio engineering is my full-time job, and I bring that same ear to
-              your record.
+              The short version: I teach the way I wish I’d been taught, patiently and around
+              what you want to play. Audio engineering is also my full-time job, and I bring that
+              same ear to your record.
             </p>
             <p
               style={{ animationDelay: "140ms" }}
@@ -161,24 +152,10 @@ export default function AboutPage() {
           title="Good things grow on the sunny*r side"
           body="Bring whatever you're working on, and let's see what it grows into."
         >
-          <span data-mode-only="lessons" className="contents">
-            <Button href="/lessons#book">Book a lesson</Button>
-            <Button href="/contact" variant="secondary">
-              Say hello
-            </Button>
-          </span>
-          <span data-mode-only="studio" className="contents">
-            <Button href="/contact">Get a quote</Button>
-            {portfolioTracks.length > 0 ? (
-              <Button href="/portfolio" variant="secondary">
-                Hear the work
-              </Button>
-            ) : (
-              <Button href="/services" variant="secondary">
-                See services
-              </Button>
-            )}
-          </span>
+          <Button href="/lessons#book">Book a lesson</Button>
+          <Button href="/studio" variant="secondary">
+            Mixing &amp; mastering
+          </Button>
         </CtaPanel>
       </Section>
     </>

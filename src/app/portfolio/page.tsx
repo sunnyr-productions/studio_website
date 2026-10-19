@@ -44,7 +44,7 @@ export default function PortfolioPage() {
             </p>
             <div className="mt-5 flex flex-wrap gap-4">
               <Button href="/contact">Get in touch</Button>
-              <Button href="/services" variant="secondary">
+              <Button href="/studio" variant="secondary">
                 See services
               </Button>
             </div>
