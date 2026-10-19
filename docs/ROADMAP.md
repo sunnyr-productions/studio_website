@@ -360,12 +360,11 @@ dependency on it)._
   - If they're a target: a short section on `/lessons` (term-based scheduling,
     walking/biking distance, a student pack price if you want one).
 
-- [ ] **4.6 Confirm the flagged copy** · `Raul` · `S`
-  - From the last copy pass, check these are true: "I'm in sessions every
-    day"; "I'll send you a few things I've worked on"; "I'll write back myself
-    within 2 business days"; "Guitar usually goes better in the room, because I
-    can see your hands"; "Most requested" on vocal lessons; "I teach both ways
-    every week" in the in-person vs online blog post.
+- [x] **4.6 Confirm the flagged copy** · `Raul` · `S` · done 2026-10-19
+  - Confirmed true: "I'm in sessions every day"; "I'll send you a few things I've worked on"; "Guitar usually goes better in the room, because I can see your hands"; "I'll write back myself".
+  - Removed as not yet true: the "Most requested" badge on Vocal Lessons, and "I teach both ways every week" (plus the "people ask me" line) in the in-person vs online post.
+  - Still to confirm: the FAQ line "I teach people who've never held a guitar and people who play out every weekend" implies a current mix of students. Reword if that isn't your situation yet.
+  - Rule going forward: no claims of demand, popularity, or student mix until there are real students and reviews to back them.
 
 ---
 

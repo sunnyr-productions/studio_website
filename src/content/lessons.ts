@@ -15,7 +15,6 @@ export const lessonTypes: LessonType[] = [
       "Technique, range, and the nerve to perform. I spent years coaching a cappella singers on both the singing and the stage presence.",
     format: "In-person or online",
     accent: "marigold",
-    featured: true,
   },
   {
     slug: "guitar",
