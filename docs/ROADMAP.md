@@ -341,7 +341,7 @@ dependency on it)._
   - Replace years-of-experience stats with outcomes once you have them:
     students taught, songs mixed, age range taught, years teaching.
 
-- [ ] **4.3 Motto and name usage** · `Code` · `S`
+- [~] **4.3 Motto and name usage** · `Code` · `S` · motto now appears only in the footer (done 2026-10-19); plain-text spelling still to settle
   - Use "Good things grow on the sunny*r side" once per page at most (footer).
   - Settle the plain-text spelling for handles, domain and search ("sunnyr"?)
     and use it consistently in metadata and schema `alternateName`.
@@ -401,7 +401,7 @@ on the page._
   - Check after Phase 2 (page weight should drop). Lazy-load Cal (3.1) and
     wavesurfer (already lazy).
 
-- [ ] **6.3 CI and smoke tests** · `Code` · `M`
+- [~] **6.3 CI and smoke tests** · `Code` · `M` · GitHub Actions (tsc, eslint, build) and the missing-space/H1 check are in (2026-10-19); Playwright smoke tests not yet
   - GitHub Actions on push: `tsc --noEmit`, `eslint`, `next build`.
   - Playwright smoke tests: every route returns 200; contact form submits with
     the API mocked; theme toggle works.

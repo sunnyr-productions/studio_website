@@ -4,11 +4,10 @@ import { Photo } from "@/components/ui/Photo";
 import { Scribble } from "@/components/ui/Scribble";
 import type { Photo as PhotoData } from "@/content/media";
 import type { ModeContent } from "@/content/modes";
-import { siteConfig } from "@/lib/site-config";
 
 /**
  * The opening of a door's landing page (/lessons or /studio): eyebrow, the one
- * H1, body, motto, two CTAs, and the hero photo when one exists. `children`
+ * H1, body, two CTAs, and the hero photo when one exists. `children`
  * sits under the buttons for page-specific extras.
  */
 export function DoorHero({
@@ -43,12 +42,6 @@ export function DoorHero({
           className="animate-fade-up mt-5 text-lg leading-relaxed text-ink-700"
         >
           {mode.body}
-        </p>
-        <p
-          style={{ animationDelay: "220ms" }}
-          className={`animate-fade-up mt-3 font-display text-lg italic ${accentText}`}
-        >
-          {siteConfig.motto}
         </p>
         <div
           style={{ animationDelay: "280ms" }}

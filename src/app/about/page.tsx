@@ -149,7 +149,7 @@ export default function AboutPage() {
 
       <Section space="tight">
         <CtaPanel
-          title="Good things grow on the sunny*r side"
+          title="Want to work together?"
           body="Bring whatever you're working on, and let's see what it grows into."
         >
           <Button href="/lessons#book">Book a lesson</Button>
