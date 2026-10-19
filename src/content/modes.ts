@@ -88,8 +88,20 @@ export const modes: Record<StudioMode, ModeContent> = {
         a: "Nope. I teach people who've never held a guitar and people who play out every weekend. We start wherever you are.",
       },
       {
+        q: "Do you teach kids?",
+        a: "Yes, any age. I take younger kids case by case, so message me about your child first and we'll work out whether a trial lesson makes sense.",
+      },
+      {
+        q: "Do I need my own instrument?",
+        a: "Not to start. I have instruments you can use during lessons. If you stick with it you'll want your own to practise on at home, and I'm happy to help you pick one.",
+      },
+      {
         q: "In person or online?",
         a: "Either. In person, we meet at my home studio in Corvallis. Voice, production, and engineering lessons work really well over video too. Guitar usually goes better in the room, because I can see your hands.",
+      },
+      {
+        q: "Where are you, and where do I park?",
+        a: "My studio is in Southtown, Corvallis, and there's free street parking nearby. I'll send the exact address when you book.",
       },
       {
         q: "What does it cost?",

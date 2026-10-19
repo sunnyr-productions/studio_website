@@ -40,7 +40,11 @@ export default function ContactPage() {
 
         <Reveal delay={120} className="text-sm text-ink-700">
           <p className="font-semibold text-ink-900">When you’ll hear back</p>
-          <p className="mt-1">Within {siteConfig.responseTime}.</p>
+          <p className="mt-1">
+            Lessons: within {siteConfig.responseTime.lessons}.
+            <br />
+            Studio quotes: within {siteConfig.responseTime.studio}.
+          </p>
 
           <p className="mt-6 font-semibold text-ink-900">Prefer email?</p>
           <a

@@ -135,7 +135,13 @@ export async function sendInquiryConfirmation(submission: ContactSubmission): Pr
   const text = [
     firstName ? `Hi ${firstName},` : "Hi there,",
     "",
-    `Thanks for reaching out to ${siteConfig.name}! Your message about ${serviceLabel?.toLowerCase()} came through, and I'll get back to you within ${siteConfig.responseTime}.`,
+    `Thanks for reaching out to ${siteConfig.name}! Your message about ${serviceLabel?.toLowerCase()} came through, and I'll get back to you within ${
+      isStudioService(submission.service)
+        ? siteConfig.responseTime.studio
+        : submission.service === LESSON_SERVICE
+          ? siteConfig.responseTime.lessons
+          : siteConfig.responseTime.any
+    }.`,
     "",
     nextSteps(submission.service),
     "",

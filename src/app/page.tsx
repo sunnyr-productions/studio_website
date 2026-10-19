@@ -352,7 +352,7 @@ export default function Home() {
         <Section data-sect="cta" space="tight">
           <CtaPanel
             title="Want to give it a try?"
-            body="Book a first lesson, or tell me about the song you're working on. Either way, I'll write back myself within 2 business days."
+            body="Book a first lesson, or tell me about the song you're working on. Either way, I'll write back myself, usually within a day or two."
           >
             <Button href="/lessons#book">Book a lesson</Button>
             <Button href="/contact" variant="secondary">

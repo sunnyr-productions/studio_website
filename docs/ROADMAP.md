@@ -40,13 +40,13 @@ settled; several Phase 0 and 1 items are better with D3 to D5 answered.
 
 | # | Decision | Options | Recommendation | Blocks |
 |---|---|---|---|---|
-| D1 | Which side should carry the business in a year? | Lessons-first · Studio-first · Equal | Pick one. The homepage, default door, nav order, and ad spend all follow it. | 2.1, 4.2 |
-| D2 | Site structure | Keep the CSS door toggle · Split into real `/lessons` and `/studio` landing pages | Split (Phase 2). | All of Phase 2 |
-| D3 | Who are lessons for? | Ages (kids? teens? adults only?), Oregon State students as a target? | Write down an age range and whether OSU students are a priority. | 0.8, 2.3, 4.5 |
-| D4 | Lesson response promise | Keep 2 business days · 24 hours for lessons | 24 hours for lessons; studio can stay at 2 days. | 0.7, 3.5 |
-| D5 | Business email and domain | Gmail · address on your own domain | Own domain (also fixes the auto-reply, see 1.6). | 1.6 |
-| D6 | The store | Keep dormant · Remove the code · Move to Gumroad/Lemon Squeezy | Keep dormant until there are 3 products you'd actually sell. Revisit in Phase 6. | 6.5 |
-| D7 | Analytics | Vercel Pro (custom events) · Plausible · GA4 | Plausible: cookieless, cheap, shows events on any plan. | 3.4 |
+| D1 | Which side should carry the business in a year? | Lessons-first · Studio-first · Equal | **DECIDED 2026-10-19: equal weight in the design; lessons promoted first because it's the easiest to market.** | 2.1, 4.2 |
+| D2 | Site structure | Keep the CSS door toggle · Split into real `/lessons` and `/studio` landing pages | **DECIDED 2026-10-19: split.** `/` is a short fork page; `/lessons` and `/studio` are the full home pages; the header toggle switches between those two routes (it navigates, it no longer flips a hidden mode). | All of Phase 2 |
+| D3 | Who are lessons for? | Ages (kids? teens? adults only?), Oregon State students as a target? | **DECIDED 2026-10-19:** any age, case by case (younger kids: message first). Oregon State students welcome but not targeted yet; the student-section idea is parked for later (4.5). Studio is in Southtown, Corvallis (exact address shared on booking), free street parking, instruments provided for use in lessons. | 0.8, 2.3, 4.5 |
+| D4 | Lesson response promise | Keep 2 business days · 24 hours for lessons | **DECIDED 2026-10-19:** lessons 1 to 2 business days (full-time day job), studio quotes 2 business days. Revisit if you want to promise 24 hours later. | 0.7, 3.5 |
+| D5 | Business email and domain | Gmail · address on your own domain | **DECIDED 2026-10-19:** no domain owned yet; register `sunnyrstudio.com` (no registration found 2026-10-19; confirm at the registrar) and use a free forwarding address (e.g. `hello@sunnyrstudio.com` forwarding to Gmail). See the steps under 1.6. | 1.6 |
+| D6 | The store | Keep dormant · Remove the code · Move to Gumroad/Lemon Squeezy | **DECIDED 2026-10-19: keep dormant** (hidden from nav and search). Revisit when there are about three products you'd really sell. | 6.5 |
+| D7 | Analytics | Vercel Pro (custom events) · Plausible · GA4 | **DECIDED 2026-10-19: nothing for now.** Existing Vercel page-view and speed tracking continue; the custom event calls stay in the code. Revisit (Plausible was the recommendation) once there is traffic worth measuring. | 3.4 |
 
 ---
 
@@ -102,13 +102,13 @@ noted. Each item is independent; ship them as one or two commits._
   - Add a visually-hidden "Skip to content" link as the first focusable element
     in `src/app/layout.tsx`, targeting `<main id="main">`.
 
-- [ ] **0.7 Response promise** · `Code` · `S` · _needs D4_
+- [x] **0.7 Response promise** · `Code` · `S` · _needs D4_
   - `siteConfig.responseTime` is one value. Split into
     `responseTime.lessons` / `responseTime.studio` and use the right one on the
     contact page, form success state, closing panels, and auto-reply
     (`src/lib/email.ts`).
 
-- [ ] **0.8 Answer the first questions people have** · `Both` · `S` · _needs D3_
+- [x] **0.8 Answer the first questions people have** · `Both` · `S` · _needs D3_
   - Add to the lessons FAQ in `src/content/modes.ts`: what ages you teach;
     roughly where the studio is (neighbourhood, parking); what to bring; whether
     you have instruments to borrow.
@@ -167,11 +167,18 @@ small and mostly already scaffolded._
   - Code: `siteConfig.social` array, icons in the footer, `sameAs` in the
     LocalBusiness schema.
 
-- [ ] **1.6 Business email on your domain** · `Raul` (+ `Code` `S`) · _needs D5_
-  - Set up the address, verify the domain in Resend, and set `RESEND_FROM_EMAIL`
-    in Vercel. Until that's set, the visitor auto-reply is switched off (see
-    `sendInquiryConfirmation` in `src/lib/email.ts`).
-  - Code: update `siteConfig.email`.
+- [ ] **1.6 Domain and business email** · `Raul` (+ `Code` `S`) · _D5 decided_
+  - Steps, in this order (about an hour, plus waiting for DNS):
+    1. Register `sunnyrstudio.com` at Cloudflare Registrar (sells at cost; its free Email Routing is what we want). Turn on auto-renew.
+    2. In Vercel: Project > Settings > Domains > add `sunnyrstudio.com` and `www.sunnyrstudio.com`; follow the DNS records it shows (Cloudflare: set the records to "DNS only", not proxied). Make one the redirect to the other.
+    3. In Vercel env vars, set `NEXT_PUBLIC_SITE_URL=https://sunnyrstudio.com` and redeploy (this fixes canonicals, sitemap, social cards).
+    4. Cloudflare > Email Routing: create `hello@sunnyrstudio.com` forwarding to your Gmail.
+    5. Resend > Domains: add `sunnyrstudio.com`, paste the DNS records it gives you into Cloudflare, wait until it says Verified.
+    6. In Vercel env vars, set `RESEND_FROM_EMAIL=hello@sunnyrstudio.com` and redeploy. The visitor auto-reply switches on automatically.
+    7. Gmail > Settings > Accounts > "Send mail as" `hello@sunnyrstudio.com`, so your replies come from the new address. Cloudflare only forwards incoming mail, so Gmail will ask for SMTP details for sending: use Resend's (`smtp.resend.com`, port 465, username `resend`, password a Resend API key).
+    8. Search Console: verify the domain and submit `https://sunnyrstudio.com/sitemap.xml`.
+  - Code (after step 3): update `siteConfig.email` in `src/lib/site-config.ts` to `hello@sunnyrstudio.com`, and the plain-text brand spelling used in metadata (see 4.3).
+  - Until this is done the site is only on its `vercel.app` address, so canonical URLs and the sitemap point at the wrong place.
 
 **Phase 1 is done when:** the site has at least one real photo above the fold,
 one audio comparison, three testimonials, a Google profile, and a domain email.
@@ -306,7 +313,7 @@ dependency on it)._
   - Add per-IP rate limiting at the same time (the TODO in
     `src/app/api/contact/route.ts`).
 
-- [ ] **3.4 Analytics that actually report** · `Code` · `S` · _needs D7_
+- [ ] **3.4 Analytics that actually report** · `Code` · `S` · _deferred (D7: nothing for now)_
   - Custom events in `src/lib/analytics.ts` only show on Vercel Pro. With
     Plausible: add the script, map `trackEvent` to `plausible()`, set up goals
     for Inquiry Sent, Lesson Booked, Door Clicked, Audio Played.
@@ -408,7 +415,7 @@ on the page._
   - Alert on contact-route and Stripe-webhook errors (Vercel log drains or a
     simple email on caught exceptions).
 
-- [ ] **6.5 Store decision** · `Raul` · _needs D6_
+- [x] **6.5 Store decision** · `Raul` · _D6 decided: keep dormant_
   - Keep dormant, remove the Stripe / Blob / webhook code, or move digital
     products to a hosted platform.
 
