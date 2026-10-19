@@ -4,6 +4,7 @@ import { getAllPosts } from "@/lib/blog";
 import { products } from "@/lib/products";
 import { services } from "@/content/services";
 import { lessonTypes } from "@/content/lessons";
+import { neurodivergentPage } from "@/content/neurodivergent-page";
 import { lessonPages } from "@/content/lesson-pages";
 import { portfolioTracks } from "@/content/portfolio/tracks";
 
@@ -35,6 +36,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const detailRoutes: MetadataRoute.Sitemap = [
+    ...(neurodivergentPage.published
+      ? [
+          {
+            url: `${base}/lessons/neurodivergent-learners`,
+            lastModified: new Date("2026-10-19"),
+            changeFrequency: "monthly" as const,
+            priority: 0.8,
+          },
+        ]
+      : []),
     ...lessonTypes.map((l) => ({
       url: `${base}/lessons/${lessonPages[l.slug].pageSlug}`,
       lastModified: new Date("2026-10-19"),

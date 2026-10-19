@@ -7,6 +7,7 @@
  * siblings rather than two unrelated businesses.
  */
 import { lessonPricing, trialPhrase } from "@/content/lessons";
+import { neurodivergentPage } from "@/content/neurodivergent-page";
 import { studioTerms } from "@/content/services";
 
 export type StudioMode = "lessons" | "studio";
@@ -27,7 +28,7 @@ export type ModeContent = {
   stats: { value: string; label: string }[];
   /** "How it works" — three plain steps to lower first-contact friction. */
   steps: { title: string; body: string }[];
-  faqs: { q: string; a: string }[];
+  faqs: { q: string; a: string; link?: { label: string; href: string } }[];
 };
 
 export const modes: Record<StudioMode, ModeContent> = {
@@ -107,6 +108,9 @@ export const modes: Record<StudioMode, ModeContent> = {
       {
         q: "What if lessons haven't worked for me before?",
         a: "Then we should talk. I'm neurodivergent myself, I go slowly, there's no fixed curriculum, and I'll keep changing the approach until it fits how you learn.",
+        link: neurodivergentPage.published
+          ? { label: "How I teach neurodivergent learners", href: "/lessons/neurodivergent-learners" }
+          : undefined,
       },
     ],
   },

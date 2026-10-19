@@ -52,6 +52,14 @@ export function Faq({ mode }: { mode: ModeContent }) {
                 </span>
               </summary>
               <p className="mt-3 leading-relaxed text-ink-700">{faq.a}</p>
+              {faq.link && faq.link.href && (
+                <Link
+                  href={faq.link.href}
+                  className="mt-2 inline-block font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
+                >
+                  {faq.link.label}
+                </Link>
+              )}
             </details>
           </Reveal>
         ))}

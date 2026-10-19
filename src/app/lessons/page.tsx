@@ -20,6 +20,7 @@ import { getHeroPhotos, getStudioPhotos } from "@/content/media";
 import { lessonPricing, lessonTypes, pricingTiers } from "@/content/lessons";
 import { lessonPages } from "@/content/lesson-pages";
 import { modes } from "@/content/modes";
+import { neurodivergentPage } from "@/content/neurodivergent-page";
 import { testimonials } from "@/content/testimonials";
 import { faqPageSchema } from "@/lib/structured-data";
 import { siteConfig } from "@/lib/site-config";
@@ -50,6 +51,18 @@ export default function LessonsPage() {
           >
             I’m neurodivergent myself, and I work especially well with students who’ve had
             trouble learning in more traditional settings.
+            {neurodivergentPage.published && (
+              <>
+                {" "}
+                <Link
+                  href="/lessons/neurodivergent-learners"
+                  className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
+                >
+                  How I teach
+                </Link>
+                .
+              </>
+            )}
           </p>
         </DoorHero>
         <div className="mt-14">
