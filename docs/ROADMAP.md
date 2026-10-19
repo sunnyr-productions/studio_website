@@ -235,7 +235,7 @@ both doors, ~166 KB of HTML), and per-side SEO._
   - Done when: `/`, `/lessons` and `/studio` each have one H1, their own title
     and description, no hidden duplicate content, and work with JS disabled.
 
-- [ ] **2.2 Per-service pages** · `Both` · `M`
+- [~] **2.2 Per-service pages** · `Both` · `M` · template built 2026-10-19 from draft copy in `src/content/service-pages.ts`; Raul to review, audio `example` waits on 1.3
   - One page per studio service, generated from `src/content/services.ts`
     (`app/studio/[slug]/page.tsx` with `generateStaticParams`).
   - Extend the `Service` type with: `intro`, `process` (steps), `deliverables`,
@@ -244,7 +244,7 @@ both doors, ~166 KB of HTML), and per-side SEO._
   - Each page: H1 "Mixing in Corvallis, OR (and remote)" pattern, price, what
     you send / what you get, process, example, FAQ, CTA to the short studio form.
 
-- [ ] **2.3 Per-lesson pages** · `Both` · `M` · _needs D3_
+- [~] **2.3 Per-lesson pages** · `Both` · `M` · template built 2026-10-19 from draft copy in `src/content/lesson-pages.ts`; Raul to review
   - Same approach from `src/content/lessons.ts`: `app/lessons/[slug]/page.tsx`.
   - Each page targets "<instrument> lessons in Corvallis": who it's for (ages
     from D3), what a first lesson looks like, what to bring, in-person vs
@@ -261,7 +261,7 @@ both doors, ~166 KB of HTML), and per-side SEO._
   - Link it from the `/lessons` hero and the "lessons haven't worked for me"
     FAQ.
 
-- [ ] **2.5 Structured data per page** · `Code` · `M`
+- [x] **2.5 Structured data per page** · `Code` · `M` · done 2026-10-19
   - `Service` schema on each `/studio/*` page with its price;
     `BreadcrumbList` on nested pages; `FAQPage` only on pages that render the
     FAQ, with only that page's questions. Keep `LocalBusiness` sitewide.

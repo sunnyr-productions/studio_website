@@ -6,7 +6,8 @@ import { siteConfig } from "@/lib/site-config";
  *
  * - LocalBusiness (sitewide, in the root layout) is the anchor entity; its
  *   @id is referenced as the publisher of blog posts.
- * - FAQPage rides on the homepage (the page that actually renders the FAQ).
+ * - FAQPage rides on each page that renders its FAQ, with only that page's questions.
+ * - Service and BreadcrumbList ride on the nested /studio and /lessons pages.
  * - BlogPosting rides on each post.
  */
 
@@ -105,5 +106,49 @@ export function blogPostingSchema(post: PostLike) {
     image: LOGO,
     author: { "@type": "Person", name: AUTHOR_NAME },
     publisher: { "@id": STUDIO_ID },
+  };
+}
+
+/** A single service page: what it is, who offers it, and the starting price. */
+export function serviceSchema({
+  name,
+  description,
+  path,
+  minPrice,
+}: {
+  name: string;
+  description: string;
+  path: string;
+  minPrice: number;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name,
+    description,
+    url: `${base}${path}`,
+    provider: { "@id": STUDIO_ID },
+    areaServed: [
+      { "@type": "City", name: `${siteConfig.location.city}, ${siteConfig.location.region}` },
+      "Online worldwide",
+    ],
+    offers: {
+      "@type": "Offer",
+      priceSpecification: { "@type": "PriceSpecification", minPrice, priceCurrency: "USD" },
+    },
+  };
+}
+
+/** Breadcrumb trail for nested pages; `path` is the page's own URL path. */
+export function breadcrumbSchema(items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: `${base}${item.path}`,
+    })),
   };
 }

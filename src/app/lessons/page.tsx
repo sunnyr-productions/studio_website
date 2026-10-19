@@ -18,6 +18,7 @@ import { Testimonials } from "@/components/ui/Testimonials";
 import { ValueProps } from "@/components/ui/ValueProps";
 import { getHeroPhotos, getStudioPhotos } from "@/content/media";
 import { lessonPricing, lessonTypes, pricingTiers } from "@/content/lessons";
+import { lessonPages } from "@/content/lesson-pages";
 import { modes } from "@/content/modes";
 import { testimonials } from "@/content/testimonials";
 import { faqPageSchema } from "@/lib/structured-data";
@@ -75,6 +76,13 @@ export default function LessonsPage() {
                 <h3 className="font-display text-xl font-semibold text-ink-900">{lesson.name}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-700">{lesson.blurb}</p>
                 <p className="mt-4 text-xs font-semibold text-ink-500">{lesson.format}</p>
+                <Link
+                  href={`/lessons/${lessonPages[lesson.slug].pageSlug}`}
+                  className="mt-3 inline-block text-sm font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
+                >
+                  Learn more
+                  <span className="sr-only"> about {lesson.name.toLowerCase()}</span>
+                </Link>
               </Card>
             </Reveal>
           ))}

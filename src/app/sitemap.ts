@@ -2,6 +2,9 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/site-config";
 import { getAllPosts } from "@/lib/blog";
 import { products } from "@/lib/products";
+import { services } from "@/content/services";
+import { lessonTypes } from "@/content/lessons";
+import { lessonPages } from "@/content/lesson-pages";
 import { portfolioTracks } from "@/content/portfolio/tracks";
 
 /**
@@ -31,6 +34,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/privacy`, lastModified: new Date("2026-10-07"), changeFrequency: "yearly", priority: 0.3 },
   ];
 
+  const detailRoutes: MetadataRoute.Sitemap = [
+    ...lessonTypes.map((l) => ({
+      url: `${base}/lessons/${lessonPages[l.slug].pageSlug}`,
+      lastModified: new Date("2026-10-19"),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    ...services.map((svc) => ({
+      url: `${base}/studio/${svc.slug}`,
+      lastModified: new Date("2026-10-19"),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+  ];
+
   const postRoutes: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
     url: `${base}/blog/${post.slug}`,
     lastModified: new Date(post.date),
@@ -38,5 +56,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...staticRoutes, ...postRoutes];
+  return [...staticRoutes, ...detailRoutes, ...postRoutes];
 }
