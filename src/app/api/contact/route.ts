@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isBot } from "@/lib/bot-check";
 import { sendContactNotification, sendInquiryConfirmation } from "@/lib/email";
+import { isRateLimited, markInquiry, saveInquiry } from "@/lib/inquiry-store";
 import {
   budgetOptions,
   experienceOptions,
@@ -68,19 +69,34 @@ export async function POST(request: Request) {
 
   // Spam traps: a filled honeypot or an implausibly fast submit is dropped
   // silently — we return the same success shape so bots get no signal to adapt
-  // to, but nothing is sent. (A future upgrade could add per-IP rate limiting
-  // via Vercel KV / Upstash here.)
+  // to, but nothing is sent.
   const trippedHoneypot = !!company && company.trim().length > 0;
   const tooFast = typeof elapsedMs === "number" && elapsedMs < MIN_FILL_MS;
   if (trippedHoneypot || tooFast) {
     return NextResponse.json({ ok: true });
   }
 
+  // Per-IP limit (a no-op until the store is connected).
+  const forwarded = request.headers.get("x-forwarded-for");
+  const ip = forwarded?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
+  if (await isRateLimited(ip)) {
+    return NextResponse.json({ error: "Too many messages" }, { status: 429 });
+  }
+
+  // Save before emailing, so a failed or spam-foldered notification can't lose the lead.
+  const inquiryId = await saveInquiry(submission);
+
   try {
     await sendContactNotification(submission);
+    if (inquiryId) await markInquiry(inquiryId, "notified");
   } catch (error) {
     console.error("Failed to send contact notification", error);
-    return NextResponse.json({ error: "Failed to send message" }, { status: 502 });
+    if (!inquiryId) {
+      return NextResponse.json({ error: "Failed to send message" }, { status: 502 });
+    }
+    // The inquiry is safe in the store, so the visitor doesn't need to retry.
+    await markInquiry(inquiryId, "notify_failed");
+    return NextResponse.json({ ok: true });
   }
 
   // Courtesy auto-reply. The inquiry already reached the inbox, so a failure

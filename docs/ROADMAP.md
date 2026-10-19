@@ -302,7 +302,7 @@ dependency on it)._
     validation in `src/app/api/contact/route.ts` (schema already treats these as
     optional).
 
-- [ ] **3.3 Don't lose leads** · `Code` · `M`
+- [~] **3.3 Don't lose leads** · `Code` · `M` · code done 2026-10-19 (Upstash Redis + per-IP rate limit, no-op until `KV_REST_API_URL`/`KV_REST_API_TOKEN` are set); Raul to connect the store in Vercel
   - Today an inquiry only exists as an email. If Resend fails or it lands in
     spam, it's gone.
   - Write every valid submission to a store before sending the notification:
