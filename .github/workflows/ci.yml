@@ -15,7 +15,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx tsc --noEmit
       - run: npx eslint
+      # next build generates next-env.d.ts (gitignored) and type-checks, so no separate tsc step.
       - run: npx next build
       - run: node scripts/check-built-html.mjs
