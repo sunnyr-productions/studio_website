@@ -401,7 +401,7 @@ on the page._
   - Check after Phase 2 (page weight should drop). Lazy-load Cal (3.1) and
     wavesurfer (already lazy).
 
-- [~] **6.3 CI and smoke tests** · `Code` · `M` · GitHub Actions (eslint, build with type-check) and the missing-space/H1 check are in (2026-10-19); Playwright smoke tests not yet
+- [x] **6.3 CI and smoke tests** · `Code` · `M` · GitHub Actions (eslint, build with type-check) and the missing-space/H1 check are in (2026-10-19); Playwright smoke tests (routes, redirect, theme toggle, mocked form) in `tests/` and CI; `npm test` after a build
   - GitHub Actions on push: `tsc --noEmit`, `eslint`, `next build`.
   - Playwright smoke tests: every route returns 200; contact form submits with
     the API mocked; theme toggle works.

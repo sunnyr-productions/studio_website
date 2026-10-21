@@ -19,3 +19,5 @@ jobs:
       # next build generates next-env.d.ts (gitignored) and type-checks, so no separate tsc step.
       - run: npx next build
       - run: node scripts/check-built-html.mjs
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
