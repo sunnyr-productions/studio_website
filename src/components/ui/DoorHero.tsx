@@ -14,11 +14,14 @@ export function DoorHero({
   mode,
   secondaryCta,
   photo,
+  calm = false,
   children,
 }: {
   mode: ModeContent;
   secondaryCta: { label: string; href: string };
   photo?: PhotoData | null;
+  /** The studio side: the accent word is coloured, not circled, and the entrance is a single fade. */
+  calm?: boolean;
   children?: ReactNode;
 }) {
   const isLessons = mode.id === "lessons";
@@ -32,19 +35,25 @@ export function DoorHero({
           {mode.eyebrow}
         </p>
         <h1
-          style={{ animationDelay: "80ms" }}
+          style={{ animationDelay: calm ? undefined : "80ms" }}
           className="animate-fade-up mt-3 text-[clamp(2.75rem,3vw+2rem,4.5rem)] font-display font-semibold leading-[1.05] tracking-tight text-ink-900"
         >
-          {mode.headlineLead} <Scribble color={scribbleColor}>{mode.headlineAccent}</Scribble>.
+          {mode.headlineLead}{" "}
+          {calm ? (
+            <span className={accentText}>{mode.headlineAccent}</span>
+          ) : (
+            <Scribble color={scribbleColor}>{mode.headlineAccent}</Scribble>
+          )}
+          .
         </h1>
         <p
-          style={{ animationDelay: "160ms" }}
+          style={{ animationDelay: calm ? undefined : "160ms" }}
           className="animate-fade-up mt-5 text-lg leading-relaxed text-ink-700"
         >
           {mode.body}
         </p>
         <div
-          style={{ animationDelay: "280ms" }}
+          style={{ animationDelay: calm ? undefined : "280ms" }}
           className="animate-fade-up mt-8 flex flex-wrap gap-4"
         >
           <Button href={mode.primaryCta.href}>{mode.primaryCta.label}</Button>

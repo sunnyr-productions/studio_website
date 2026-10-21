@@ -7,7 +7,6 @@ import { LazyCalEmbed } from "@/components/booking/LazyCalEmbed";
 import { CtaPanel } from "@/components/ui/CtaPanel";
 import { DoorHero } from "@/components/ui/DoorHero";
 import { Faq } from "@/components/ui/Faq";
-import { GrowthDivider } from "@/components/ui/GrowthDivider";
 import { HowItWorks } from "@/components/ui/HowItWorks";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PhotoStrip } from "@/components/ui/Photo";
@@ -39,7 +38,7 @@ export default function LessonsPage() {
     <>
       <JsonLd data={faqPageSchema(mode.faqs)} />
 
-      <Section pattern="dots" surface="sky" space="hero">
+      <Section surface="sky" space="hero">
         <DoorHero
           mode={mode}
           secondaryCta={mode.secondaryCta}
@@ -68,7 +67,6 @@ export default function LessonsPage() {
         <div className="mt-14">
           <StatStrip mode={mode} />
         </div>
-        <GrowthDivider className="mt-14" />
       </Section>
 
       <Section>

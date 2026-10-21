@@ -166,6 +166,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
 
       <Section space="tight">
         <CtaPanel
+          calm
           title={`Ready for ${service.name.toLowerCase()}?`}
           body={`Tell me about your project. I’ll send a fixed quote within ${siteConfig.responseTime.studio}.`}
         >

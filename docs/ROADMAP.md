@@ -373,7 +373,7 @@ dependency on it)._
 _After Phase 1 assets exist, so decisions are made with real photos and audio
 on the page._
 
-- [ ] **5.1 A calmer studio side** · `Code` · `M`
+- [x] **5.1 A calmer studio side** · `Code` · `M` · done 2026-10-20 (no scribble, divider, or drifting gradient; single fade-in)
   - On `/studio` pages: drop the scribble circle and growth dividers, use one
     gradient surface per section, fewer animations. Keep the sticker cards and
     palette so it's clearly the same brand. Lessons keeps the playful version.
@@ -381,7 +381,7 @@ on the page._
 - [ ] **5.2 Audio in the studio hero** · `Code` · `S` · _needs 1.3_
   - One before/after pair directly under the studio H1.
 
-- [ ] **5.3 Ornament budget** · `Code` · `S`
+- [x] **5.3 Ornament budget** · `Code` · `S` · done 2026-10-20 (home and lessons heroes keep the scribble only; studio hero keeps the dots only; dividers only in the lessons-side closing panel)
   - One decorative motif per section (pattern *or* divider *or* scribble).
     Audit each page against that rule.
 

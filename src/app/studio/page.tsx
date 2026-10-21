@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/Card";
 import { CtaPanel } from "@/components/ui/CtaPanel";
 import { DoorHero } from "@/components/ui/DoorHero";
 import { Faq } from "@/components/ui/Faq";
-import { GrowthDivider } from "@/components/ui/GrowthDivider";
 import { HowItWorks } from "@/components/ui/HowItWorks";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
@@ -43,11 +42,10 @@ export default function StudioPage() {
       <JsonLd data={faqPageSchema(mode.faqs)} />
 
       <Section pattern="dots" surface="sky" space="hero">
-        <DoorHero mode={mode} secondaryCta={secondaryCta} photo={getHeroPhotos().studio} />
+        <DoorHero mode={mode} secondaryCta={secondaryCta} photo={getHeroPhotos().studio} calm />
         <div className="mt-14">
           <StatStrip mode={mode} />
         </div>
-        <GrowthDivider className="mt-14" />
       </Section>
 
       <Section surface="dusk" id="services" className="scroll-mt-4">
@@ -141,6 +139,7 @@ export default function StudioPage() {
 
       <Section space="tight">
         <CtaPanel
+          calm
           title="Got a song that’s ready?"
           body={`Tell me how many tracks, when you need it, and what you want it to sound like. I’ll send a quote within ${siteConfig.responseTime.studio}.`}
         >

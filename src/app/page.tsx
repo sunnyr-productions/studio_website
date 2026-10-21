@@ -3,7 +3,6 @@ import Link from "next/link";
 import { DoorLink } from "@/components/home/DoorLink";
 import { Button } from "@/components/ui/Button";
 import { CtaPanel } from "@/components/ui/CtaPanel";
-import { GrowthDivider } from "@/components/ui/GrowthDivider";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
 import { Scribble } from "@/components/ui/Scribble";
@@ -116,7 +115,7 @@ function DoorCard({ door, delay }: { door: DoorCardContent; delay: number }) {
 export default function Home() {
   return (
     <>
-      <Section pattern="dots" surface="sky" space="hero">
+      <Section surface="sky" space="hero">
         <p className="animate-fade-up font-semibold tracking-[0.08em] text-marigold-800">
           Corvallis, OR &amp; online
         </p>
@@ -140,7 +139,6 @@ export default function Home() {
             <DoorCard key={door.id} door={door} delay={i * 100} />
           ))}
         </div>
-        <GrowthDivider className="mt-14" />
       </Section>
 
       <Section>
