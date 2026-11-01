@@ -70,7 +70,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         ]}
       />
 
-      <Section surface="sky" space="page">
+      <Section space="page">
         <nav aria-label="Breadcrumb" className="text-sm text-ink-500">
           <Link href="/studio" className="inline-block py-2 font-semibold text-periwinkle-700 hover:underline">
             ← Studio

@@ -36,7 +36,7 @@ export default function LessonsPage() {
     <>
       <JsonLd data={faqPageSchema(mode.faqs)} />
 
-      <Section surface="sky" space="hero">
+      <Section space="hero">
         <DoorHero
           mode={mode}
           secondaryCta={mode.secondaryCta}
@@ -91,7 +91,7 @@ export default function LessonsPage() {
         </div>
       </Section>
 
-      <Section surface="sun" id="pricing">
+      <Section id="pricing">
         <SectionHeading
           title="Pricing"
           lede="One rate, whatever we’re working on."
@@ -155,7 +155,7 @@ export default function LessonsPage() {
         )}
       </Section>
 
-      <Section surface="ink">
+      <Section>
         <HowItWorks mode={mode} />
       </Section>
 
@@ -165,7 +165,7 @@ export default function LessonsPage() {
         </Section>
       )}
 
-      <Section surface="tint" id="faq">
+      <Section id="faq">
         <Faq mode={mode} />
       </Section>
 

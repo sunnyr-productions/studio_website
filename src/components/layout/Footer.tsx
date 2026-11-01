@@ -7,25 +7,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="surface-ground mt-auto">
-      <svg
-        viewBox="0 0 1200 60"
-        preserveAspectRatio="none"
-        className="block h-10 w-full text-cream-100 sm:h-14"
-        aria-hidden="true"
-      >
-        <path
-          d="M0,38 C120,12 240,54 360,30 C480,8 600,54 720,30 C840,8 960,54 1080,30 C1140,18 1170,36 1200,28 L1200,60 L0,60 Z"
-          className="fill-current"
-        />
-        <path
-          d="M0,38 C120,12 240,54 360,30 C480,8 600,54 720,30 C840,8 960,54 1080,30 C1140,18 1170,36 1200,28"
-          fill="none"
-          stroke="var(--color-ink-900)"
-          strokeOpacity="0.15"
-          strokeWidth="2"
-        />
-      </svg>
+    <footer className="surface-night mt-auto pt-[230px]">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 pb-12 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <Link

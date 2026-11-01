@@ -67,7 +67,7 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
         ]}
       />
 
-      <Section surface="sky" space="page" width="narrow">
+      <Section space="page" width="narrow">
         <nav aria-label="Breadcrumb" className="text-sm text-ink-500">
           <Link href="/lessons" className="inline-block py-2 font-semibold text-marigold-800 hover:underline">
             ← Lessons

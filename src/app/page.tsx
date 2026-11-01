@@ -97,7 +97,7 @@ function DoorCard({ door }: { door: DoorCardContent }) {
 export default function Home() {
   return (
     <>
-      <Section surface="sky" space="hero">
+      <Section space="hero">
         <div className="grid items-center gap-8 sm:grid-cols-[1fr_auto]">
           <div className="max-w-2xl">
             <h1 className="text-[clamp(2.75rem,3vw+2rem,4.5rem)] font-display font-semibold leading-[1.05] tracking-tight text-ink-900">
@@ -162,7 +162,7 @@ export default function Home() {
       </Section>
 
       {testimonials.length > 0 && (
-        <Section surface="tint">
+        <Section>
           <Testimonials />
         </Section>
       )}

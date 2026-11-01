@@ -19,36 +19,39 @@
   --color-ink-fixed: #1f2430;
   --sketch-shadow: rgba(31, 36, 48, 0.14);
 
-  /* Section surfaces (see Section.tsx). The light theme is an early
-     sunrise: lavender sky overhead, blush in the middle, gold at the
-     horizon, and one band of the indigo that's left of the night.
-
-     Every surface is a gradient with a reason for its direction:
-     - page:   the sky itself, fixed to the viewport, so plain sections are
-               windows onto it (cool at the top of the screen, warm at the
-               bottom) rather than flat paper.
-     - sky:    the full sunrise, top of a main page. Vertical, like the
-               horizon it stands for.
-     - sun / dusk: vertical too, deepening downward toward the horizon.
-     - tint / ink / card: diagonal, lit from the upper left, because they
-               are objects in the scene rather than sky.
-     - ground: the footer, darkening as it leaves the horizon line.
-     Small controls (buttons, inputs, toggles) stay flat so they read as
-     crisp stickers on top. */
-  --surface-page: linear-gradient(180deg, #f1e6f1 0%, #fbeee3 48%, #fde4cb 100%);
-  --surface-sky: linear-gradient(180deg, #cdd9f8 0%, #f0d1df 52%, #fdd9a8 100%);
-  --surface-sun: linear-gradient(180deg, #fde2bb 0%, #fbcd96 100%);
-  --surface-dusk: linear-gradient(180deg, #f2d3dc 0%, #f8cdbf 100%);
-  --surface-tint: linear-gradient(135deg, #dadff7 0%, #eadcee 100%);
-  --surface-ink: linear-gradient(150deg, #262b5a 0%, #3b3069 100%);
+  /* The site is one day. <main> runs from sunrise at the top of the page,
+     through full daylight, to sunset at the bottom, and the footer carries
+     that sunset down into night. The two gradients meet on the same colour.
+     Main's stops are percentages, so a short page just has a shorter day. They
+     change hue but hold nearly the same lightness, which keeps dark text evenly
+     readable: if you retune one, keep its luminance around 0.5 to 0.65. The
+     footer's stops are in pixels so its text always starts on the dark part. */
+  --sky-day: linear-gradient(
+    180deg,
+    #b4c6f2 0%,
+    #dcbde2 12%,
+    #f8c2ad 26%,
+    #fccb55 42%,
+    #fdbb4c 60%,
+    #ffab60 80%,
+    #ffa27a 100%
+  );
+  --sky-night: linear-gradient(
+    180deg,
+    #ffa27a 0,
+    #ec7a70 55px,
+    #c24f70 110px,
+    #8a3670 165px,
+    #55285f 215px,
+    #3b2358 55%,
+    #2a2150 100%
+  );
   --surface-card: linear-gradient(150deg, #fff7ef 0%, #fbe9dc 100%);
-  --surface-ground: linear-gradient(180deg, #e3e5f7 0%, #d3d6f1 100%);
 }
 
-/* The ink band is a slice of night inside the page: it redefines the colour
-   tokens, so everything inside it (text, cards, borders) flips with no
-   per-component styling. */
-.surface-ink {
+/* Night: the footer redefines the colour tokens, so everything inside it (text,
+   buttons, borders) flips with no per-component styling. */
+.surface-night {
   /* Surfaces (was cream: lightest → warmest) now (base night → warmer panel) */
   --surface-card: linear-gradient(150deg, #29254a 0%, #1f1b32 100%);
   --color-cream-50: #1e1b30;
@@ -56,7 +59,7 @@
   --color-cream-200: #3d2a3a;
 
   /* Text (was ink: dark → darkest) now warm off-whites */
-  --color-ink-500: #928f8a;
+  --color-ink-500: #c9c5bc;
   --color-ink-700: #d8d4cb;
   --color-ink-900: #f6f1e6;
 
@@ -94,7 +97,7 @@
   --color-marigold-500: #f5a623;
   --color-marigold-600: #db8a12;
   --color-marigold-700: #b36b0e;
-  --color-marigold-800: #8a5210;
+  --color-marigold-800: #4f2b02;
   --color-marigold-900: #6e4212;
 
   /* Periwinkle — secondary accent (links, secondary buttons, decorative strokes) */
@@ -105,7 +108,7 @@
   --color-periwinkle-400: #93a0e4;
   --color-periwinkle-500: #7b8fde;
   --color-periwinkle-600: #5e6fc2;
-  --color-periwinkle-700: #48569c;
+  --color-periwinkle-700: #252f66;
   --color-periwinkle-800: #374176;
   --color-periwinkle-900: #2a3159;
 
@@ -121,8 +124,8 @@
   --color-coral-800: #7e332f;
 
   /* Ink — body text (softer than pure black) */
-  --color-ink-500: #5b6272;
-  --color-ink-700: #2c3342;
+  --color-ink-500: #2c3241;
+  --color-ink-700: #252b3a;
   --color-ink-900: #1f2430;
 
   /* Cream — the paper, tinted on purpose so nothing reads as plain white.
@@ -136,35 +139,17 @@
   --font-display: var(--font-fraunces);
 }
 
-/* Surfaces. Section.tsx says what each band is for; the gradients themselves
-   are defined (and explained) with the theme tokens at the top. */
-.surface-sun {
-  background: var(--surface-sun);
+main {
+  background: var(--sky-day);
 }
 
-.surface-dusk {
-  background: var(--surface-dusk);
-}
-
-.surface-sky {
-  background: var(--surface-sky);
-}
-
-.surface-tint {
-  background: var(--surface-tint);
+.surface-night {
+  background: var(--sky-night);
+  color: var(--color-ink-900);
 }
 
 .surface-card {
   background: var(--surface-card);
-}
-
-.surface-ground {
-  background: var(--surface-ground);
-}
-
-.surface-ink {
-  background: var(--surface-ink);
-  color: var(--color-ink-900);
 }
 
 /* Body copy runs at 17px; every rem-based size scales with it. */
@@ -179,17 +164,6 @@ html {
 body {
   color: var(--foreground);
   position: relative;
-}
-
-/* The page sky: one fixed layer behind everything (a fixed element, not
-   background-attachment, which phones ignore). */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: var(--surface-page);
 }
 
 /* Paper grain — a faint fixed noise layer over the whole site so flat cream

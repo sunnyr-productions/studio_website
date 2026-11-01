@@ -52,7 +52,7 @@ const gearGroups = [
 export default function AboutPage() {
   return (
     <>
-      <Section pattern="waveform" surface="sky" space="page">
+      <Section pattern="waveform" space="page">
         <div className="grid gap-10 sm:grid-cols-[240px_1fr] sm:items-start">
           <div className="relative h-48 w-48 overflow-hidden rounded-full ring-2 ring-marigold-200 shadow-[3px_4px_0_0_var(--sketch-shadow)] sm:h-60 sm:w-60">
             <Image
@@ -103,7 +103,7 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      <Section surface="dusk">
+      <Section>
         <SectionHeading
           title="The room and the gear"
           lede="I got lucky with the room. We moved into a house that happened to have a bedroom the right size for a small studio, and I found a really good deal on acoustic panels on Facebook Marketplace."

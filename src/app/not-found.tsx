@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <Section pattern="dots" surface="sky" space="page">
+    <Section pattern="dots" space="page">
       <p className="font-semibold tracking-[0.08em] text-marigold-800">404</p>
       <h1
         className="mt-3 font-display text-4xl font-semibold tracking-tight text-ink-900"

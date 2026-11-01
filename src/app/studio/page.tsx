@@ -39,11 +39,11 @@ export default function StudioPage() {
     <>
       <JsonLd data={faqPageSchema(mode.faqs)} />
 
-      <Section pattern="dots" surface="sky" space="hero">
+      <Section pattern="dots" space="hero">
         <DoorHero mode={mode} secondaryCta={secondaryCta} photo={getHeroPhotos().studio} />
       </Section>
 
-      <Section surface="dusk" id="services" className="scroll-mt-4">
+      <Section id="services" className="scroll-mt-4">
         <SectionHeading
           title="What I do"
           lede="These are starting prices. I’ll send you a fixed quote before anything starts."
@@ -92,7 +92,7 @@ export default function StudioPage() {
       </Section>
 
       {portfolioTracks.length > 0 && (
-        <Section surface="tint">
+        <Section>
           <SectionHeading
             title="Recent work"
             action={
@@ -114,7 +114,7 @@ export default function StudioPage() {
         <ValueProps mode={mode} />
       </Section>
 
-      <Section surface="ink">
+      <Section>
         <HowItWorks mode={mode} />
       </Section>
 
@@ -124,7 +124,7 @@ export default function StudioPage() {
         </Section>
       )}
 
-      <Section surface="tint" id="faq">
+      <Section id="faq">
         <Faq mode={mode} />
       </Section>
 
