@@ -13,9 +13,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/terms" },
 };
 
-const LAST_UPDATED = "October 7, 2026";
+const LAST_UPDATED = "November 1, 2026";
 
-const { hourlyRate, trial, pack, cancellationNoticeHours, paymentMethods } = lessonPricing;
+const { hourlyRate, trial, pack, cancellationNoticeHours, lateCancelPercent, paymentMethods } = lessonPricing;
 
 /**
  * Plain-language terms. Section ids (#lessons, #studio, #store) are linked
@@ -25,7 +25,7 @@ export default function TermsPage() {
   return (
     <Section pattern="dots" space="page" width="narrow">
       <article className="max-w-2xl">
-        <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
+        <h1 className="font-display text-4xl font-semibold tracking-tight text-ink-900">
           Terms &amp; Policies
         </h1>
         <p className="mt-2 text-sm text-ink-500">Last updated {LAST_UPDATED}</p>
@@ -34,7 +34,7 @@ export default function TermsPage() {
           <p>
             The short version: be upfront with me and I’ll be upfront with you. These terms
             cover using this website and booking lessons, studio work, or downloads from{" "}
-            {siteConfig.name}, run by Raul Patel in {siteConfig.location.city},{" "}
+            {siteConfig.name}, run by Raul in {siteConfig.location.city},{" "}
             {siteConfig.location.regionName}. Questions about anything here? Email{" "}
             <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.
           </p>
@@ -47,13 +47,15 @@ export default function TermsPage() {
             </li>
             <li>
               <strong>Payment.</strong> Lessons are paid in person at the lesson, by{" "}
-              {paymentMethods}. Packs are paid in full at the first lesson of the pack. For online
-              lessons, please send payment by Venmo before we start.
+              {paymentMethods}, or another method we’ve agreed on. Packs are paid in full at the
+              first lesson of the pack. For online lessons, please send payment by Venmo or Zelle
+              before we start.
             </li>
             <li>
               <strong>Rescheduling and cancelling.</strong> Free with at least{" "}
-              {cancellationNoticeHours} hours’ notice. Cancellations with less notice, and
-              no-shows, are charged in full (or count as a used lesson from a pack).
+              {cancellationNoticeHours} hours’ notice. With less notice, there’s a{" "}
+              {lateCancelPercent}% fee. No-shows are charged the full lesson (or count as a used
+              lesson from a pack).
             </li>
             <li>
               <strong>If I need to cancel,</strong> you choose: reschedule at no cost, or a full
@@ -78,9 +80,15 @@ export default function TermsPage() {
               are invoiced by email.
             </li>
             <li>
-              <strong>Revisions.</strong> Two rounds of revisions are included on every mix.
-              Additional rounds, or changes outside the original scope, are quoted case by case
-              before any extra work starts, so there are no surprise charges.
+              <strong>Revisions.</strong> {studioTerms.revisionRounds} rounds of revisions are
+              included on every mix. A round is one list of notes sent together. Additional rounds
+              are ${studioTerms.extraRevisionFee} each. Changes outside the original scope, like a
+              re-recorded part or a new arrangement, are quoted before any extra work starts.
+            </li>
+            <li>
+              <strong>Files.</strong> You get the finished mixes and masters. Stems or multitracks
+              are an add-on, and session files aren’t included. After a recording session, you get
+              your multitracks and a rough bounce.
             </li>
             <li>
               <strong>Your music stays yours.</strong> You keep all rights to your songs and

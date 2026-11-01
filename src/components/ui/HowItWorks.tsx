@@ -1,7 +1,5 @@
-import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { ModeContent } from "@/content/modes";
-import { trialPhrase } from "@/content/lessons";
 
 /**
  * Three plain steps to lower first-contact anxiety — the "how it works" every
@@ -11,20 +9,17 @@ import { trialPhrase } from "@/content/lessons";
 export function HowItWorks({ mode }: { mode: ModeContent }) {
   const isLessons = mode.id === "lessons";
   const numBg = isLessons ? "bg-marigold-500" : "bg-periwinkle-500";
-  const heading = isLessons ? "Getting started is easy" : "How a project runs";
+  const heading = isLessons ? "How it starts" : "How a project runs";
   const reassurance = isLessons
-    ? `It starts with ${trialPhrase}, and you can stop there if it's not for you.`
+    ? `You can stop after the trial if it's not for you.`
     : "Quotes are free, and asking for one doesn't commit you to anything.";
 
   return (
     <div>
-      <Reveal>
-        <SectionHeading title={heading} lede={reassurance} />
-      </Reveal>
+      <SectionHeading title={heading} lede={reassurance} />
       <ol className="mt-10 grid gap-8 sm:grid-cols-3">
         {mode.steps.map((step, i) => (
-          <Reveal key={step.title} delay={i * 90}>
-            <li className="flex h-full flex-col">
+          <li key={step.title} className="flex h-full flex-col">
               <span
                 aria-hidden="true"
                 style={{ borderRadius: "var(--radius-sketch-sm)" }}
@@ -35,7 +30,6 @@ export function HowItWorks({ mode }: { mode: ModeContent }) {
               <h3 className="mt-4 font-display text-lg font-semibold text-ink-900">{step.title}</h3>
               <p className="mt-2 leading-relaxed text-ink-700">{step.body}</p>
             </li>
-          </Reveal>
         ))}
       </ol>
     </div>

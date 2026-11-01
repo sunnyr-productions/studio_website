@@ -3,11 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { CtaPanel } from "@/components/ui/CtaPanel";
-import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { lessonPages } from "@/content/lesson-pages";
 import { lessonPricing, lessonTypes, trialPhrase } from "@/content/lessons";
 import { siteConfig } from "@/lib/site-config";
@@ -34,18 +31,12 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
-function Bullets({ items }: { items: string[] }) {
+function Part({ title, children }: { title: string; children: string }) {
   return (
-    <ul className="mt-4 space-y-2 text-ink-700">
-      {items.map((item) => (
-        <li key={item} className="flex gap-2">
-          <span aria-hidden="true" className="text-marigold-600">
-            &bull;
-          </span>
-          {item}
-        </li>
-      ))}
-    </ul>
+    <div className="mt-8 first:mt-0">
+      <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-900">{title}</h2>
+      <p className="mt-2 text-lg leading-relaxed text-ink-700">{children}</p>
+    </div>
   );
 }
 
@@ -56,7 +47,6 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
   const { lesson, page } = entry;
 
   const path = `/lessons/${slug}`;
-  const others = entries.filter((e) => e.page.pageSlug !== slug);
 
   return (
     <>
@@ -77,121 +67,48 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
         ]}
       />
 
-      <Section pattern="dots" surface="sky" space="page">
-        <nav aria-label="Breadcrumb" className="animate-fade-up text-sm text-ink-500">
-          <Link href="/lessons" className="font-semibold text-marigold-800 inline-block py-2 hover:underline">
+      <Section surface="sky" space="page" width="narrow">
+        <nav aria-label="Breadcrumb" className="text-sm text-ink-500">
+          <Link href="/lessons" className="inline-block py-2 font-semibold text-marigold-800 hover:underline">
             ← Lessons
           </Link>
         </nav>
-        <h1
-          style={{ animationDelay: "80ms" }}
-          className="animate-fade-up mt-4 max-w-3xl font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl"
-        >
+        <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
           {page.h1}
         </h1>
-        <p
-          style={{ animationDelay: "140ms" }}
-          className="animate-fade-up mt-5 max-w-2xl text-lg leading-relaxed text-ink-700"
-        >
-          {page.intro}
+        <p className="mt-5 text-lg leading-relaxed text-ink-700">{page.intro}</p>
+        <p className="mt-4 font-semibold text-marigold-800">
+          ${lessonPricing.hourlyRate} an hour. Start with {trialPhrase}.
         </p>
-        <p
-          style={{ animationDelay: "200ms" }}
-          className="animate-fade-up mt-4 font-display text-xl font-semibold text-marigold-800"
-        >
-          ${lessonPricing.hourlyRate} an hour · {trialPhrase}
-        </p>
-        <div
-          style={{ animationDelay: "260ms" }}
-          className="animate-fade-up mt-8 flex flex-wrap gap-4"
-        >
-          <Button href="/lessons#book">Book a trial</Button>
-          <Button href={`/contact?service=lessons`} variant="secondary">
-            Ask a question
-          </Button>
-        </div>
       </Section>
 
-      <Section>
-        <Reveal>
-          <SectionHeading title="Who it’s for" />
-          <p className="mt-4 max-w-3xl text-lg leading-relaxed text-ink-700">{page.whoFor}</p>
-        </Reveal>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          <Reveal>
-            <Card accent={lesson.accent} className="h-full">
-              <h2 className="font-display text-xl font-semibold text-ink-900">
-                What a first lesson looks like
-              </h2>
-              <Bullets items={page.firstLesson} />
-            </Card>
-          </Reveal>
-          <Reveal delay={80}>
-            <Card accent="marigold" className="h-full">
-              <h2 className="font-display text-xl font-semibold text-ink-900">What to bring</h2>
-              <Bullets items={page.bring} />
-            </Card>
-          </Reveal>
-        </div>
-      </Section>
-
-      <Section surface="sun">
-        <Reveal>
-          <SectionHeading title="In person or online" />
-          <p className="mt-4 max-w-3xl leading-relaxed text-ink-700">{page.format}</p>
-          <p className="mt-3 max-w-3xl leading-relaxed text-ink-700">
-            Prices, packs, and the cancellation policy are on the{" "}
-            <Link
-              href="/lessons#pricing"
-              className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 hover:text-marigold-600"
-            >
-              lessons page
-            </Link>
-            .
-          </p>
-        </Reveal>
-      </Section>
-
-      <Section surface="tint">
-        <Reveal>
-          <SectionHeading title="Questions people ask" />
-        </Reveal>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {page.faqs.map((faq, i) => (
-            <Reveal key={faq.q} delay={i * 60}>
-              <Card className="h-full">
-                <h3 className="font-display text-lg font-semibold text-ink-900">{faq.q}</h3>
-                <p className="mt-2 leading-relaxed text-ink-700">{faq.a}</p>
-              </Card>
-            </Reveal>
-          ))}
-        </div>
+      <Section width="narrow">
+        {page.sections.map((section) => (
+          <Part key={section.title} title={section.title}>
+            {section.body}
+          </Part>
+        ))}
+        <Part title="Who it’s for">{page.whoFor}</Part>
+        <Part title="The first lesson">{page.firstLesson}</Part>
+        <Part title="What to bring">{page.bring}</Part>
+        <Part title="In person or online">{page.format}</Part>
+        {page.faqs.map((faq) => (
+          <Part key={faq.q} title={faq.q}>
+            {faq.a}
+          </Part>
+        ))}
       </Section>
 
       <Section space="tight">
         <CtaPanel
-          title={`Try ${lesson.name.toLowerCase()}`}
-          body={`Book ${trialPhrase} lesson, or send a question first. I’ll write back myself within ${siteConfig.responseTime.lessons}.`}
+          title={page.closingTitle}
+          body={`Book a trial, or send me a question first. I’ll write back within ${siteConfig.responseTime.lessons}.`}
         >
           <Button href="/lessons#book">Book a trial</Button>
           <Button href="/contact?service=lessons" variant="secondary">
             Ask a question
           </Button>
         </CtaPanel>
-        <p className="mt-8 text-center text-sm text-ink-500">
-          Also:{" "}
-          {others.map((o, i) => (
-            <span key={o.page.pageSlug}>
-              {i > 0 && " · "}
-              <Link
-                href={`/lessons/${o.page.pageSlug}`}
-                className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 hover:text-marigold-600"
-              >
-                {o.lesson.name}
-              </Link>
-            </span>
-          ))}
-        </p>
       </Section>
     </>
   );

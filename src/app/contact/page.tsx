@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { Suspense } from "react";
 import { ContactForm, ContactFormFromUrl } from "@/components/ContactForm";
-import { Reveal } from "@/components/ui/Reveal";
 import { siteConfig } from "@/lib/site-config";
 import { trialPhrase } from "@/content/lessons";
 
@@ -19,26 +18,24 @@ export default function ContactPage() {
     <Section pattern="dots" space="page">
       <div className="grid gap-10 lg:grid-cols-[1fr_280px]">
         <div>
-          <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
-            Let’s work together
+          <h1 className="font-display text-4xl font-semibold tracking-tight text-ink-900">
+            Get in touch
           </h1>
           <p
-            style={{ animationDelay: "80ms" }}
-            className="animate-fade-up mt-3 max-w-lg leading-relaxed text-ink-700"
+            className="mt-3 max-w-lg leading-relaxed text-ink-700"
           >
-            Tell me what you’re after and the form will ask the right follow-up questions. Lessons
-            can start with {trialPhrase}, and studio projects get a quote before any work starts.
-            Just curious about something? Ask. Questions are free.
+            Tell me what you’re after. Lessons can start with {trialPhrase}, and studio work gets a
+            quote before anything starts. If you just have a question, ask.
           </p>
 
-          <div style={{ animationDelay: "140ms" }} className="animate-fade-up mt-8 max-w-2xl">
+          <div className="mt-8 max-w-2xl">
             <Suspense fallback={<ContactForm />}>
               <ContactFormFromUrl />
             </Suspense>
           </div>
         </div>
 
-        <Reveal delay={120} className="text-sm text-ink-700">
+        <div className="text-sm text-ink-700">
           <p className="font-semibold text-ink-900">When you’ll hear back</p>
           <p className="mt-1">
             Lessons: within {siteConfig.responseTime.lessons}.
@@ -58,7 +55,7 @@ export default function ContactPage() {
           <Link href="/lessons#book" className="mt-1 block transition-colors hover:text-marigold-600">
             Go straight to scheduling
           </Link>
-        </Reveal>
+        </div>
       </div>
     </Section>
   );

@@ -55,3 +55,6 @@ ds-bundle/
 # playwright
 /test-results/
 /playwright-report/
+
+# private interview transcripts
+/docs/interview-answers.md

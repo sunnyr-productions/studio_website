@@ -14,7 +14,7 @@ import { siteConfig } from "@/lib/site-config";
 const base = siteConfig.url;
 const STUDIO_ID = `${base}/#studio`;
 const LOGO = `${base}/images/sunnyr-logo.png`;
-const AUTHOR_NAME = "Raul Patel";
+const AUTHOR_NAME = "Raul";
 
 type Faq = { q: string; a: string };
 type PostLike = { slug: string; title: string; excerpt: string; date: string };

@@ -8,9 +8,9 @@ export type NavItem = {
 
 export const siteConfig = {
   name: "The sunny*r Studio",
-  tagline: "Guitar, vocal, production & engineering lessons taught patiently, plus mixing and mastering for musicians ready to level up.",
+  tagline: "Guitar, voice, production and audio engineering lessons in Corvallis, Oregon, plus mixing and mastering.",
   motto: "Good things grow on the sunny*r side.",
-  email: "raulpatel0224@gmail.com",
+  email: "sunnyrmusic@gmail.com",
   /** Reply-time promise — form success message, contact page, auto-reply. */
   responseTime: {
     lessons: "1 to 2 business days",

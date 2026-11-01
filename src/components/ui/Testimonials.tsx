@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/Card";
-import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { testimonials } from "@/content/testimonials";
 
@@ -7,12 +6,10 @@ import { testimonials } from "@/content/testimonials";
 export function Testimonials() {
   return (
     <>
-      <Reveal>
-        <SectionHeading title="What people say" />
-      </Reveal>
+      <SectionHeading title="What people say" />
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
-        {testimonials.map((t, i) => (
-          <Reveal key={t.name} delay={i * 100}>
+        {testimonials.map((t) => (
+          <div key={t.name}>
             <Card className="relative overflow-hidden">
               <span
                 aria-hidden="true"
@@ -28,7 +25,7 @@ export function Testimonials() {
                 {t.role ? `, ${t.role}` : ""}
               </p>
             </Card>
-          </Reveal>
+          </div>
         ))}
       </div>
     </>

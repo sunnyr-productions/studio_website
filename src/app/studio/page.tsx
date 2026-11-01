@@ -8,10 +8,8 @@ import { CtaPanel } from "@/components/ui/CtaPanel";
 import { DoorHero } from "@/components/ui/DoorHero";
 import { Faq } from "@/components/ui/Faq";
 import { HowItWorks } from "@/components/ui/HowItWorks";
-import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { StatStrip } from "@/components/ui/StatStrip";
 import { Testimonials } from "@/components/ui/Testimonials";
 import { ValueProps } from "@/components/ui/ValueProps";
 import { getHeroPhotos } from "@/content/media";
@@ -42,22 +40,17 @@ export default function StudioPage() {
       <JsonLd data={faqPageSchema(mode.faqs)} />
 
       <Section pattern="dots" surface="sky" space="hero">
-        <DoorHero mode={mode} secondaryCta={secondaryCta} photo={getHeroPhotos().studio} calm />
-        <div className="mt-14">
-          <StatStrip mode={mode} />
-        </div>
+        <DoorHero mode={mode} secondaryCta={secondaryCta} photo={getHeroPhotos().studio} />
       </Section>
 
       <Section surface="dusk" id="services" className="scroll-mt-4">
-        <Reveal>
-          <SectionHeading
-            title="Mixing, mastering & recording"
-            lede="These prices are starting points. Tell me about your project and I’ll send you a fixed quote before anything starts."
-          />
-        </Reveal>
+        <SectionHeading
+          title="What I do"
+          lede="These are starting prices. I’ll send you a fixed quote before anything starts."
+        />
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {services.map((service, i) => (
-            <Reveal key={service.slug} delay={i * 70}>
+          {services.map((service) => (
+            <div key={service.slug}>
               <Card accent={service.accent} className="flex h-full flex-col">
                 <h3 className="font-display text-2xl font-semibold tracking-tight text-ink-900">
                   {service.name}
@@ -93,26 +86,24 @@ export default function StudioPage() {
                   </div>
                 </div>
               </Card>
-            </Reveal>
+            </div>
           ))}
         </div>
       </Section>
 
       {portfolioTracks.length > 0 && (
         <Section surface="tint">
-          <Reveal>
-            <SectionHeading
-              title="Recent work"
-              action={
-                <Button href="/portfolio" variant="ghost" className="hidden sm:inline-flex">
-                  Hear more
-                </Button>
-              }
-            />
-          </Reveal>
-          <Reveal delay={100} className="mt-10">
+          <SectionHeading
+            title="Recent work"
+            action={
+              <Button href="/portfolio" variant="ghost" className="hidden sm:inline-flex">
+                Hear more
+              </Button>
+            }
+          />
+          <div className="mt-10">
             <PortfolioTrackList tracks={portfolioTracks.slice(0, 3)} />
-          </Reveal>
+          </div>
           <Button href="/portfolio" variant="ghost" className="mt-8 sm:hidden">
             Hear more
           </Button>
@@ -139,8 +130,7 @@ export default function StudioPage() {
 
       <Section space="tight">
         <CtaPanel
-          calm
-          title="Got a song that’s ready?"
+          title="Got a song ready?"
           body={`Tell me how many tracks, when you need it, and what you want it to sound like. I’ll send a quote within ${siteConfig.responseTime.studio}.`}
         >
           <Button href="/contact">Get a quote</Button>

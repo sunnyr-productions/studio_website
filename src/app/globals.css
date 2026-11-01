@@ -45,33 +45,9 @@
   --surface-ground: linear-gradient(180deg, #e3e5f7 0%, #d3d6f1 100%);
 }
 
-/* ---- Warm "after-hours studio" dark theme --------------------------------
-   Not an inverted grayscale: a deep periwinkle-ink night with marigold kept
-   as the warm light source. Implemented by redefining the SAME scale tokens
-   the light theme uses, so every `bg-cream-*`, `text-ink-*`, etc. flips at
-   once (Tailwind v4 utilities reference these vars). `cream` becomes the
-   night surfaces, `ink` becomes warm off-white text; marigold/periwinkle
-   keep their hue but the shades used AS TEXT on dark are brightened. */
-:root[data-theme="dark"] {
-  --background: #1e1b30;
-  --foreground: #f6f1e6;
-
-  /* The dark theme is a late sunset: indigo-violet sky overhead, magenta
-     plum in the middle, embers at the horizon, and one band of afterglow
-     wine where the light theme has its indigo. */
-  --surface-page: linear-gradient(180deg, #1a1935 0%, #1e1b30 48%, #2b1c2c 100%);
-  --surface-sky: linear-gradient(180deg, #191936 0%, #3b2148 55%, #6a3226 100%);
-  --surface-sun: linear-gradient(180deg, #3d2924 0%, #5a301c 100%);
-  --surface-dusk: linear-gradient(180deg, #2f204c 0%, #46203e 100%);
-  --surface-tint: linear-gradient(135deg, #2a2144 0%, #35203a 100%);
-  --surface-ink: linear-gradient(150deg, #3a1e36 0%, #5c262c 100%);
-  --surface-ground: linear-gradient(180deg, #2b2140 0%, #221935 100%);
-}
-
-/* The ink band is a slice of night inside the day theme, so it takes the same
-   token set as the dark theme: everything inside it (text, cards, borders)
-   flips with no per-component styling. */
-:root[data-theme="dark"],
+/* The ink band is a slice of night inside the page: it redefines the colour
+   tokens, so everything inside it (text, cards, borders) flips with no
+   per-component styling. */
 .surface-ink {
   /* Surfaces (was cream: lightest → warmest) now (base night → warmer panel) */
   --surface-card: linear-gradient(150deg, #29254a 0%, #1f1b32 100%);
@@ -230,21 +206,9 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Multiply darkens — invisible on a dark field, so the grain switches to a
-   screen (lightening) blend at night. */
-:root[data-theme="dark"] body::before {
-  mix-blend-mode: screen;
-  opacity: 0.05;
-}
-
 ::selection {
   background: var(--color-marigold-200);
   color: var(--color-ink-900);
-}
-
-:root[data-theme="dark"] ::selection {
-  background: var(--color-marigold-500);
-  color: var(--color-ink-fixed);
 }
 
 /* Custom scrollbar — cream track, marigold thumb, on-brand instead of the
@@ -320,16 +284,6 @@ body::before {
   --marker-color: var(--color-periwinkle-200);
 }
 
-/* On the night surface a pale highlight behind light text reads backwards —
-   use a translucent saturated accent so it glows behind the text instead. */
-:root[data-theme="dark"] .marker {
-  --marker-color: color-mix(in srgb, var(--color-marigold-500) 32%, transparent);
-}
-
-:root[data-theme="dark"] .marker-periwinkle {
-  --marker-color: color-mix(in srgb, var(--color-periwinkle-500) 34%, transparent);
-}
-
 /* ---- Motion primitives -------------------------------------------------
    Everything here is gated on prefers-reduced-motion: no-preference, so a
    reduced-motion visitor just sees the final state with no transition. */
@@ -345,89 +299,7 @@ body::before {
     }
   }
 
-  @keyframes grow-y {
-    from {
-      transform: scaleY(0);
-    }
-    to {
-      transform: scaleY(1);
-    }
-  }
-
-  @keyframes sway {
-    0%,
-    100% {
-      transform: rotate(-6deg);
-    }
-    50% {
-      transform: rotate(6deg);
-    }
-  }
-
-  @keyframes float-y {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-6px);
-    }
-  }
-
-  @keyframes drift-bg {
-    0%,
-    100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
   .animate-fade-up {
     animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .animate-grow-y {
-    animation: grow-y 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-    transform-origin: bottom;
-  }
-
-  .animate-sway {
-    animation: sway 3.2s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: bottom center;
-  }
-
-  .animate-float {
-    animation: float-y 5s ease-in-out infinite;
-  }
-
-  .animate-drift-bg {
-    background-size: 200% 200%;
-    animation: drift-bg 12s ease-in-out infinite;
-  }
-
-  /* Hidden-until-revealed only once the pre-paint script has confirmed JS is
-     running ([data-js] on <html>); without it the content just shows. */
-  [data-js] [data-reveal] {
-    opacity: 0;
-    transform: translateY(22px);
-    transition:
-      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  [data-js] [data-reveal="in"] {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Reduced motion: reveal content is visible immediately, no animation. */
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal] {
-    opacity: 1;
-    transform: none;
   }
 }

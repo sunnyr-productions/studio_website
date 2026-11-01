@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-type Pattern = "waveform" | "dots" | "sprout" | "none";
+type Pattern = "waveform" | "dots" | "none";
 
 function DotsPattern() {
   return (
@@ -37,26 +37,6 @@ function WaveformPattern() {
           className="fill-marigold-600"
         />
       ))}
-    </svg>
-  );
-}
-
-function SproutPattern() {
-  return (
-    <svg
-      className="absolute inset-0 h-full w-full opacity-[0.07]"
-      aria-hidden="true"
-    >
-      <defs>
-        <pattern id="sunnyr-sprout" width="56" height="56" patternUnits="userSpaceOnUse">
-          <g transform="translate(10 34)" className="stroke-marigold-700" fill="none" strokeWidth="2" strokeLinecap="round">
-            <path d="M0,16 C0,6 0,0 0,0" />
-            <path d="M0,10 C4,10 6,6 6,2 C2,2 0,5 0,10" className="fill-marigold-600" strokeWidth="1.5" />
-            <path d="M0,6 C-4,6 -6,2 -6,-2 C-2,-2 0,1 0,6" className="fill-periwinkle-500" strokeWidth="1.5" />
-          </g>
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#sunnyr-sprout)" />
     </svg>
   );
 }
@@ -132,7 +112,6 @@ export function Section({
     >
       {pattern === "dots" && <DotsPattern />}
       {pattern === "waveform" && <WaveformPattern />}
-      {pattern === "sprout" && <SproutPattern />}
       <div className={`relative mx-auto px-6 ${widthClasses[width]} ${spaceClasses[space]}`}>
         {children}
       </div>

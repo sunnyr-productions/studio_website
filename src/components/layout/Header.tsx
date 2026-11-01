@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { siteConfig } from "@/lib/site-config";
 import { LogoLockup } from "@/components/ui/LogoLockup";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { MobileNav } from "./MobileNav";
 
 export function Header() {
@@ -32,7 +31,6 @@ export function Header() {
             </ul>
           </nav>
 
-          <ThemeToggle />
           <MobileNav />
         </div>
       </div>

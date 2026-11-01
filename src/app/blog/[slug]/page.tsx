@@ -31,7 +31,7 @@ export async function generateMetadata({
       description: post.excerpt,
       url: path,
       publishedTime: post.date,
-      authors: ["Raul Patel"],
+      authors: ["Raul"],
     },
   };
 }
@@ -74,7 +74,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         Back to Blog
       </Link>
 
-      <article className="animate-fade-up mt-6 max-w-2xl">
+      <article className="mt-6 max-w-2xl">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-500">
           {new Date(frontmatter.date).toLocaleDateString("en-US", {
             year: "numeric",
@@ -85,7 +85,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <span className="mx-2" aria-hidden="true">
             ·
           </span>
-          By Raul Patel
+          By Raul
         </p>
         <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">
           {frontmatter.title}

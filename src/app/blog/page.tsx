@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
-import { Reveal } from "@/components/ui/Reveal";
 import { getAllPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
@@ -16,22 +15,20 @@ export default function BlogPage() {
 
   return (
     <Section pattern="dots" space="page">
-      <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
-        Blog &amp; Resources
+      <h1 className="font-display text-4xl font-semibold tracking-tight text-ink-900">
+        Blog
       </h1>
       <p
-        style={{ animationDelay: "80ms" }}
-        className="animate-fade-up mt-3 max-w-xl leading-relaxed text-ink-700"
+        className="mt-3 max-w-xl leading-relaxed text-ink-700"
       >
-        Notes on recording, mixing, gear, and learning music, written for musicians rather than
-        engineers.
+        Notes on recording, mixing, gear and learning music.
       </p>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
         {posts.map((post, i) => (
-          <Reveal key={post.slug} delay={i * 70}>
+          <div key={post.slug}>
             <Link href={`/blog/${post.slug}`}>
-              <Card accent={i % 2 === 0 ? "marigold" : "periwinkle"} className="h-full">
+              <Card accent={i % 2 === 0 ? "marigold" : "periwinkle"} interactive className="h-full">
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-500">
                   {new Date(post.date).toLocaleDateString("en-US", {
                     year: "numeric",
@@ -46,7 +43,7 @@ export default function BlogPage() {
                 <p className="mt-2 text-sm leading-relaxed text-ink-700">{post.excerpt}</p>
               </Card>
             </Link>
-          </Reveal>
+          </div>
         ))}
       </div>
     </Section>

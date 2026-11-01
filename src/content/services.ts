@@ -7,21 +7,33 @@ export type Service = {
   accent: "marigold" | "periwinkle" | "coral";
 };
 
-/** Payment terms for studio projects — shown in the FAQ, terms, and auto-reply. */
+/** Terms for studio projects — shown in the FAQ, terms, and auto-reply. */
 export const studioTerms = {
   /** Share of the quote paid upfront to book the project. */
   depositPercent: 50,
+  /** Included on every mix. */
+  revisionRounds: 2,
+  /** Price of each round past the included ones. */
+  extraRevisionFee: 35,
+  /** First version of a mix, in weeks. */
+  firstVersionWeeks: 2,
+  /** Lower rate for the first few clients, in exchange for a testimonial. */
+  introMix: { price: 125, clients: 5 },
 } as const;
+
+/** What anyone coming to the house should know. */
+export const homeVisitNote =
+  "The studio is upstairs and carpeted, so we prefer no shoes up there, though we can make exceptions. I have a friendly dog who sheds a fair amount, so tell me if you have allergies. Please don't knock or ring the bell, because that's the one thing that sets him off. The door will be unlocked, and I'll probably be waiting outside the first time you come.";
 
 export const services: Service[] = [
   {
     slug: "mixing",
     name: "Mixing",
-    blurb: "You send me the raw tracks, and I send back a mix that's balanced, punchy, and sounds right on any speaker.",
+    blurb: "You send me your tracks. I find out what you want the song to do, then shape the mix to get it there.",
     details: [
-      "Up to 48 tracks per session",
-      "2 rounds of revisions included",
-      "Delivered in WAV + streaming-ready MP3",
+      "Up to 48 tracks, and we can talk if you have more",
+      `${studioTerms.revisionRounds} rounds of revisions`,
+      `First version within ${studioTerms.firstVersionWeeks} weeks`,
     ],
     startingPrice: "Starting at $175/song",
     accent: "marigold",
@@ -29,11 +41,11 @@ export const services: Service[] = [
   {
     slug: "mastering",
     name: "Mastering",
-    blurb: "The last step before release. I bring the loudness up to where it should be, even out the tone, and make sure every track sits together.",
+    blurb: "The final polish before release, meant to catch any loose ends. Done well, it's subtle.",
     details: [
       "Single track or full EP/album",
-      "Reference-track matching on request",
-      "Delivered in WAV + streaming-ready MP3",
+      "I can work from a reference track if you want",
+      "WAV and streaming-ready MP3",
     ],
     startingPrice: "Starting at $60/track",
     accent: "periwinkle",
@@ -41,11 +53,11 @@ export const services: Service[] = [
   {
     slug: "recording",
     name: "Recording Sessions",
-    blurb: "Come record vocals or instruments at the studio. We track one or two parts at a time and build the song up in layers, and I run the session so you can just play.",
+    blurb: "Record vocals or instruments in my home studio. We put down a scratch version of each part first, then refine from there.",
     details: [
-      "Hourly or day-rate blocks",
-      "Session files organized and delivered same week",
-      "In person in Corvallis, or remote (you record, I direct over video)",
+      "Multitracks and a rough bounce the same week",
+      "Solo artists and small groups here, full bands at a rented studio",
+      "Vocal coaching over video if you're recording at home",
     ],
     startingPrice: "Starting at $75/hour",
     accent: "coral",
@@ -56,8 +68,8 @@ export const services: Service[] = [
     blurb: "An hour on a call, going through your project together. Good for a stuck mix, an arrangement that isn't working, or a second opinion.",
     details: [
       "60-minute video call",
-      "Written notes + marked-up session follow-up",
-      "Great before you book a full mix",
+      "Written notes afterward",
+      "Worth doing before you pay for a full mix",
     ],
     startingPrice: "$60/session",
     accent: "marigold",
@@ -65,13 +77,13 @@ export const services: Service[] = [
   {
     slug: "mix-master-bundle",
     name: "Mixing + Mastering Bundle",
-    blurb: "Book mixing and mastering together and save a little. Same ears on your song from raw tracks to final master.",
+    blurb: "Book both together and it costs a little less. It's simpler and cheaper than hiring two people.",
     details: [
-      "Same deliverables as mixing + mastering separately",
-      "~10% savings vs. booking à la carte",
-      "Great default for a single/EP release",
+      "About 10% less than booking them separately",
+      "One person to deal with from start to finish",
+      "A separate mastering engineer is still the ideal, if your budget allows",
     ],
-    startingPrice: "Starting at $210/song (vs. $235 à la carte)",
+    startingPrice: "Starting at $210/song",
     accent: "coral",
   },
 ];

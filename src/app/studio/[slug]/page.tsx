@@ -5,12 +5,9 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CtaPanel } from "@/components/ui/CtaPanel";
-import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { servicePages } from "@/content/service-pages";
 import { services } from "@/content/services";
-import { siteConfig } from "@/lib/site-config";
 import { breadcrumbSchema, faqPageSchema, serviceSchema } from "@/lib/structured-data";
 
 type Params = { slug: string };
@@ -52,7 +49,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
   if (!service || !page) notFound();
 
   const path = `/studio/${slug}`;
-  const others = services.filter((s) => s.slug !== slug && servicePages[s.slug]);
+  const quoteHref = `/contact?service=${slug}`;
 
   return (
     <>
@@ -69,123 +66,68 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
             { name: "Studio", path: "/studio" },
             { name: service.name, path },
           ]),
-          faqPageSchema(page.faqs),
+          ...(page.faqs.length > 0 ? [faqPageSchema(page.faqs)] : []),
         ]}
       />
 
-      <Section pattern="dots" surface="sky" space="page">
-        <nav aria-label="Breadcrumb" className="animate-fade-up text-sm text-ink-500">
-          <Link href="/studio" className="font-semibold text-periwinkle-700 inline-block py-2 hover:underline">
+      <Section surface="sky" space="page">
+        <nav aria-label="Breadcrumb" className="text-sm text-ink-500">
+          <Link href="/studio" className="inline-block py-2 font-semibold text-periwinkle-700 hover:underline">
             ← Studio
           </Link>
         </nav>
-        <h1
-          style={{ animationDelay: "80ms" }}
-          className="animate-fade-up mt-4 max-w-3xl font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl"
-        >
+        <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
           {page.h1}
         </h1>
-        <p
-          style={{ animationDelay: "140ms" }}
-          className="animate-fade-up mt-5 max-w-2xl text-lg leading-relaxed text-ink-700"
-        >
-          {page.intro}
-        </p>
-        <p
-          style={{ animationDelay: "200ms" }}
-          className="animate-fade-up mt-4 font-display text-xl font-semibold text-marigold-800"
-        >
+        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-700">{page.intro}</p>
+        <p className="mt-4 font-display text-xl font-semibold text-marigold-800">
           {service.startingPrice}
         </p>
-        <div
-          style={{ animationDelay: "260ms" }}
-          className="animate-fade-up mt-8 flex flex-wrap gap-4"
-        >
-          <Button href={`/contact?service=${page.formValue}`}>Get a quote</Button>
-          <Button href="/studio" variant="secondary">
-            All services
-          </Button>
-        </div>
       </Section>
 
       <Section>
         <div className="grid gap-6 sm:grid-cols-2">
-          <Reveal>
-            <Card accent="periwinkle" className="h-full">
-              <h2 className="font-display text-xl font-semibold text-ink-900">What you send</h2>
-              <Bullets items={page.youSend} />
-            </Card>
-          </Reveal>
-          <Reveal delay={80}>
-            <Card accent="marigold" className="h-full">
-              <h2 className="font-display text-xl font-semibold text-ink-900">What you get</h2>
-              <Bullets items={page.youGet} />
-            </Card>
-          </Reveal>
+          <Card accent="periwinkle" className="h-full">
+            <h2 className="font-display text-xl font-semibold text-ink-900">{page.needTitle}</h2>
+            <Bullets items={page.need} />
+          </Card>
+          <Card accent="marigold" className="h-full">
+            <h2 className="font-display text-xl font-semibold text-ink-900">{page.getTitle}</h2>
+            <Bullets items={page.get} />
+          </Card>
         </div>
-      </Section>
+        <p className="mt-10 max-w-3xl text-lg leading-relaxed text-ink-700">{page.howItRuns}</p>
 
-      <Section surface="ink">
-        <Reveal>
-          <SectionHeading title="How it works" lede="Quotes are free, and asking for one doesn’t commit you to anything." />
-        </Reveal>
-        <ol className="mt-10 grid gap-8 sm:grid-cols-3">
-          {page.process.map((step, i) => (
-            <Reveal key={step.title} delay={i * 90}>
-              <li>
-                <span
-                  aria-hidden="true"
-                  style={{ borderRadius: "var(--radius-sketch-sm)" }}
-                  className="flex h-11 w-11 items-center justify-center border-[1.5px] border-[color:var(--color-ink-fixed)] bg-periwinkle-500 font-display text-lg font-semibold text-[color:var(--color-ink-fixed)] shadow-[2px_3px_0_0_var(--color-ink-fixed)]"
-                >
-                  {i + 1}
-                </span>
-                <h3 className="mt-4 font-display text-lg font-semibold text-ink-900">{step.title}</h3>
-                <p className="mt-2 leading-relaxed text-ink-700">{step.body}</p>
-              </li>
-            </Reveal>
-          ))}
-        </ol>
-      </Section>
+        {page.sections.length > 0 && (
+          <div className="mt-12 max-w-3xl">
+            {page.sections.map((section) => (
+              <div key={section.title} className="mt-8 first:mt-0">
+                <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-900">{section.title}</h2>
+                <p className="mt-2 text-lg leading-relaxed text-ink-700">{section.body}</p>
+              </div>
+            ))}
+          </div>
+        )}
 
-      <Section surface="tint">
-        <Reveal>
-          <SectionHeading title="Questions people ask" />
-        </Reveal>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {page.faqs.map((faq, i) => (
-            <Reveal key={faq.q} delay={i * 60}>
-              <Card className="h-full">
-                <h3 className="font-display text-lg font-semibold text-ink-900">{faq.q}</h3>
+        {page.faqs.length > 0 && (
+          <div className="mt-12 max-w-3xl">
+            {page.faqs.map((faq) => (
+              <div key={faq.q} className="mt-6">
+                <h2 className="font-display text-xl font-semibold text-ink-900">{faq.q}</h2>
                 <p className="mt-2 leading-relaxed text-ink-700">{faq.a}</p>
-              </Card>
-            </Reveal>
-          ))}
-        </div>
+              </div>
+            ))}
+          </div>
+        )}
       </Section>
 
       <Section space="tight">
-        <CtaPanel
-          calm
-          title={`Ready for ${service.name.toLowerCase()}?`}
-          body={`Tell me about your project. I’ll send a fixed quote within ${siteConfig.responseTime.studio}.`}
-        >
-          <Button href={`/contact?service=${page.formValue}`}>Get a quote</Button>
+        <CtaPanel title={page.closingTitle} body={page.closingBody}>
+          <Button href={quoteHref}>{page.ctaLabel}</Button>
+          <Button href="/studio" variant="secondary">
+            See everything I do
+          </Button>
         </CtaPanel>
-        <p className="mt-8 text-center text-sm text-ink-500">
-          Also:{" "}
-          {others.map((o, i) => (
-            <span key={o.slug}>
-              {i > 0 && " · "}
-              <Link
-                href={`/studio/${o.slug}`}
-                className="font-semibold text-periwinkle-700 underline decoration-periwinkle-300 underline-offset-2 hover:text-periwinkle-600"
-              >
-                {o.name}
-              </Link>
-            </span>
-          ))}
-        </p>
       </Section>
     </>
   );

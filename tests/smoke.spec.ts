@@ -33,14 +33,6 @@ test("/services redirects to /studio", async ({ page }) => {
   await expect(page).toHaveURL(/\/studio$/);
 });
 
-test("theme toggle switches the theme", async ({ page }) => {
-  await page.goto("/");
-  const html = page.locator("html");
-  const before = await html.getAttribute("data-theme");
-  await page.getByRole("button", { name: /switch to (light|dark) mode/i }).click();
-  await expect(html).not.toHaveAttribute("data-theme", before ?? "");
-});
-
 test("contact form submits with the API mocked", async ({ page }) => {
   let payload: Record<string, unknown> | null = null;
   await page.route("**/api/contact", async (route) => {

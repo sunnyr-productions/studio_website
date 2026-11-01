@@ -20,7 +20,7 @@ export default function PrivacyPage() {
   return (
     <Section pattern="dots" space="page" width="narrow">
       <article className="max-w-2xl">
-        <h1 className="animate-fade-up font-display text-4xl font-semibold tracking-tight text-ink-900">
+        <h1 className="font-display text-4xl font-semibold tracking-tight text-ink-900">
           Privacy Policy
         </h1>
         <p className="mt-2 text-sm text-ink-500">Last updated {LAST_UPDATED}</p>

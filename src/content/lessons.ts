@@ -10,33 +10,33 @@ export type LessonType = {
 export const lessonTypes: LessonType[] = [
   {
     slug: "vocal",
-    name: "Vocal Lessons",
+    name: "Voice lessons",
     blurb:
-      "Technique, range, and the nerve to perform. I spent years coaching a cappella singers on both the singing and the stage presence.",
+      "For anyone who wants to sing, including people who are embarrassed to. I coached a cappella singers on both the singing and the stage presence.",
     format: "In-person or online",
     accent: "marigold",
   },
   {
     slug: "guitar",
-    name: "Guitar Lessons",
+    name: "Guitar lessons",
     blurb:
-      "From your first chords to writing your own songs, at whatever pace keeps it fun. I've been playing for 16 years.",
+      "The songs you actually listen to, at your level. I've been playing for 16 years.",
     format: "Best in person, since I need to see your hands",
     accent: "periwinkle",
   },
   {
     slug: "production",
-    name: "Music Production / DAW Lessons",
+    name: "Music production",
     blurb:
-      "Songwriting, beat-making, and arranging in Ableton, Logic, or Pro Tools. If another instrument comes up along the way, we'll pick it up.",
+      "How to build a track: grooves, sounds, synths, and what each instrument does in a song. I teach in Logic, and it all carries over to other DAWs.",
     format: "In-person or online",
     accent: "coral",
   },
   {
     slug: "audio-engineering",
-    name: "Audio Engineering / Recording Lessons",
+    name: "Audio engineering and recording",
     blurb:
-      "Mixing, mic technique, and getting a home studio to sound good. It's what I do at work all day, so ask me anything.",
+      "For people already making music. We go through your song or mix together, and I'll show you what I'd do and why.",
     format: "In-person or online",
     accent: "periwinkle",
   },
@@ -48,13 +48,15 @@ export const lessonTypes: LessonType[] = [
  * here and it updates everywhere.
  */
 export const lessonPricing = {
-  hourlyRate: 45,
+  hourlyRate: 50,
   trial: { price: 20, minutes: 30 },
-  pack: { lessons: 4, price: 160 },
+  pack: { lessons: 4, price: 180 },
   /** Free cancellation/reschedule window, in hours before the lesson. */
   cancellationNoticeHours: 24,
+  /** Share of the lesson charged when cancelling inside that window. No-shows pay in full. */
+  lateCancelPercent: 50,
   /** How lessons are paid — in person, at the lesson. */
-  paymentMethods: "cash or Venmo",
+  paymentMethods: "cash, Venmo or Zelle",
 } as const;
 
 const { hourlyRate, trial, pack } = lessonPricing;
@@ -75,7 +77,7 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Trial Lesson",
     price: `$${trial.price} / ${trial.minutes} min`,
-    forWho: "Half an hour, face to face, to see if we get along. The fee just holds the time. If you only have questions, message me. That's free.",
+    forWho: "Half an hour to see if we get along. The fee just holds the time.",
     accent: "marigold",
   },
   {

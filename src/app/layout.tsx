@@ -50,21 +50,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-theme="light"
-      suppressHydrationWarning
       className={`${bodyFont.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <head>
-        {/* Runs synchronously during HTML parse, before first paint, so the
-            saved theme (or the OS preference when none is saved) is applied with
-            no flash. try/catch guards
-            private-mode localStorage. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var d=document.documentElement;d.setAttribute("data-js","");try{var t=localStorage.getItem("theme");if(!t){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}d.setAttribute("data-theme",t);}catch(e){}})()`,
-          }}
-        />
-      </head>
       <body className="flex min-h-full flex-col font-sans text-ink-900">
         <a
           href="#main"

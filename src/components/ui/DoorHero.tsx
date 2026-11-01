@@ -14,47 +14,40 @@ export function DoorHero({
   mode,
   secondaryCta,
   photo,
-  calm = false,
   children,
 }: {
   mode: ModeContent;
   secondaryCta: { label: string; href: string };
   photo?: PhotoData | null;
-  /** The studio side: the accent word is coloured, not circled, and the entrance is a single fade. */
-  calm?: boolean;
   children?: ReactNode;
 }) {
   const isLessons = mode.id === "lessons";
   const accentText = isLessons ? "text-marigold-800" : "text-periwinkle-700";
-  const scribbleColor = isLessons ? "var(--color-marigold-500)" : "var(--color-periwinkle-500)";
 
   return (
     <div className={photo ? "grid items-center gap-12 lg:grid-cols-[1.2fr_1fr]" : ""}>
       <div className="max-w-2xl">
-        <p className={`animate-fade-up font-semibold tracking-[0.08em] ${accentText}`}>
+        <p className={`font-semibold tracking-[0.08em] ${accentText}`}>
           {mode.eyebrow}
         </p>
         <h1
-          style={{ animationDelay: calm ? undefined : "80ms" }}
-          className="animate-fade-up mt-3 text-[clamp(2.75rem,3vw+2rem,4.5rem)] font-display font-semibold leading-[1.05] tracking-tight text-ink-900"
+          className="mt-3 text-[clamp(2.75rem,3vw+2rem,4.5rem)] font-display font-semibold leading-[1.05] tracking-tight text-ink-900"
         >
           {mode.headlineLead}{" "}
-          {calm ? (
-            <span className={accentText}>{mode.headlineAccent}</span>
+          {isLessons ? (
+            <Scribble color="var(--color-marigold-500)">{mode.headlineAccent}</Scribble>
           ) : (
-            <Scribble color={scribbleColor}>{mode.headlineAccent}</Scribble>
+            <span className={accentText}>{mode.headlineAccent}</span>
           )}
           .
         </h1>
         <p
-          style={{ animationDelay: calm ? undefined : "160ms" }}
-          className="animate-fade-up mt-5 text-lg leading-relaxed text-ink-700"
+          className="mt-5 text-lg leading-relaxed text-ink-700"
         >
           {mode.body}
         </p>
         <div
-          style={{ animationDelay: calm ? undefined : "280ms" }}
-          className="animate-fade-up mt-8 flex flex-wrap gap-4"
+          className="mt-8 flex flex-wrap gap-4"
         >
           <Button href={mode.primaryCta.href}>{mode.primaryCta.label}</Button>
           <Button href={secondaryCta.href} variant="secondary">
@@ -64,7 +57,7 @@ export function DoorHero({
         {children}
       </div>
       {photo && (
-        <div style={{ animationDelay: "200ms" }} className="animate-fade-up">
+        <div >
           <Photo
             photo={photo}
             accent={isLessons ? "marigold" : "periwinkle"}

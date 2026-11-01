@@ -44,7 +44,7 @@ settled; several Phase 0 and 1 items are better with D3 to D5 answered.
 | D2 | Site structure | Keep the CSS door toggle · Split into real `/lessons` and `/studio` landing pages | **DECIDED 2026-10-19: split.** `/` is a short fork page; `/lessons` and `/studio` are the full home pages; the header toggle switches between those two routes (it navigates, it no longer flips a hidden mode). | All of Phase 2 |
 | D3 | Who are lessons for? | Ages (kids? teens? adults only?), Oregon State students as a target? | **DECIDED 2026-10-19:** any age, case by case (younger kids: message first). Oregon State students welcome but not targeted yet; the student-section idea is parked for later (4.5). Studio is in Southtown, Corvallis (exact address shared on booking), free street parking, instruments provided for use in lessons. | 0.8, 2.3, 4.5 |
 | D4 | Lesson response promise | Keep 2 business days · 24 hours for lessons | **DECIDED 2026-10-19:** lessons 1 to 2 business days (full-time day job), studio quotes 2 business days. Revisit if you want to promise 24 hours later. | 0.7, 3.5 |
-| D5 | Business email and domain | Gmail · address on your own domain | **DECIDED 2026-10-19:** no domain owned yet; register `sunnyrstudio.com` (no registration found 2026-10-19; confirm at the registrar) and use a free forwarding address (e.g. `hello@sunnyrstudio.com` forwarding to Gmail). See the steps under 1.6. | 1.6 |
+| D5 | Business email and domain | Gmail · address on your own domain | **DECIDED 2026-11-01:** bought `sunnyrmusic.com` on Porkbun. Public email stays `sunnyrmusic@gmail.com`; the site sends form email from an address on the domain. See the steps under 1.6. | 1.6 |
 | D6 | The store | Keep dormant · Remove the code · Move to Gumroad/Lemon Squeezy | **DECIDED 2026-10-19: keep dormant** (hidden from nav and search). Revisit when there are about three products you'd really sell. | 6.5 |
 | D7 | Analytics | Vercel Pro (custom events) · Plausible · GA4 | **DECIDED 2026-10-19: nothing for now.** Existing Vercel page-view and speed tracking continue; the custom event calls stay in the code. Revisit (Plausible was the recommendation) once there is traffic worth measuring. | 3.4 |
 
@@ -169,15 +169,14 @@ small and mostly already scaffolded._
 
 - [ ] **1.6 Domain and business email** · `Raul` (+ `Code` `S`) · _D5 decided_
   - Steps, in this order (about an hour, plus waiting for DNS):
-    1. Register `sunnyrstudio.com` at Cloudflare Registrar (sells at cost; its free Email Routing is what we want). Turn on auto-renew.
-    2. In Vercel: Project > Settings > Domains > add `sunnyrstudio.com` and `www.sunnyrstudio.com`; follow the DNS records it shows (Cloudflare: set the records to "DNS only", not proxied). Make one the redirect to the other.
-    3. In Vercel env vars, set `NEXT_PUBLIC_SITE_URL=https://sunnyrstudio.com` and redeploy (this fixes canonicals, sitemap, social cards).
-    4. Cloudflare > Email Routing: create `hello@sunnyrstudio.com` forwarding to your Gmail.
-    5. Resend > Domains: add `sunnyrstudio.com`, paste the DNS records it gives you into Cloudflare, wait until it says Verified.
-    6. In Vercel env vars, set `RESEND_FROM_EMAIL=hello@sunnyrstudio.com` and redeploy. The visitor auto-reply switches on automatically.
-    7. Gmail > Settings > Accounts > "Send mail as" `hello@sunnyrstudio.com`, so your replies come from the new address. Cloudflare only forwards incoming mail, so Gmail will ask for SMTP details for sending: use Resend's (`smtp.resend.com`, port 465, username `resend`, password a Resend API key).
-    8. Search Console: verify the domain and submit `https://sunnyrstudio.com/sitemap.xml`.
-  - Code (after step 3): update `siteConfig.email` in `src/lib/site-config.ts` to `hello@sunnyrstudio.com`, and the plain-text brand spelling used in metadata (see 4.3).
+    1. DONE 2026-11-01: registered `sunnyrmusic.com` at Porkbun. Turn on auto-renew.
+    2. In Vercel: Project > Settings > Domains > add `sunnyrmusic.com` and `www.sunnyrmusic.com`; delete Porkbun's default parking records, then add the DNS records Vercel shows. Make `www` redirect to the bare domain.
+    3. In Vercel env vars, set `NEXT_PUBLIC_SITE_URL=https://sunnyrmusic.com` and redeploy (this fixes canonicals, sitemap, social cards).
+    4. Resend > Domains: add `sunnyrmusic.com`, paste the DNS records it gives you into Porkbun, wait until it says Verified.
+    5. In Vercel env vars, set `RESEND_FROM_EMAIL=hello@sunnyrmusic.com` and `CONTACT_FORM_TO_EMAIL=sunnyrmusic@gmail.com`, then redeploy. The visitor auto-reply switches on automatically. Mirror both in `.env.local`.
+    6. Optional: Porkbun email forwarding from `hello@sunnyrmusic.com` to `sunnyrmusic@gmail.com`, in case anyone writes to the sending address.
+    7. Search Console: verify the domain and submit `https://sunnyrmusic.com/sitemap.xml`.
+  - Code: none needed. These values all come from env vars, and `siteConfig.email` is already `sunnyrmusic@gmail.com`.
   - Until this is done the site is only on its `vercel.app` address, so canonical URLs and the sitemap point at the wrong place.
 
 **Phase 1 is done when:** the site has at least one real photo above the fold,

@@ -10,9 +10,7 @@ import { Faq } from "@/components/ui/Faq";
 import { HowItWorks } from "@/components/ui/HowItWorks";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PhotoStrip } from "@/components/ui/Photo";
-import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { StatStrip } from "@/components/ui/StatStrip";
 import { Testimonials } from "@/components/ui/Testimonials";
 import { ValueProps } from "@/components/ui/ValueProps";
 import { getHeroPhotos, getStudioPhotos } from "@/content/media";
@@ -45,11 +43,9 @@ export default function LessonsPage() {
           photo={getHeroPhotos().lessons}
         >
           <p
-            style={{ animationDelay: "340ms" }}
-            className="animate-fade-up mt-6 leading-relaxed text-ink-700"
+            className="mt-6 leading-relaxed text-ink-700"
           >
-            I’m neurodivergent myself, and I work especially well with students who’ve had
-            trouble learning in more traditional settings.
+            If traditional lessons haven’t worked for you, I’d especially like to hear from you.
             {neurodivergentPage.published && (
               <>
                 {" "}
@@ -64,25 +60,20 @@ export default function LessonsPage() {
             )}
           </p>
         </DoorHero>
-        <div className="mt-14">
-          <StatStrip mode={mode} />
-        </div>
       </Section>
 
       <Section>
         <ValueProps mode={mode} />
       </Section>
 
-      <Section pattern="sprout" id="lesson-types">
-        <Reveal>
-          <SectionHeading
-            title="What we can work on"
-            lede="Pick whichever is closest to what you want to do. They’re all the same price."
-          />
-        </Reveal>
+      <Section id="lesson-types">
+        <SectionHeading
+          title="What we can work on"
+          lede="All four cost the same."
+        />
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {lessonTypes.map((lesson, i) => (
-            <Reveal key={lesson.slug} delay={i * 80}>
+          {lessonTypes.map((lesson) => (
+            <div key={lesson.slug}>
               <Card accent={lesson.accent} className="h-full">
                 <h3 className="font-display text-xl font-semibold text-ink-900">{lesson.name}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-700">{lesson.blurb}</p>
@@ -95,38 +86,37 @@ export default function LessonsPage() {
                   <span className="sr-only"> about {lesson.name.toLowerCase()}</span>
                 </Link>
               </Card>
-            </Reveal>
+            </div>
           ))}
         </div>
       </Section>
 
       <Section surface="sun" id="pricing">
-        <Reveal>
-          <SectionHeading
-            title="Pricing"
-            lede="One flat rate, no matter which lesson type. Simple on purpose."
-          />
-        </Reveal>
+        <SectionHeading
+          title="Pricing"
+          lede="One rate, whatever we’re working on."
+        />
         <div className="mt-10 grid gap-6 sm:grid-cols-3">
-          {pricingTiers.map((tier, i) => (
-            <Reveal key={tier.name} delay={i * 70}>
+          {pricingTiers.map((tier) => (
+            <div key={tier.name}>
               <Card accent={tier.accent} className="h-full">
                 <h3 className="font-display text-lg font-semibold text-ink-900">{tier.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-marigold-800">{tier.price}</p>
                 <p className="mt-2 text-sm leading-relaxed text-ink-700">{tier.forWho}</p>
               </Card>
-            </Reveal>
+            </div>
           ))}
         </div>
         <PhotoStrip photos={getStudioPhotos()} className="mt-10" />
         <p className="mt-10 max-w-3xl leading-relaxed text-ink-700">
           In-person lessons happen at my sound-treated home studio in Corvallis, OR. Online lessons
-          work great for voice, production, and audio engineering. Guitar tends to go better
-          in-person, since hands-on technique is harder to see clearly over video.
+          work well for voice, production and audio engineering. Guitar goes better in person,
+          because I can see your hands.
         </p>
         <p className="mt-3 max-w-3xl leading-relaxed text-ink-700">
           Lessons are paid in person, by {lessonPricing.paymentMethods}. Need to move one? Free with{" "}
-          {lessonPricing.cancellationNoticeHours}+ hours’ notice. See the{" "}
+          {lessonPricing.cancellationNoticeHours}+ hours’ notice, and a{" "}
+          {lessonPricing.lateCancelPercent}% fee with less. See the{" "}
           <Link
             href="/terms#lessons"
             className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
@@ -138,33 +128,31 @@ export default function LessonsPage() {
       </Section>
 
       <Section id="book" className="scroll-mt-4">
-        <Reveal>
-          <SectionHeading title="Pick a time that works for you" />
-          {siteConfig.calLink ? (
-            <>
-              <p className="mt-2 max-w-xl leading-relaxed text-ink-700">
-                Grab any open slot below. You’ll get a confirmation email with the details.
-              </p>
-              <div
-                style={{ borderRadius: "var(--radius-sketch-sm)" }}
-                className="mt-8 overflow-hidden border-[1.5px] border-ink-900/20 bg-cream-50 shadow-[3px_4px_0_0_var(--sketch-shadow)]"
-              >
-                <LazyCalEmbed calLink={siteConfig.calLink} />
-              </div>
-            </>
-          ) : (
-            <Card accent="marigold" className="mt-8 max-w-2xl">
-              <p className="leading-relaxed text-ink-700">
-                Online booking is coming soon. For now, send a quick note with the lesson
-                you’re interested in and a few times that work for you. I’ll reply with an
-                open slot for your trial lesson.
-              </p>
-              <Button href="/contact?service=lessons" className="mt-5">
-                Request a lesson
-              </Button>
-            </Card>
-          )}
-        </Reveal>
+        <SectionHeading title="Book a trial lesson" />
+        {siteConfig.calLink ? (
+          <>
+            <p className="mt-2 max-w-xl leading-relaxed text-ink-700">
+              Pick any open time. You’ll get a confirmation email with the details.
+            </p>
+            <div
+              style={{ borderRadius: "var(--radius-sketch-sm)" }}
+              className="mt-8 overflow-hidden border-[1.5px] border-ink-900/20 bg-cream-50 shadow-[3px_4px_0_0_var(--sketch-shadow)]"
+            >
+              <LazyCalEmbed calLink={siteConfig.calLink} />
+            </div>
+          </>
+        ) : (
+          <Card accent="marigold" className="mt-8 max-w-2xl">
+            <p className="leading-relaxed text-ink-700">
+              Online booking is coming soon. For now, send a quick note with the lesson
+              you’re interested in and a few times that work for you. I’ll reply with an
+              open slot for your trial lesson.
+            </p>
+            <Button href="/contact?service=lessons" className="mt-5">
+              Request a lesson
+            </Button>
+          </Card>
+        )}
       </Section>
 
       <Section surface="ink">
@@ -183,8 +171,8 @@ export default function LessonsPage() {
 
       <Section space="tight">
         <CtaPanel
-          title="Want to give it a try?"
-          body={`Book a trial lesson, or send me a question first. Either way, I’ll write back myself, usually within ${siteConfig.responseTime.lessons}.`}
+          title="Still deciding?"
+          body={`Send me a question first if you’d like. I’ll write back myself, usually within ${siteConfig.responseTime.lessons}.`}
         >
           <Button href="#book">Book a lesson</Button>
           <Button href="/contact?service=lessons" variant="secondary">
@@ -192,7 +180,7 @@ export default function LessonsPage() {
           </Button>
         </CtaPanel>
         <p className="mt-8 text-center text-sm text-ink-500">
-          Teaching is one side of the practice. The other is{" "}
+          I also do{" "}
           <Link
             href="/studio"
             className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
