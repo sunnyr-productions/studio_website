@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PortfolioTrackList } from "@/components/audio/PortfolioTrackList";
 import { Button } from "@/components/ui/Button";
+import { PhotoBanner } from "@/components/ui/Photo";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { media } from "@/content/media";
 import { portfolioTracks } from "@/content/portfolio/tracks";
 
 export const metadata: Metadata = {
@@ -42,6 +44,8 @@ export default function MusicPage() {
           </div>
         </Section>
       )}
+
+      <PhotoBanner photo={media.stageSoloists} />
 
       <Section width="narrow" space="tight">
         <SectionHeading title="On the Rocks" />

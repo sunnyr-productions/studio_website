@@ -153,10 +153,17 @@ small and mostly already scaffolded._
 
 - [ ] **1.4 Photos** · `Raul` (+ `Code` `S`)
   - Shot list, phone photos in good window light are fine:
-    - `hero-lessons`: you mid-lesson or playing, portrait or square.
-    - `hero-studio`: you at the desk or monitors, portrait or square.
+    - `hero-lessons`: you mid-lesson or playing, portrait or square. Shows on
+      the homepage "I want to learn" card.
+    - `hero-studio`: you at the desk or monitors, portrait or square. Shows on
+      the homepage "I have a song" card and the `/studio` hero.
     - `studio-1..3`: the room, the desk and monitors, the instruments,
-      landscape.
+      landscape. Shows on About and Lessons.
+  - Other photos are in the `media` library in `src/content/media.ts`, placed as
+    banners, a stage section, a scrapbook and page photos. Judge new media on its
+    own merits rather than fitting it to a slot.
+  - Photos of students need written permission, from a parent for minors. Check
+    that no client names or session titles are visible on screens.
   - Drop them in `public/images/` with those names; the slots in
     `src/content/media.ts` pick them up. Update the alt text in that file to
     describe what's actually in each photo.

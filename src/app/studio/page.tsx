@@ -3,9 +3,11 @@ import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/Button";
 import { Faq } from "@/components/ui/Faq";
+import { HeroWithPhoto, StageSection } from "@/components/ui/Photo";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Testimonials } from "@/components/ui/Testimonials";
+import { getHeroPhotos, media } from "@/content/media";
 import { servicePages } from "@/content/service-pages";
 import { services, studioTerms } from "@/content/services";
 import { testimonials } from "@/content/testimonials";
@@ -53,7 +55,7 @@ export default function StudioPage() {
       <JsonLd data={faqPageSchema(faqs)} />
 
       <Section space="hero">
-        <div className="max-w-3xl">
+        <HeroWithPhoto photo={getHeroPhotos().studio} accent="periwinkle">
           <p className="font-semibold tracking-[0.04em] text-periwinkle-700">
             Mixing, mastering and recording in Corvallis, Oregon, and remotely
           </p>
@@ -72,7 +74,7 @@ export default function StudioPage() {
               Hear my work
             </Button>
           </div>
-        </div>
+        </HeroWithPhoto>
       </Section>
 
       <Section id="services" space="tight" className="scroll-mt-4">
@@ -129,7 +131,7 @@ export default function StudioPage() {
         </div>
       </Section>
 
-      <Section width="narrow" space="tight" id="a-cappella">
+      <StageSection id="a-cappella" photo={media.stageGroup}>
         <SectionHeading title="A cappella groups" />
         <p className="mt-4 text-lg leading-relaxed text-ink-700">
           I spent college as music director of On the Rocks at the University of Oregon. I taught the
@@ -138,7 +140,7 @@ export default function StudioPage() {
           the garage where we rehearsed. If your group needs an arrangement, part tapes, or someone
           to run vocals in a session, I’d love to hear from you. That includes groups at OSU.
         </p>
-      </Section>
+      </StageSection>
 
       {testimonials.length > 0 && (
         <Section>

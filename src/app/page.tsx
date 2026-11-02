@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { DoorLink } from "@/components/home/DoorLink";
 import { Button } from "@/components/ui/Button";
+import { Photo } from "@/components/ui/Photo";
 import { Scribble } from "@/components/ui/Scribble";
 import { Section } from "@/components/ui/Section";
 import { Testimonials } from "@/components/ui/Testimonials";
 import { lessonPricing } from "@/content/lessons";
+import { getHeroPhotos } from "@/content/media";
 import { studioTerms } from "@/content/services";
 import { testimonials } from "@/content/testimonials";
 import raulHeadshot from "../../public/images/raul-headshot.jpg";
@@ -32,6 +34,8 @@ const doors = [
 ] as const;
 
 export default function Home() {
+  const heroPhotos = getHeroPhotos();
+
   return (
     <>
       <Section space="hero">
@@ -63,33 +67,47 @@ export default function Home() {
         </div>
 
         <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-2">
-          {doors.map((door) => (
-            <div
-              key={door.id}
-              style={{ borderRadius: "var(--radius-sketch)" }}
-              className={`surface-card relative flex h-full flex-col gap-3 border-[1.5px] border-ink-900/80 p-6 transition-transform duration-300 motion-safe:hover:-translate-y-1 sm:p-8 ${
-                door.id === "lessons"
-                  ? "shadow-[6px_8px_0_0_var(--color-marigold-400)]"
-                  : "shadow-[6px_8px_0_0_var(--color-periwinkle-400)]"
-              }`}
-            >
-              <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-                {door.title}
-              </h2>
-              <p className="leading-relaxed text-ink-700">{door.body}</p>
-              <div className="mt-auto pt-2">
-                {/* The overlay (after:inset-0) makes the whole card the click target. */}
-                <DoorLink
-                  door={door.id}
-                  href={door.href}
-                  className="inline-flex items-center gap-2 font-semibold text-marigold-800 underline decoration-marigold-300 decoration-2 underline-offset-4 after:absolute after:inset-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-marigold-600"
-                >
-                  {door.cta}
-                  <span aria-hidden="true">→</span>
-                </DoorLink>
+          {doors.map((door) => {
+            const photo = heroPhotos[door.id];
+            return (
+              <div
+                key={door.id}
+                style={{ borderRadius: "var(--radius-sketch)" }}
+                className={`surface-card relative flex h-full flex-col gap-5 border-[1.5px] border-ink-900/80 p-6 transition-transform duration-300 motion-safe:hover:-translate-y-1 sm:flex-row sm:gap-6 sm:p-8 ${
+                  door.id === "lessons"
+                    ? "shadow-[6px_8px_0_0_var(--color-marigold-400)]"
+                    : "shadow-[6px_8px_0_0_var(--color-periwinkle-400)]"
+                }`}
+              >
+                {photo && (
+                  <Photo
+                    photo={photo}
+                    accent="none"
+                    aspect="aspect-[4/3] sm:aspect-[4/5]"
+                    sizes="(min-width: 1024px) 200px, (min-width: 640px) 260px, 100vw"
+                    className="shrink-0 sm:w-2/5 sm:self-start"
+                  />
+                )}
+                <div className="flex min-w-0 flex-1 flex-col gap-3">
+                  <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
+                    {door.title}
+                  </h2>
+                  <p className="leading-relaxed text-ink-700">{door.body}</p>
+                  <div className="mt-auto pt-2">
+                    {/* The overlay (after:inset-0) makes the whole card the click target. */}
+                    <DoorLink
+                      door={door.id}
+                      href={door.href}
+                      className="inline-flex items-center gap-2 font-semibold text-marigold-800 underline decoration-marigold-300 decoration-2 underline-offset-4 after:absolute after:inset-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-marigold-600"
+                    >
+                      {door.cta}
+                      <span aria-hidden="true">→</span>
+                    </DoorLink>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Section>
 

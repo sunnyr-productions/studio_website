@@ -91,6 +91,16 @@
   --logo-ink: #f5a623;
 }
 
+/* The orange of the On the Rocks stage backdrop, sampled from the top of the photo
+   in StageSection. Body text on it is about 5.3:1. */
+.surface-stage {
+  --color-ink-500: #fff1e3;
+  --color-ink-700: #fff5ea;
+  --color-ink-900: #fffaf3;
+  background-color: #c82402;
+  color: var(--color-ink-900);
+}
+
 @theme {
   /* Marigold — primary accent (buttons, CTAs, large text, icons) */
   --color-marigold-50: #fff8ec;

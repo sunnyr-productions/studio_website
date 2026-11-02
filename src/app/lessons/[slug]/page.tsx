@@ -3,12 +3,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/Button";
+import { Photo } from "@/components/ui/Photo";
 import { Section } from "@/components/ui/Section";
 import { lessonPages } from "@/content/lesson-pages";
 import { lessonPricing, lessonTypes, trialPhrase } from "@/content/lessons";
+import { media, type Photo as PhotoData } from "@/content/media";
 import { breadcrumbSchema, serviceSchema } from "@/lib/structured-data";
 
 type Params = { slug: string };
+
+/** Keyed by page slug. Wide photos run under the intro, tall ones sit beside it. */
+const pagePhotos: Record<string, { photo: PhotoData; shape: "wide" | "tall" }> = {
+  guitar: { photo: media.stratCase, shape: "wide" },
+  voice: { photo: media.voiceMic, shape: "tall" },
+};
 
 const entries = lessonTypes
   .filter((l) => lessonPages[l.slug])
@@ -36,6 +44,7 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
   const { lesson, page } = entry;
 
   const path = `/lessons/${slug}`;
+  const pagePhoto = pagePhotos[slug];
 
   return (
     <>
@@ -61,10 +70,23 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
             ← Lessons
           </Link>
         </nav>
-        <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
-          {page.h1}
-        </h1>
-        <p className="mt-5 text-lg leading-relaxed text-ink-700">{page.intro}</p>
+        <div className={pagePhoto?.shape === "tall" ? "grid gap-8 sm:grid-cols-[minmax(0,1fr)_16rem]" : ""}>
+          <div>
+            <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
+              {page.h1}
+            </h1>
+            <p className="mt-5 text-lg leading-relaxed text-ink-700">{page.intro}</p>
+          </div>
+          {pagePhoto && (
+            <Photo
+              photo={pagePhoto.photo}
+              aspect={pagePhoto.shape === "tall" ? "aspect-[4/3] sm:aspect-[3/4]" : "aspect-[3/2]"}
+              sizes={pagePhoto.shape === "tall" ? "(min-width: 640px) 272px, 100vw" : "(min-width: 816px) 768px, 100vw"}
+              preload
+              className={pagePhoto.shape === "wide" ? "mt-8" : "sm:mt-4"}
+            />
+          )}
+        </div>
       </Section>
 
       <Section width="narrow" space="tight">

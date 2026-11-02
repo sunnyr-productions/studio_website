@@ -5,11 +5,11 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Faq } from "@/components/ui/Faq";
-import { PhotoStrip } from "@/components/ui/Photo";
+import { PhotoBanner, PhotoStrip } from "@/components/ui/Photo";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Testimonials } from "@/components/ui/Testimonials";
-import { getStudioPhotos } from "@/content/media";
+import { getStudioPhotos, media } from "@/content/media";
 import { lessonPages } from "@/content/lesson-pages";
 import { lessonPricing, lessonTypes, pricingTiers } from "@/content/lessons";
 import { homeVisitNote } from "@/content/services";
@@ -108,6 +108,8 @@ export default function LessonsPage() {
           </div>
         </div>
       </Section>
+
+      <PhotoBanner photo={media.overlook} />
 
       <Section id="lesson-types" space="tight">
         <SectionHeading title="What I teach" />

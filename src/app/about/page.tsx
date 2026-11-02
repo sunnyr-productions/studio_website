@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { PhotoStrip } from "@/components/ui/Photo";
-import { getStudioPhotos } from "@/content/media";
-import raulHeadshot from "../../../public/images/raul-headshot.jpg";
+import { Photo, PhotoStrip } from "@/components/ui/Photo";
+import { Scrapbook, type ScrapbookItem } from "@/components/ui/Scrapbook";
+import { getStudioPhotos, media } from "@/content/media";
 
 export const metadata: Metadata = {
   title: "About Raul, Music Teacher & Audio Engineer in Corvallis",
@@ -47,24 +46,33 @@ const gearGroups = [
   },
 ];
 
+const scrapbook: ScrapbookItem[] = [
+  { photo: media.polaroid, caption: "On the Rocks", tilt: "-rotate-2", placement: "lg:col-start-1" },
+  { photo: media.band, caption: "The wedding band", tilt: "rotate-1", placement: "lg:col-start-1" },
+  {
+    photo: media.arena,
+    caption: "On the Rocks, center court",
+    print: "night",
+    tilt: "-rotate-1",
+    // Small source (960px wide), so this keeps it from going soft on sharp screens.
+    placement: "lg:col-start-2 lg:max-w-xl lg:self-center",
+  },
+];
+
 export default function AboutPage() {
   return (
     <>
       <Section space="page">
-        <div className="grid gap-10 sm:grid-cols-[240px_1fr] sm:items-start">
-          <div className="relative h-48 w-48 overflow-hidden rounded-full ring-2 ring-marigold-200 shadow-[3px_4px_0_0_var(--sketch-shadow)] sm:h-60 sm:w-60">
-            <Image
-              src={raulHeadshot}
-              alt="Raul, the teacher and engineer behind The sunny*r Studio"
-              fill
-              sizes="(min-width: 640px) 15rem, 12rem"
-              placeholder="blur"
-              className="object-cover"
-              priority
-            />
-          </div>
+        <div className="grid gap-10 lg:grid-cols-[22rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr_auto]">
+          <Photo
+            photo={media.portrait}
+            aspect="aspect-[4/5]"
+            sizes="(min-width: 1024px) 374px, 272px"
+            preload
+            className="w-64 lg:w-full"
+          />
 
-          <div className="max-w-[68ch]">
+          <div className="max-w-[68ch] lg:row-span-2">
             <h1
               className="font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl"
             >
@@ -101,6 +109,8 @@ export default function AboutPage() {
               Today I do audio and software engineering at a podcast studio, tutor computer science, and make my own music as sunny*r. Teaching music lessons and mixing for other artists are the newest parts. <a href="/music" className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600">You can hear some of it here</a>.
             </p>
           </div>
+
+          <Scrapbook items={scrapbook} className="lg:contents" />
         </div>
       </Section>
 
@@ -120,7 +130,10 @@ export default function AboutPage() {
             I also bring a little field microphone when my wife and I go to national parks. When we find a small, cavernous space, I wait until no one’s walking by, set the microphone down and clap. I can turn that recording into a reverb, so a place we visited can end up on a song.
           </p>
         </div>
-        <PhotoStrip photos={getStudioPhotos()} className="mt-10" />
+        <PhotoStrip
+          photos={[...getStudioPhotos(), media.taylor, media.stratBridge]}
+          className="mt-10"
+        />
         <div className="mt-10 grid gap-6 sm:grid-cols-3">
           {gearGroups.map((group, i) => (
             <div key={group.title}>
