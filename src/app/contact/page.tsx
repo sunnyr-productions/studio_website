@@ -19,7 +19,7 @@ export default function ContactPage() {
       <div className="grid gap-10 lg:grid-cols-[1fr_280px]">
         <div>
           <h1 className="font-display text-4xl font-semibold tracking-tight text-ink-900">
-            Get in touch
+            Tell me what you’re up to
           </h1>
           <p
             className="mt-3 max-w-lg leading-relaxed text-ink-700"

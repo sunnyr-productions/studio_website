@@ -41,7 +41,6 @@ export function localBusinessSchema() {
     image: LOGO,
     logo: LOGO,
     description: siteConfig.tagline,
-    slogan: siteConfig.motto,
     email: siteConfig.email,
     address: {
       "@type": "PostalAddress",

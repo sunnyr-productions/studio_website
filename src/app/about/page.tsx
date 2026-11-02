@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { CtaPanel } from "@/components/ui/CtaPanel";
 import { PhotoStrip } from "@/components/ui/Photo";
 import { getStudioPhotos } from "@/content/media";
 import raulHeadshot from "../../../public/images/raul-headshot.jpg";
@@ -52,7 +50,7 @@ const gearGroups = [
 export default function AboutPage() {
   return (
     <>
-      <Section pattern="waveform" space="page">
+      <Section space="page">
         <div className="grid gap-10 sm:grid-cols-[240px_1fr] sm:items-start">
           <div className="relative h-48 w-48 overflow-hidden rounded-full ring-2 ring-marigold-200 shadow-[3px_4px_0_0_var(--sketch-shadow)] sm:h-60 sm:w-60">
             <Image
@@ -97,7 +95,10 @@ export default function AboutPage() {
               and helped produce the vocals on our album <em>In the Groove</em>. I also sang in a wedding band during those years, which is how I came to sing “Wobble” off a lyric sheet, in a suit, to someone’s grandmother.
             </p>
             <p className="mt-4 leading-relaxed text-ink-700">
-              Today I do audio and software engineering at a podcast studio, and at home I make my own music as sunny*r. I’m just starting to teach music lessons and to mix and master for other artists, and all those teachers have shaped how I want to do it. I don’t want to be a scary teacher. If you forget to do last week’s work, that’s fine. What I care about is whether you’re learning, and how you learn best.
+              I didn’t find out I’m autistic and have ADHD until I was an adult. As a kid I just knew I’d begged for these lessons, and I still walked into them ashamed because I hadn’t done the homework. I don’t want to be that kind of teacher. If you forget last week’s work, that’s fine. What I care about is whether you’re learning, and how you learn best.
+            </p>
+            <p className="mt-4 leading-relaxed text-ink-700">
+              Today I do audio and software engineering at a podcast studio, tutor computer science, and make my own music as sunny*r. Teaching music lessons and mixing for other artists are the newest parts. <a href="/music" className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600">You can hear some of it here</a>.
             </p>
           </div>
         </div>
@@ -141,18 +142,6 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
-      </Section>
-
-      <Section space="tight">
-        <CtaPanel
-          title="Want to work together?"
-          body="Book a lesson, or tell me about the song you’re working on."
-        >
-          <Button href="/lessons#book">Book a lesson</Button>
-          <Button href="/studio" variant="secondary">
-            Mixing &amp; mastering
-          </Button>
-        </CtaPanel>
       </Section>
     </>
   );

@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { DoorLink } from "@/components/home/DoorLink";
 import { Button } from "@/components/ui/Button";
-import { Photo } from "@/components/ui/Photo";
+import { Scribble } from "@/components/ui/Scribble";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Testimonials } from "@/components/ui/Testimonials";
-import { getHeroPhotos } from "@/content/media";
 import { lessonPricing } from "@/content/lessons";
+import { studioTerms } from "@/content/services";
 import { testimonials } from "@/content/testimonials";
 import raulHeadshot from "../../public/images/raul-headshot.jpg";
 
@@ -16,83 +14,22 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-type DoorCardContent = {
-  id: "lessons" | "studio";
-  title: string;
-  pitch: string;
-  proof: string;
-  cta: string;
-  href: string;
-  accent: "marigold" | "periwinkle";
-};
-
-// Lessons leads: equal weight in the design, but it's the easier side to find
-// students for (roadmap D1).
-const doors: DoorCardContent[] = [
+const doors = [
   {
     id: "lessons",
-    title: "Lessons",
-    pitch: "Guitar, voice, production and audio engineering, one-on-one, at your pace. Any age and any genre.",
-    proof: `Start with a $${lessonPricing.trial.price} half-hour trial.`,
+    title: "I want to learn",
+    body: `Guitar, voice, music production or audio engineering, in person in Corvallis or online. It starts with a $${lessonPricing.trial.price} half-hour conversation about what you want to play.`,
     cta: "See lessons",
     href: "/lessons",
-    accent: "marigold",
   },
   {
     id: "studio",
-    title: "Mixing, mastering & recording",
-    pitch: "For songs you're getting ready to release. Recording sessions are in Corvallis or over video.",
-    proof: "Mixing from $175 a song, quoted before I start.",
+    title: "I have a song",
+    body: `Mixing, mastering and recording for independent artists. I’m new to doing this for clients, so my first five mixing clients pay $${studioTerms.introMix.price} a song instead of $175.`,
     cta: "See the studio",
     href: "/studio",
-    accent: "periwinkle",
   },
-];
-
-function DoorCard({ door }: { door: DoorCardContent }) {
-  const photo = getHeroPhotos()[door.id];
-  const isLessons = door.id === "lessons";
-  return (
-    <div
-      style={{ borderRadius: "var(--radius-sketch)" }}
-      className={`surface-card group relative flex h-full flex-col gap-4 border-[1.5px] border-ink-900/80 p-6 transition-transform duration-300 motion-safe:hover:-translate-y-1 sm:p-8 ${
-        isLessons
-          ? "shadow-[6px_8px_0_0_var(--color-marigold-400)]"
-          : "shadow-[6px_8px_0_0_var(--color-periwinkle-400)]"
-      }`}
-    >
-      {photo && (
-        <Photo
-          photo={photo}
-          accent={door.accent}
-          aspect="aspect-[4/3]"
-          sizes="(min-width: 1024px) 40vw, 100vw"
-          priority={isLessons}
-        />
-      )}
-      <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-        {door.title}
-      </h2>
-      <p className="leading-relaxed text-ink-700">{door.pitch}</p>
-      <p className="text-sm font-semibold text-ink-900">{door.proof}</p>
-      <div className="mt-auto pt-2">
-        {/* The overlay (after:inset-0) makes the whole card the click target. */}
-        <DoorLink
-          door={door.id}
-          href={door.href}
-          className={`inline-flex items-center gap-2 font-semibold underline decoration-2 underline-offset-4 after:absolute after:inset-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-marigold-600 ${
-            isLessons
-              ? "text-marigold-800 decoration-marigold-300"
-              : "text-periwinkle-700 decoration-periwinkle-300"
-          }`}
-        >
-          {door.cta}
-          <span aria-hidden="true">→</span>
-        </DoorLink>
-      </div>
-    </div>
-  );
-}
+] as const;
 
 export default function Home() {
   return (
@@ -100,11 +37,16 @@ export default function Home() {
       <Section space="hero">
         <div className="grid items-center gap-8 sm:grid-cols-[1fr_auto]">
           <div className="max-w-2xl">
-            <h1 className="text-[clamp(2.75rem,3vw+2rem,4.5rem)] font-display font-semibold leading-[1.05] tracking-tight text-ink-900">
-              I teach music and mix records in Corvallis, Oregon.
+            <p className="font-semibold tracking-[0.04em] text-marigold-800">
+              Music lessons and mixing in Corvallis, Oregon, and online
+            </p>
+            <h1 className="mt-3 font-display text-[clamp(2.5rem,3vw+1.75rem,4.25rem)] font-semibold leading-[1.08] tracking-tight text-ink-900">
+              For anyone who’s been told they’re doing music{" "}
+              <Scribble color="var(--color-marigold-500)">wrong</Scribble>.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-ink-700">
-              I’m Raul. You can learn with me in person or online, or send me a song from anywhere.
+              I’m Raul. I teach music and mix songs, and I think the right way to do both is
+              whichever one sounds and feels right to you. I’ll help you find it.
             </p>
           </div>
           <div className="relative row-start-1 h-32 w-32 overflow-hidden rounded-full border-[1.5px] border-ink-900/80 sm:col-start-2 sm:h-56 sm:w-56">
@@ -122,43 +64,65 @@ export default function Home() {
 
         <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-2">
           {doors.map((door) => (
-            <DoorCard key={door.id} door={door} />
+            <div
+              key={door.id}
+              style={{ borderRadius: "var(--radius-sketch)" }}
+              className={`surface-card relative flex h-full flex-col gap-3 border-[1.5px] border-ink-900/80 p-6 transition-transform duration-300 motion-safe:hover:-translate-y-1 sm:p-8 ${
+                door.id === "lessons"
+                  ? "shadow-[6px_8px_0_0_var(--color-marigold-400)]"
+                  : "shadow-[6px_8px_0_0_var(--color-periwinkle-400)]"
+              }`}
+            >
+              <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
+                {door.title}
+              </h2>
+              <p className="leading-relaxed text-ink-700">{door.body}</p>
+              <div className="mt-auto pt-2">
+                {/* The overlay (after:inset-0) makes the whole card the click target. */}
+                <DoorLink
+                  door={door.id}
+                  href={door.href}
+                  className="inline-flex items-center gap-2 font-semibold text-marigold-800 underline decoration-marigold-300 decoration-2 underline-offset-4 after:absolute after:inset-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-marigold-600"
+                >
+                  {door.cta}
+                  <span aria-hidden="true">→</span>
+                </DoorLink>
+              </div>
+            </div>
           ))}
         </div>
       </Section>
 
       <Section width="narrow">
-        <SectionHeading
-          title="A bit about me"
-          lede="I’ve played guitar since I was 10 and sung for longer than that. I learned to teach as Music Director of an a cappella group at the University of Oregon, and audio engineering is my full-time job. I teach and mix from a home studio I treated myself."
-        />
-        <Button href="/about" variant="secondary" className="mt-6">
-          More about me
-        </Button>
-        <p className="mt-8 text-sm text-ink-500">
-          Got a question? Try the{" "}
-          <Link
-            href="/lessons#faq"
-            className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
-          >
-            lessons FAQ
-          </Link>{" "}
-          or the{" "}
-          <Link
-            href="/studio#faq"
-            className="font-semibold text-periwinkle-700 underline decoration-periwinkle-300 underline-offset-2 transition-colors hover:text-periwinkle-600"
-          >
-            studio FAQ
-          </Link>
-          , or just{" "}
-          <Link
-            href="/contact"
-            className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
-          >
-            ask me
-          </Link>
-          .
-        </p>
+        <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
+          Why I do it this way
+        </h2>
+        <div className="mt-5 space-y-4 text-lg leading-relaxed text-ink-700">
+          <p>
+            I begged my parents for guitar lessons, and then I walked into them ashamed. I’d forget
+            the homework, or start it, struggle and give up, and I knew I was about to get scolded.
+            I found out as an adult that I’m autistic and have ADHD. At the time, I just knew that
+            other people didn’t seem to have this problem.
+          </p>
+          <p>
+            I’ve had more bad music teachers than good ones. The good ones listened. One told me my
+            note-perfect “Little Wing” was correct but didn’t feel like music. A music director told
+            me I wasn’t the baritone I’d always said I was, and I ended up the highest tenor in the
+            group.
+          </p>
+          <p>
+            So if you show up to a lesson having done nothing, I’ll ask what happened. Maybe you had
+            a busy week. Maybe what I gave you was boring, and that’s on me.
+          </p>
+        </div>
+        <div className="mt-8 flex flex-wrap gap-4">
+          <Button href="/about" variant="secondary">
+            More about me
+          </Button>
+          <Button href="/music" variant="ghost">
+            Hear my music
+          </Button>
+        </div>
       </Section>
 
       {testimonials.length > 0 && (

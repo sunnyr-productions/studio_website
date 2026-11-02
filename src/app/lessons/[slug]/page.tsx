@@ -3,12 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/Button";
-import { CtaPanel } from "@/components/ui/CtaPanel";
 import { Section } from "@/components/ui/Section";
 import { lessonPages } from "@/content/lesson-pages";
 import { lessonPricing, lessonTypes, trialPhrase } from "@/content/lessons";
-import { siteConfig } from "@/lib/site-config";
-import { breadcrumbSchema, faqPageSchema, serviceSchema } from "@/lib/structured-data";
+import { breadcrumbSchema, serviceSchema } from "@/lib/structured-data";
 
 type Params = { slug: string };
 
@@ -29,15 +27,6 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     description: entry.page.metaDescription,
     alternates: { canonical: `/lessons/${slug}` },
   };
-}
-
-function Part({ title, children }: { title: string; children: string }) {
-  return (
-    <div className="mt-8 first:mt-0">
-      <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-900">{title}</h2>
-      <p className="mt-2 text-lg leading-relaxed text-ink-700">{children}</p>
-    </div>
-  );
 }
 
 export default async function LessonPage({ params }: { params: Promise<Params> }) {
@@ -63,7 +52,6 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
             { name: "Lessons", path: "/lessons" },
             { name: lesson.name, path },
           ]),
-          faqPageSchema(page.faqs),
         ]}
       />
 
@@ -77,38 +65,33 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
           {page.h1}
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-ink-700">{page.intro}</p>
-        <p className="mt-4 font-semibold text-marigold-800">
-          ${lessonPricing.hourlyRate} an hour. Start with {trialPhrase}.
-        </p>
       </Section>
 
-      <Section width="narrow">
+      <Section width="narrow" space="tight">
         {page.sections.map((section) => (
-          <Part key={section.title} title={section.title}>
-            {section.body}
-          </Part>
+          <div key={section.title} className="mt-10 first:mt-0">
+            <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-900">
+              {section.title}
+            </h2>
+            <p className="mt-2 text-lg leading-relaxed text-ink-700">{section.body}</p>
+          </div>
         ))}
-        <Part title="Who it’s for">{page.whoFor}</Part>
-        <Part title="The first lesson">{page.firstLesson}</Part>
-        <Part title="What to bring">{page.bring}</Part>
-        <Part title="In person or online">{page.format}</Part>
-        {page.faqs.map((faq) => (
-          <Part key={faq.q} title={faq.q}>
-            {faq.a}
-          </Part>
-        ))}
-      </Section>
-
-      <Section space="tight">
-        <CtaPanel
-          title={page.closingTitle}
-          body={`Book a trial, or send me a question first. I’ll write back within ${siteConfig.responseTime.lessons}.`}
+        <div
+          style={{ borderRadius: "var(--radius-sketch)" }}
+          className="surface-card mt-12 border-[1.5px] border-ink-900/80 p-6 sm:p-8"
         >
-          <Button href="/lessons#book">Book a trial</Button>
-          <Button href="/contact?service=lessons" variant="secondary">
-            Ask a question
-          </Button>
-        </CtaPanel>
+          <p className="leading-relaxed text-ink-700">{page.practical}</p>
+          <p className="mt-3 leading-relaxed text-ink-700">
+            Lessons are ${lessonPricing.hourlyRate} an hour, and you can start with {trialPhrase},
+            which is mostly a conversation.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-4">
+            <Button href="/lessons#book">Book a trial</Button>
+            <Button href="/contact?service=lessons" variant="secondary">
+              Ask a question
+            </Button>
+          </div>
+        </div>
       </Section>
     </>
   );

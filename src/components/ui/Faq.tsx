@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import type { ModeContent } from "@/content/modes";
 
 /**
  * FAQ accordion — native <details>/<summary>, no client JS needed. Cuts
  * pre-contact friction and gives crawlers real Q&A text. Heading on the left,
  * questions on the right.
  */
-export function Faq({ mode }: { mode: ModeContent }) {
+export function Faq({ faqs }: { faqs: { q: string; a: string }[] }) {
   return (
     <div className="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
       <SectionHeading
@@ -26,7 +25,7 @@ export function Faq({ mode }: { mode: ModeContent }) {
         }
       />
       <div className="flex flex-col gap-3">
-        {mode.faqs.map((faq) => (
+        {faqs.map((faq) => (
           <div key={faq.q}>
             <details
               style={{ borderRadius: "var(--radius-sketch-sm)" }}
@@ -49,14 +48,6 @@ export function Faq({ mode }: { mode: ModeContent }) {
                 </span>
               </summary>
               <p className="mt-3 leading-relaxed text-ink-700">{faq.a}</p>
-              {faq.link && faq.link.href && (
-                <Link
-                  href={faq.link.href}
-                  className="mt-2 inline-block font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
-                >
-                  {faq.link.label}
-                </Link>
-              )}
             </details>
           </div>
         ))}

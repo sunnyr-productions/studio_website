@@ -9,34 +9,30 @@ export type LessonType = {
 
 export const lessonTypes: LessonType[] = [
   {
-    slug: "vocal",
-    name: "Voice lessons",
-    blurb:
-      "For anyone who wants to sing, including people who are embarrassed to. I coached a cappella singers on both the singing and the stage presence.",
-    format: "In-person or online",
-    accent: "marigold",
-  },
-  {
     slug: "guitar",
-    name: "Guitar lessons",
-    blurb:
-      "The songs you actually listen to, at your level. I've been playing for 16 years.",
+    name: "Guitar",
+    blurb: "The songs you actually listen to, at your level, in a way that works for your hands.",
     format: "Best in person, since I need to see your hands",
     accent: "periwinkle",
   },
   {
+    slug: "vocal",
+    name: "Voice",
+    blurb: "For anyone who wants to sing, especially if you’re embarrassed to.",
+    format: "In-person or online",
+    accent: "marigold",
+  },
+  {
     slug: "production",
     name: "Music production",
-    blurb:
-      "How to build a track: grooves, sounds, synths, and what each instrument does in a song. I teach in Logic, and it all carries over to other DAWs.",
+    blurb: "How to build a track in Logic, from your first groove to something you can play for your friends.",
     format: "In-person or online",
     accent: "coral",
   },
   {
     slug: "audio-engineering",
-    name: "Audio engineering and recording",
-    blurb:
-      "For people already making music. We go through your song or mix together, and I'll show you what I'd do and why.",
+    name: "Audio engineering",
+    blurb: "For people already making music. We open your song and talk through the decisions.",
     format: "In-person or online",
     accent: "periwinkle",
   },

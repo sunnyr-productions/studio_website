@@ -7,8 +7,9 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="surface-night mt-auto pt-[230px]">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 pb-12 sm:flex-row sm:items-start sm:justify-between">
+    <footer className="surface-night mt-auto px-2 pb-2 pt-[230px] sm:px-3 sm:pb-3">
+      <div className="panel-glass relative">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 pb-10 pt-8 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <Link
             href="/"
@@ -18,7 +19,7 @@ export function Footer() {
             <LogoLockup />
           </Link>
           <p className="mt-4 font-display text-base italic text-marigold-800">
-            {siteConfig.motto}
+            Pronounced “sunnier.”
           </p>
           <p className="mt-2 max-w-sm text-sm text-ink-700">{siteConfig.tagline}</p>
         </div>
@@ -50,7 +51,7 @@ export function Footer() {
           </nav>
         </div>
       </div>
-      <div className="border-t border-ink-900/5 px-6 py-4 text-center text-xs text-ink-500">
+      <div className="border-t border-white/15 px-6 py-4 text-center text-xs text-ink-500">
         &copy; {year} {siteConfig.name}. All rights reserved.
         <span className="mx-2" aria-hidden="true">·</span>
         <Link href="/terms" className="transition-colors hover:text-marigold-600">
@@ -60,6 +61,7 @@ export function Footer() {
         <Link href="/privacy" className="transition-colors hover:text-marigold-600">
           Privacy
         </Link>
+      </div>
       </div>
     </footer>
   );

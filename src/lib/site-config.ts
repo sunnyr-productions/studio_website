@@ -1,5 +1,4 @@
 import { products } from "@/lib/products";
-import { portfolioTracks } from "@/content/portfolio/tracks";
 
 export type NavItem = {
   label: string;
@@ -9,7 +8,6 @@ export type NavItem = {
 export const siteConfig = {
   name: "The sunny*r Studio",
   tagline: "Guitar, voice, production and audio engineering lessons in Corvallis, Oregon, plus mixing and mastering.",
-  motto: "Good things grow on the sunny*r side.",
   email: "sunnyrmusic@gmail.com",
   /** Reply-time promise — form success message, contact page, auto-reply. */
   responseTime: {
@@ -29,15 +27,10 @@ export const siteConfig = {
    */
   calLink: process.env.NEXT_PUBLIC_CAL_LINK?.trim() || null,
   nav: [
-    { label: "Home", href: "/" },
     { label: "Lessons", href: "/lessons" },
     { label: "Studio", href: "/studio" },
-    // Portfolio and Store are left out of the menus until they have something
-    // in them — an empty page in the nav is a dead end. Both stay reachable by
-    // URL and in the sitemap.
-    ...(portfolioTracks.length > 0
-      ? [{ label: "Portfolio", href: "/portfolio" }]
-      : []),
+    { label: "Music", href: "/music" },
+    // The store stays out of the menus until it has something in it.
     ...(products.length > 0 ? [{ label: "Store", href: "/store" }] : []),
     { label: "Blog", href: "/blog" },
     { label: "About", href: "/about" },
@@ -47,7 +40,7 @@ export const siteConfig = {
   footerLinks: [
     { label: "Lessons", href: "/lessons" },
     { label: "Studio", href: "/studio" },
-    ...(portfolioTracks.length > 0 ? [{ label: "Portfolio", href: "/portfolio" }] : []),
+    { label: "Music", href: "/music" },
     ...(products.length > 0 ? [{ label: "Store", href: "/store" }] : []),
     { label: "Blog", href: "/blog" },
     { label: "About", href: "/about" },

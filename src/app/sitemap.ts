@@ -2,11 +2,11 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/site-config";
 import { getAllPosts } from "@/lib/blog";
 import { products } from "@/lib/products";
+import { servicePages } from "@/content/service-pages";
 import { services } from "@/content/services";
 import { lessonTypes } from "@/content/lessons";
 import { neurodivergentPage } from "@/content/neurodivergent-page";
 import { lessonPages } from "@/content/lesson-pages";
-import { portfolioTracks } from "@/content/portfolio/tracks";
 
 /**
  * Sitemap for crawlers. Static pages plus every blog post. Transactional and
@@ -18,19 +18,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Bump a date here when that page's content meaningfully changes; leaving
   // every page stamped "now" tells crawlers nothing and wastes their trust.
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: `${base}/`, lastModified: new Date("2026-10-15"), changeFrequency: "weekly", priority: 1 },
-    { url: `${base}/lessons`, lastModified: new Date("2026-10-15"), changeFrequency: "monthly", priority: 0.9 },
-    { url: `${base}/studio`, lastModified: new Date("2026-10-15"), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/`, lastModified: new Date("2026-11-01"), changeFrequency: "weekly", priority: 1 },
+    { url: `${base}/lessons`, lastModified: new Date("2026-11-01"), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/studio`, lastModified: new Date("2026-11-01"), changeFrequency: "monthly", priority: 0.9 },
     // Empty pages stay out of the sitemap (and are noindexed) until they have content.
-    ...(portfolioTracks.length > 0
-      ? [{ url: `${base}/portfolio`, lastModified: new Date("2026-10-15"), changeFrequency: "monthly" as const, priority: 0.7 }]
-      : []),
+    { url: `${base}/music`, lastModified: new Date("2026-11-01"), changeFrequency: "monthly", priority: 0.7 },
     ...(products.length > 0
-      ? [{ url: `${base}/store`, lastModified: new Date("2026-10-15"), changeFrequency: "monthly" as const, priority: 0.6 }]
+      ? [{ url: `${base}/store`, lastModified: new Date("2026-11-01"), changeFrequency: "monthly" as const, priority: 0.6 }]
       : []),
-    { url: `${base}/blog`, lastModified: new Date("2026-10-15"), changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/about`, lastModified: new Date("2026-10-15"), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/contact`, lastModified: new Date("2026-10-15"), changeFrequency: "yearly", priority: 0.6 },
+    { url: `${base}/blog`, lastModified: new Date("2026-11-01"), changeFrequency: "weekly", priority: 0.7 },
+    { url: `${base}/about`, lastModified: new Date("2026-11-01"), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/contact`, lastModified: new Date("2026-11-01"), changeFrequency: "yearly", priority: 0.6 },
     { url: `${base}/terms`, lastModified: new Date("2026-10-07"), changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/privacy`, lastModified: new Date("2026-10-07"), changeFrequency: "yearly", priority: 0.3 },
   ];
@@ -52,7 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    ...services.map((svc) => ({
+    ...services.filter((svc) => servicePages[svc.slug]).map((svc) => ({
       url: `${base}/studio/${svc.slug}`,
       lastModified: new Date("2026-10-19"),
       changeFrequency: "monthly" as const,

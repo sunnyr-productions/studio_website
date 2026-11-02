@@ -29,7 +29,7 @@ export const services: Service[] = [
   {
     slug: "mixing",
     name: "Mixing",
-    blurb: "You send me your tracks. I find out what you want the song to do, then shape the mix to get it there.",
+    blurb: "You send me your tracks. I find out what you want the song to do, and shape the mix to get it there. First version within 2 weeks, with 2 rounds of revisions.",
     details: [
       "Up to 48 tracks, and we can talk if you have more",
       `${studioTerms.revisionRounds} rounds of revisions`,
@@ -41,7 +41,7 @@ export const services: Service[] = [
   {
     slug: "mastering",
     name: "Mastering",
-    blurb: "The final polish before release, meant to catch any loose ends. Done well, it's subtle.",
+    blurb: "The final polish before release, meant to catch any loose ends. Done well, it's subtle. If you want something drastic, it probably belongs in the mix.",
     details: [
       "Single track or full EP/album",
       "I can work from a reference track if you want",
@@ -52,8 +52,8 @@ export const services: Service[] = [
   },
   {
     slug: "recording",
-    name: "Recording Sessions",
-    blurb: "Record vocals or instruments in my home studio. We put down a scratch version of each part first, then refine from there.",
+    name: "Recording",
+    blurb: "Vocals or instruments in my home studio, or vocal coaching over video if you’re recording at home. A full band needs a rented room, and I can record you there.",
     details: [
       "Multitracks and a rough bounce the same week",
       "Solo artists and small groups here, full bands at a rented studio",
@@ -64,8 +64,8 @@ export const services: Service[] = [
   },
   {
     slug: "consultation",
-    name: "Production Consultation",
-    blurb: "An hour on a call, going through your project together. Good for a stuck mix, an arrangement that isn't working, or a second opinion.",
+    name: "An hour on your project",
+    blurb: "A video call about your song, with written notes afterward. Good for a stuck mix, an arrangement that isn't working, or a second opinion before you pay for a full mix.",
     details: [
       "60-minute video call",
       "Written notes afterward",
@@ -76,8 +76,8 @@ export const services: Service[] = [
   },
   {
     slug: "mix-master-bundle",
-    name: "Mixing + Mastering Bundle",
-    blurb: "Book both together and it costs a little less. It's simpler and cheaper than hiring two people.",
+    name: "Mixing and mastering",
+    blurb: "Both from me, for a little less. A separate mastering engineer is the ideal, so this is for when budget or simplicity matters more.",
     details: [
       "About 10% less than booking them separately",
       "One person to deal with from start to finish",

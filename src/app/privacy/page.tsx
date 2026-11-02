@@ -40,6 +40,11 @@ export default function PrivacyPage() {
               email (via Resend). It isn’t stored in a database on this site.
             </li>
             <li>
+              <strong>Music players.</strong> The Music page embeds players from Spotify and YouTube,
+              and those companies may collect data when the page loads them, under their own privacy
+              policies.
+            </li>
+            <li>
               <strong>Lesson booking.</strong> Bookings are handled by Cal.com, which collects your
               name, email, and chosen time to schedule the lesson and send confirmations.
             </li>

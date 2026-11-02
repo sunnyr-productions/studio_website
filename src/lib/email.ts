@@ -150,7 +150,6 @@ export async function sendInquiryConfirmation(submission: ContactSubmission): Pr
     "Talk soon,",
     "Raul",
     siteConfig.name,
-    siteConfig.motto,
     "",
     "(You're getting this because this address was entered in the contact form at",
     `${siteConfig.url}. If that wasn't you, you can ignore this. Nothing else will be sent.)`,

@@ -36,7 +36,7 @@ export function MobileNav() {
       </button>
 
       {open && (
-        <nav className="animate-fade-up absolute inset-x-0 top-full z-40 border-t border-ink-900/10 bg-cream-50 px-6 py-4 shadow-lg">
+        <nav className="animate-fade-up absolute inset-x-0 top-full z-40 mt-2 rounded-[1.25rem] border border-white/60 bg-cream-50 px-6 py-4 shadow-lg">
           <ul className="flex flex-col gap-3">
             {siteConfig.nav.map((item, i) => (
               <li

@@ -5,8 +5,8 @@ import { MobileNav } from "./MobileNav";
 
 export function Header() {
   return (
-    <header className="relative z-50 border-b border-ink-900/5 bg-cream-50/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <header className="panel-glass sticky top-2 z-50 mx-2 mt-2 sm:top-3 sm:mx-3 sm:mt-3">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 sm:px-6">
         <Link
           href="/"
           aria-label={siteConfig.name}

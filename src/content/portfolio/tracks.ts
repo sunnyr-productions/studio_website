@@ -7,8 +7,8 @@ export type PortfolioTrack = {
 };
 
 /**
- * Real portfolio tracks only. The portfolio page shows an honest "coming soon"
- * state while this is empty (see app/portfolio/page.tsx), so no placeholder
+ * Real client work only. The Music page shows this section
+ * only when this has entries (see app/music/page.tsx), so no placeholder
  * audio ever ships. Add real mixes/masters here (with permission to publish).
  */
 export const portfolioTracks: PortfolioTrack[] = [];

@@ -7,6 +7,15 @@ const nextConfig: NextConfig = {
     return [
       { source: "/services", destination: "/studio", permanent: true },
       { source: "/services/:path*", destination: "/studio/:path*", permanent: true },
+      { source: "/studio/consultation", destination: "/studio", permanent: true },
+      { source: "/studio/mix-master-bundle", destination: "/studio", permanent: true },
+      { source: "/portfolio", destination: "/music", permanent: true },
+      { source: "/blog/5-tips-for-better-home-recordings", destination: "/blog", permanent: true },
+      { source: "/blog/choosing-your-first-audio-interface", destination: "/blog", permanent: true },
+      { source: "/blog/how-loud-should-your-master-be-lufs", destination: "/blog", permanent: true },
+      { source: "/blog/in-person-vs-online-music-lessons", destination: "/blog", permanent: true },
+      { source: "/blog/mixing-vs-mastering-whats-the-difference", destination: "/blog", permanent: true },
+      { source: "/blog/what-mastering-actually-does", destination: "/blog", permanent: true },
     ];
   },
 };

@@ -60,7 +60,7 @@ export const servicePages: Record<string, ServicePage> = {
       },
       {
         title: "The right mix isn't always the correct one",
-        body: "On one daydreamy song, I pushed the saturation until the mix was bursting at the seams. It wasn't what a textbook would tell you to do, but it suited the song. I've made the opposite mistake too: on my first release, I processed every track until each one sounded great, and ended up with a muddy mix where you couldn't tell what I was singing.",
+        body: "On one daydreamy song, I pushed the saturation until the mix was bursting at the seams. It isn't what a textbook would tell you to do, but it suited the song. I've gotten it wrong the other way too, and I wrote about the song I had to mix twice on the blog.",
       },
       {
         title: "Where I check it",
@@ -115,14 +115,14 @@ export const servicePages: Record<string, ServicePage> = {
     howItRuns: `I work from a finished mix. If yours isn't there yet, start with mixing. ${deposit}`,
     faqs: [
       { q: "One song or a whole EP?", a: "Either. Single tracks start at $60, and I'll quote an EP or album as a set." },
-      { q: "How loud will it be?", a: "Loud enough to hold up next to other releases, without squashing it. I wrote more about that in my post on LUFS." },
+      { q: "How loud will it be?", a: "Loud enough to hold up next to other releases, without squashing it." },
     ],
     closingTitle: "Is your mix finished?",
     closingBody: "Send me a link and tell me how many tracks there are. I'll get back to you with a quote within 2 business days.",
     ctaLabel: "Get a mastering quote",
   },
   recording: {
-    h1: "Recording sessions",
+    h1: "Recording",
     metaTitle: "Recording Studio Sessions in Corvallis, OR",
     metaDescription:
       "Record vocals or instruments at a treated home studio in Corvallis, Oregon from $75/hour, or get coached through recording vocals at home over video.",
@@ -164,45 +164,5 @@ export const servicePages: Record<string, ServicePage> = {
     closingTitle: "Want to book some time?",
     closingBody: "Tell me what you're recording and when you're free. We'll talk before you book, and if I don't think I can help, I'll say so.",
     ctaLabel: "Ask about a session",
-  },
-  consultation: {
-    h1: "An hour on your project",
-    metaTitle: "Music Production Consultation",
-    metaDescription:
-      "A 60-minute video call going through your project: a stuck mix, an arrangement that isn't working, or a second opinion. $60 per session.",
-    intro:
-      "We get on a video call for an hour and go through your project together. It's good for a stuck mix, an arrangement that isn't working, or a second opinion before you pay for a full mix.",
-    minPrice: 60,
-    sections: [],
-    needTitle: "Send me",
-    need: ["A link to the song or session", "A few lines on what's bothering you"],
-    getTitle: "What you get",
-    get: ["The 60-minute call", "Written notes afterward, including notes on your session"],
-    howItRuns: "It's $60. Message me and we'll find a time.",
-    faqs: [
-      { q: "Is it just for mixing?", a: "No. Arrangement and sound choices are fair game, and so is asking whether a song is ready." },
-    ],
-    closingTitle: "Stuck on something?",
-    closingBody: "Tell me what it is and we'll find an hour.",
-    ctaLabel: "Book a consultation",
-  },
-  "mix-master-bundle": {
-    h1: "Mixing and mastering together",
-    metaTitle: "Mixing + Mastering Bundle in Corvallis, OR",
-    metaDescription:
-      "Mixing and mastering together from $210/song in Corvallis, Oregon or remotely. A simpler, cheaper option when hiring two people doesn't fit.",
-    intro:
-      "If you need both, you can book them together. It starts at $210 a song instead of $235. Ideally, mastering is done by someone who didn't work on the mix, and if your budget allows for that, I'd encourage it. If budget or simplicity matters more, I'll do both.",
-    minPrice: 210,
-    sections: [],
-    needTitle: "What I need from you",
-    need: ["Your raw tracks as WAV files, clearly named", "A reference song or two", "Your release date, if you have one"],
-    getTitle: "What you get back",
-    get: ["The final master as a WAV and a streaming-ready MP3", `${revisionRounds} rounds of revisions on the mix`],
-    howItRuns: `I mix first, we go through your notes, then I master it. ${deposit}`,
-    faqs: [revisionsFaq, sessionFilesFaq],
-    closingTitle: "Got a release coming up?",
-    closingBody: "Send me a link and your date. I'll get back to you with a quote within 2 business days.",
-    ctaLabel: "Get a quote",
   },
 };
