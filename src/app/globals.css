@@ -283,6 +283,88 @@ body::before {
   }
 }
 
+/* The band around the words, ruled at the top and foot of the mark's N (21% and
+   79% of its height), with a heavier foot for it to stand on. The mark is point
+   symmetric, so its curves reach further out at the bottom left and top right:
+   each rule runs in to meet the curve on its own line. The reaches are fractions
+   of the mark's height, measured from the art. Periwinkle is marigold's complement,
+   so the rules stay separate from the mark where they meet it. */
+.logo-lockup {
+  --logo-height: 48px;
+  --logo-foot: 2px;
+  --logo-gap: calc(var(--logo-height) * 0.14);
+  --logo-reach-near: calc(var(--logo-gap) * -1 - var(--logo-height) * 0.056);
+  --logo-reach-far: calc(var(--logo-gap) * -1 - var(--logo-height) * 0.208);
+  display: inline-flex;
+  flex-shrink: 0;
+  column-gap: var(--logo-gap);
+}
+
+@media (max-width: 359px) {
+  .logo-lockup {
+    --logo-height: 36px;
+  }
+}
+
+@media (min-width: 40rem) {
+  .logo-lockup {
+    --logo-height: 4.5rem;
+    --logo-foot: 2.5px;
+  }
+}
+
+@media (min-width: 64rem) {
+  .logo-lockup {
+    --logo-height: 5rem;
+    --logo-foot: 3px;
+  }
+}
+
+.logo-band {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-block: calc(var(--logo-height) * 0.21);
+  padding-inline: calc(var(--logo-height) * 0.12);
+}
+
+.logo-band::before,
+.logo-band::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  background-color: var(--color-periwinkle-600);
+  forced-color-adjust: none;
+  print-color-adjust: exact;
+}
+
+.logo-band::before {
+  top: 0;
+  height: 1px;
+}
+
+.logo-band::after {
+  bottom: 0;
+  height: var(--logo-foot);
+}
+
+.logo-band-start::before {
+  right: var(--logo-reach-far);
+}
+
+.logo-band-start::after {
+  right: var(--logo-reach-near);
+}
+
+.logo-band-end::before {
+  left: var(--logo-reach-near);
+}
+
+.logo-band-end::after {
+  left: var(--logo-reach-far);
+}
+
 /* By day the logo is a tinted, darkened view of whatever is behind it, so its
    contrast stays even over sky, cards, and photos alike. The recipe trades some
    contrast for color: any darker and the marigold turns brown. A backdrop-filter
