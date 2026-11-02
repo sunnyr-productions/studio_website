@@ -7,7 +7,7 @@ comes from one spiral (K) and every width from the weights below.
 Usage: python build_logo.py <output.svg> [fill] [small|sun]
 
 The site uses public/images/sunnyr-logo.svg (regular cut) and
-sunnyr-logo-small.svg (small). export_png.cjs makes the PNGs from these.
+sunnyr-logo-small.svg (small). export_png.mjs makes the PNGs from these.
 """
 import math
 import sys

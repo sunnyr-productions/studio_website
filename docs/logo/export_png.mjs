@@ -1,7 +1,7 @@
 // Makes the PNG versions of the logo. Run from the repo root, after build_logo.py:
-//   node docs/logo/export_png.cjs <sun.svg>
-const path = require("path");
-const sharp = require("sharp");
+//   node docs/logo/export_png.mjs <sun.svg>
+import path from "node:path";
+import sharp from "sharp";
 
 const PAPER = "#fffdf7";
 const [, , sunSvg] = process.argv;

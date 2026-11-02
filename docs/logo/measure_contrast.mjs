@@ -1,10 +1,9 @@
 // Measures the header logo's real rendered contrast while scrolling.
 // Needs the dev server on :3000. Run from anywhere:
-//   node docs/logo/measure_contrast.cjs <extra-css-file|none> <out.json> [pages comma list] [steps]
-const root = require('path').resolve(__dirname, '../../node_modules') + '/';
-const { chromium } = require(root + 'playwright');
-const sharp = require(root + 'sharp');
-const fs = require('fs');
+//   node docs/logo/measure_contrast.mjs <extra-css-file|none> <out.json> [pages comma list] [steps]
+import { chromium } from 'playwright';
+import sharp from 'sharp';
+import fs from 'node:fs';
 
 const [, , cssFile, out, pagesArg, stepsArg] = process.argv;
 const css = cssFile === 'none' ? '' : fs.readFileSync(cssFile, 'utf8');
