@@ -50,10 +50,10 @@ export default function Home() {
               <Scribble color="var(--color-marigold-500)">listening</Scribble> to you
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-ink-700">
-              I’m Raul, and this is sunny*r. I’ve been singing for as long as anyone can remember and
-              playing guitar since I was ten, and these days I split my time between a day job at a
-              podcast studio and a converted bedroom full of instruments. That bedroom is where I
-              teach, and where I mix other people’s songs.
+              I’m Raul. I’ve been singing for as long as anyone can remember and playing guitar since I
+              was ten, and these days I split my time between a day job at a podcast studio and a
+              converted bedroom full of instruments. That bedroom is the sunny*r studio, where I teach
+              and mix other people’s songs.
             </p>
           </div>
           <div className="relative row-start-1 h-32 w-32 overflow-hidden rounded-full border-[1.5px] border-ink-900/80 sm:col-start-2 sm:h-56 sm:w-56">

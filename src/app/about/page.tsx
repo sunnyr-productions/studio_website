@@ -117,7 +117,7 @@ export default function AboutPage() {
         <SectionHeading title="About the name" />
         <div className="mt-6 space-y-4 leading-relaxed text-ink-700">
           <p>
-            I needed an artist name one night in my now-wife’s college apartment, after playing everyone a song I was working on. I wanted something with sun in it, partly because a warm marigold yellow has always been my favorite color. I was joking about those names with a symbol in the middle when we landed on Sunnier, which doubles as Sunny R, as in Raul. It was spelled sunny.r for a while, until I decided an asterisk looked more like a star.
+            I needed an artist name one night in my now-wife’s college apartment, after playing everyone a song I was working on. I wanted something with sun in it, partly because a warm marigold yellow has always been my favorite color. I was joking about those names with a symbol in the middle when we landed on one that works twice: say it and it’s “sunnier,” spell it out and it’s “sunny R,” as in Raul. It was spelled sunny.r for a while, until I decided an asterisk looked more like a star, and it became sunny*r.
           </p>
           <p>
             I drew the logo at an awful office job where there wasn’t enough work and you had to look busy anyway. It’s an ambigram, so it reads the same upside down, and I filled a lot of paper before I found a pattern that worked.
