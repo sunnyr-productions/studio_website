@@ -26,7 +26,7 @@ export const serviceOptions: InquiryOption[] = [
   { value: "mastering", label: "Mastering" },
   { value: "mix-master-bundle", label: "Mixing + mastering" },
   { value: "recording", label: "Recording session" },
-  { value: "consultation", label: "Production consultation" },
+  { value: "consultation", label: "An hour on my project" },
   { value: OTHER_SERVICE, label: "Something else" },
 ];
 

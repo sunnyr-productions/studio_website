@@ -43,10 +43,19 @@ export default function NeurodivergentLearnersPage() {
         </div>
       </Section>
 
+      <Section width="narrow" space="tight">
+        <SectionHeading title={copy.story.title} />
+        <div className="mt-4 space-y-4 text-lg leading-relaxed text-ink-700">
+          {copy.story.paragraphs.map((p) => (
+            <p key={p}>{p}</p>
+          ))}
+        </div>
+      </Section>
+
       <Section width="narrow">
         <SectionHeading title="Who this is for" />
         <p className="mt-4 text-lg leading-relaxed text-ink-700">{copy.whoFor}</p>
-        <SectionHeading title="How to find out if it's a fit" className="mt-12" />
+        <SectionHeading title="Try it for half an hour" className="mt-12" />
         <p className="mt-4 text-lg leading-relaxed text-ink-700">{copy.trial}</p>
         <div className="mt-8 flex flex-wrap gap-4">
           <Button href="/lessons#book">Book a trial</Button>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { Prose } from "@/components/ui/Prose";
 import { lessonPricing } from "@/content/lessons";
-import { studioTerms } from "@/content/services";
+import { studioPrices, studioTerms } from "@/content/services";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/terms" },
 };
 
-const LAST_UPDATED = "November 1, 2026";
+const LAST_UPDATED = "November 2, 2026";
 
 const { hourlyRate, trial, pack, cancellationNoticeHours, lateCancelPercent, paymentMethods } = lessonPricing;
 
@@ -77,7 +77,8 @@ export default function TermsPage() {
             <li>
               <strong>Deposit.</strong> Projects are booked with a {studioTerms.depositPercent}%
               deposit of the quoted price. The balance is due before final files are delivered. Both
-              are invoiced by email.
+              are invoiced by email. The ${studioPrices.consultation} hour on your project is paid in full up
+              front instead.
             </li>
             <li>
               <strong>Revisions.</strong> {studioTerms.revisionRounds} rounds of revisions are

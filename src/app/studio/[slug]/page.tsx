@@ -42,6 +42,24 @@ function Bullets({ items }: { items: string[] }) {
   );
 }
 
+/** The section's text, with its one linked phrase turned into a link. */
+function SectionBody({ body, link }: { body: string; link?: { text: string; href: string } }) {
+  if (!link) return body;
+  const [before, after] = body.split(link.text);
+  return (
+    <>
+      {before}
+      <Link
+        href={link.href}
+        className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
+      >
+        {link.text}
+      </Link>
+      {after}
+    </>
+  );
+}
+
 export default async function ServicePage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
   const service = services.find((s) => s.slug === slug);
@@ -96,14 +114,18 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
             <Bullets items={page.get} />
           </Card>
         </div>
-        <p className="mt-10 max-w-3xl text-lg leading-relaxed text-ink-700">{page.howItRuns}</p>
+        {page.howItRuns && (
+          <p className="mt-10 max-w-3xl text-lg leading-relaxed text-ink-700">{page.howItRuns}</p>
+        )}
 
         {page.sections.length > 0 && (
           <div className="mt-12 max-w-3xl">
             {page.sections.map((section) => (
               <div key={section.title} className="mt-8 first:mt-0">
                 <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-900">{section.title}</h2>
-                <p className="mt-2 text-lg leading-relaxed text-ink-700">{section.body}</p>
+                <p className="mt-2 text-lg leading-relaxed text-ink-700">
+                  <SectionBody body={section.body} link={section.link} />
+                </p>
               </div>
             ))}
           </div>
@@ -125,7 +147,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         <CtaPanel title={page.closingTitle} body={page.closingBody}>
           <Button href={quoteHref}>{page.ctaLabel}</Button>
           <Button href="/studio" variant="secondary">
-            See everything I do
+            See all studio services
           </Button>
         </CtaPanel>
       </Section>

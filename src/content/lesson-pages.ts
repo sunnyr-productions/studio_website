@@ -1,7 +1,8 @@
+import { lessonPricing, trialPhrase } from "@/content/lessons";
+
 /**
  * Copy for each /lessons/[slug] page, keyed by the slug in lessons.ts. Written
- * from Raul's interview answers (docs/interview-answers.md, gitignored). The
- * first lesson, pricing and house notes live once on /lessons.
+ * from Raul's interview answers (docs/interview-answers.md, gitignored).
  */
 export type LessonPage = {
   /** URL segment, may differ from the lesson slug (voice vs vocal). */
@@ -10,114 +11,69 @@ export type LessonPage = {
   metaTitle: string;
   metaDescription: string;
   intro: string;
-  sections: { title: string; body: string }[];
-  /** In person or online, what to bring, anything practical. */
-  practical: string;
+  paragraphs: string[];
+  /** Sits in the closing card with the buttons: what to bring, format, price. */
+  closing: string;
 };
+
+const { hourlyRate, trial } = lessonPricing;
 
 export const lessonPages: Record<string, LessonPage> = {
   guitar: {
     pageSlug: "guitar",
     h1: "Guitar lessons in Corvallis",
     metaTitle: "Guitar Lessons in Corvallis, OR",
-    metaDescription:
-      "One-on-one guitar lessons in Southtown, Corvallis, built around the songs you want to play. Beginners through experienced players. $20 half-hour trial.",
+    metaDescription: `Learn acoustic or electric guitar using songs you love, at any level. In-person lessons in Southtown, with a $${trial.price} trial.`,
     intro:
-      "I started lessons at 10 wanting to play Green Day, and my teacher wanted to teach classical. So I’ll ask what you listen to, and we’ll start there. We may not play it note for note. We’ll play it at your level.",
-    sections: [
-      {
-        title: "Your hands aren’t my hands",
-        body: "Lots of people struggle with barre chords, partly because everyone’s hands are different, and the way I play one might not work for you. Some things are always true: you want all the strings to ring out, and you shouldn’t get a hand cramp three minutes into a song. Past that, we’ll find what works for your hands, even if it doesn’t look like what I do.",
-      },
-      {
-        title: "Where I’ll push you",
-        body: "Open chords are great, but I teach barre chords earlier than most, because they open up the rest of the neck and make theory easier to understand. I also think everyone should know some fingerstyle, whatever you play.",
-      },
-      {
-        title: "Getting past the right notes",
-        body: "A teacher once listened to me play “Little Wing” and told me, “That’s correct, but it doesn’t feel like music.” Nobody had asked me about feeling before. If you’re at the stage where you can play it but it sounds like nothing, that’s worth a lesson too.",
-      },
+      "My first guitar teacher wanted a classical student. I was ten and wanted Green Day, so you can guess how that went. I’ve since come around on classical and I’m learning it now, but I haven’t forgotten what it’s like to sit through lessons on music you don’t care about. We’ll use the songs you play in the car, simplified as much as you need.",
+    paragraphs: [
+      "Everybody’s hands are different, which is why the internet’s confident advice about holding a guitar only gets you so far. Barre chords are the classic example. There’s no single shape that works for every hand, but there are things to check: does every string ring, and can you get through a whole song without your hand seizing up? We’ll keep adjusting until the answer to both is yes.",
+      "I do have a couple of firm opinions. Barre chords should come early, since they unlock the whole neck and make theory click. And anyone who plays with a pick should also learn to play with their fingers, whatever the genre.",
+      "At some point you may find you can play a song accurately and it still sounds flat. I got stuck there too, until a teacher told me as much about my “Little Wing.” Learning to put yourself into a phrase takes longer than learning the notes, and I think it matters more.",
     ],
-    practical:
-      "Guitar goes better in person, because I need to see your hands. You can use one of my acoustics or electrics, so you don’t need to own a guitar to start. If yours has a problem, bring it along. I learned repair on my own Strat.",
+    closing: `Bring your guitar if you have one, or use one of mine. Lessons go best in person, where I can see your hands. They’re $${hourlyRate} an hour, and you can start with ${trialPhrase}.`,
   },
   vocal: {
     pageSlug: "voice",
-    h1: "Voice lessons in Corvallis",
+    h1: "Voice and singing lessons in Corvallis",
     metaTitle: "Voice & Singing Lessons in Corvallis, OR",
-    metaDescription:
-      "One-on-one voice and singing lessons in Corvallis, Oregon or online, including for people who are embarrassed to sing. $20 half-hour trial.",
+    metaDescription: `Singing lessons for anyone, including people too nervous to sing in front of someone. In Corvallis or online, with a $${trial.price} trial.`,
     intro:
-      "A lot of people tell me they’re embarrassed to sing around me, and it makes me sad every time. Your voice doesn’t have to be good enough for anything. You never have to set foot on a stage. And if your friends clown on you for singing in the car, that’s a friend problem.",
-    sections: [
-      {
-        title: "If you’re too nervous to sing",
-        body: "Then we won’t start there. We can do sirens, trills and diction exercises, which feel less like singing and still work your voice, and I’ll do them with you, so we’re both being silly. You didn’t come here to be perfect. You came here to learn.",
-      },
-      {
-        title: "I was wrong about my own voice",
-        body: "I told everyone I was a baritone, because I was uncomfortable up high and afraid of my voice cracking. Then I auditioned for On the Rocks, and the music director said, “Nope, you’re definitely not a baritone.” I ended up the highest tenor in the group for years. I didn’t get there by learning the technically right way. I got there by finding what felt comfortable for my voice.",
-      },
-      {
-        title: "Who you’re comparing yourself to",
-        body: "Lady Gaga does this all day, with the best coaches in the world and healthcare the rest of us don’t have. She’s a strange thing to measure yourself against when you just want to sing along with the radio.",
-      },
+      "When I tell people I sing, a surprising number of them apologize for their own voices, and it bums me out. Singing along in the car isn’t an audition. The stars you’re comparing yourself to have world-class coaches, medical care most people can’t get, and all day to work at it.",
+    paragraphs: [
+      "We can ease in if you’re nervous. The first ten minutes might be nothing but sirens, lip trills and tongue twisters, with me doing them right alongside you and sounding just as ridiculous. Your voice warms up and the pressure drops before anybody has sung a real note.",
+      "You may also have your voice wrong. I spent years telling people I was a baritone, because high notes scared me and I didn’t trust my voice not to crack. When I auditioned for On the Rocks, the music director disagreed on the spot, and with his help I became the highest tenor in the group. What changed was that I stopped singing what I thought I was supposed to sing and went looking for what felt easy.",
+      "People also undersell plain repetition. I learned a lot in choir, musical theater and lessons, but I learned at least as much by singing constantly, usually without noticing. If you’ve been shushing yourself for years, just getting more reps in will change things.",
     ],
-    practical:
-      "Voice works well in person or online. You don’t need to read music or own a microphone. If you have a song you’d like to work on, bring it.",
+    closing: `Lessons work in person or online, and you don’t need experience or a microphone. Bring a song you like. It’s $${hourlyRate} an hour, and you can start with ${trialPhrase}.`,
   },
   production: {
     pageSlug: "production",
-    h1: "Music production lessons",
+    h1: "Music production lessons in Corvallis and online",
     metaTitle: "Music Production Lessons in Corvallis, OR",
-    metaDescription:
-      "Learn to build a track from scratch: grooves, sounds, synths and arrangement. Taught in Logic, in person in Corvallis or online. $20 half-hour trial.",
+    metaDescription: `Learn to make a track from nothing in Logic, in person in Corvallis or online, with a $${trial.price} trial.`,
     intro:
-      "How to actually build a track: making a groove, choosing sounds that work together, designing a synth, and knowing what each instrument usually does in a song. I got started at 17 with a birthday-present audio interface and Reaper, because Reaper was free.",
-    sections: [
-      {
-        title: "Where we’d start",
-        body: "If you’ve never opened a DAW, I’ll start with how sound gets into a computer and back out. A wave hits a microphone, becomes an electrical signal, becomes data, and eventually moves your speakers to make a wave again. Not many people stop to think about that, and it’s kind of magic.",
-      },
-      {
-        title: "Where you could be in a few months",
-        body: "If you already know a little music, you should be able to record your own beats and loops and put together a little song. It won’t be a top 40 hit. It’ll be something you can play for your friends.",
-      },
-      {
-        title: "What not to buy",
-        body: "Your DAW’s built-in plugins are more than enough, as long as you learn to use them. If a new plugin gets you excited to open your session and you can afford it, great. It should never be a choice between that and your utility bill.",
-      },
-      {
-        title: "A word about YouTube",
-        body: "I watch tutorials all the time, but when I was starting out I hopped between everyone’s method, because everyone says theirs is the right one. Part of what we’ll do is figure out your own workflow.",
-      },
+      "When I was 17, a friend got a little audio interface, and we recorded one of my songs in his bedroom with a drum loop and the sound of waves behind it. It wasn’t good. I was thrilled anyway, because I’d assumed recording meant paying for a real studio. I asked for my own interface for my next birthday and got to work in Reaper, which was free.",
+    paragraphs: [
+      "These lessons take you from an idea to a finished little track. We cover how to build a groove, how to pick sounds that get along, how to make a synth do what you want, and what each instrument usually does in a band.",
+      "If you’ve never opened recording software, our first conversation is about physics. Your voice moves air, a microphone turns that into electricity, a converter turns that into numbers, and eventually your speakers move air again. Everything in the software makes more sense once you have that picture, and it still amazes me a little.",
+      "I teach in Logic because I use it every day. Apart from key commands and menus, what you learn applies in Ableton, Pro Tools or whatever you end up using. You also don’t need to buy plugins. What came with your software can do nearly anything once you learn it, and a new one is only worth it if it gets you excited to open a session and doesn’t compete with your bills.",
+      "I’d like to save you some of the time I lost on YouTube, too. Everybody there has the one true workflow, and I tried most of them. You’ll find your own faster with someone to ask.",
     ],
-    practical:
-      "I use Logic every day, so that’s what I teach in. The ideas carry over to Ableton, Pro Tools or anything else, and only the key commands and interface are specific to Logic. Lessons work well online, since we’re both looking at a screen anyway.",
+    closing: `If you already play or sing a little, give it a few months and you should have a song you can show your friends. It won’t chart, but you’ll have made it from scratch. Lessons are $${hourlyRate} an hour, in person or online, and you can start with ${trialPhrase}.`,
   },
   "audio-engineering": {
     pageSlug: "audio-engineering",
-    h1: "Audio engineering lessons",
-    metaTitle: "Audio Engineering & Mixing Lessons in Corvallis, OR",
-    metaDescription:
-      "Mixing and recording lessons for people already making music, working on your own songs, from a working audio engineer in Corvallis, Oregon or online.",
+    h1: "Audio engineering lessons in Corvallis and online",
+    metaTitle: "Audio Engineering Lessons in Corvallis, OR",
+    metaDescription: "Learn mixing and recording on your own songs, in person in Corvallis or online.",
     intro:
-      "These are for people already making music. We open a song you’re working on and go through it together: what I’d do and why, what you were going for, and whether there’s a way to get there with fewer plugins on the chain.",
-    sections: [
-      {
-        title: "The first thing I’d fix",
-        body: "Usually how you’re listening. Your monitors or headphones don’t have to be top of the line. You just have to know them, by listening to a lot of music you love on them, so you’re not bouncing your mix and running to five different places to hear what’s wrong.",
-      },
-      {
-        title: "What my day job taught me",
-        body: "I work in live podcast production, where things go wrong constantly and the show’s still running. Learn your signal chain, so you know every place a problem could be, and check them one by one. Problems are almost always fixable.",
-      },
-      {
-        title: "Before you buy anything",
-        body: "The gear people waste money on is the gear they don’t use. Have a purpose before you buy something. If you don’t, it had better be a really good deal.",
-      },
+      "These are for people who are already making music and getting stuck on how it sounds. You bring a song in progress, we open it up together, and I ask why you made the choices you made. Then I show you what I’d try and why, often with fewer plugins.",
+    paragraphs: [
+      "Almost always, the first thing we look at is your listening setup, since you can’t fix what you can’t hear. That doesn’t take expensive speakers or headphones. It takes a pair you’ve heard hundreds of songs on, so you know what good sounds like through them and don’t have to run out to the car to check every bounce.",
+      "My day job adds a different kind of education. We run live podcast sessions with multiple cameras and a long signal path between microphones, mixers, recording software and video software, and something always crackles at the worst moment. You learn to keep a map of that chain in your head and walk it one connection at a time. Nearly every problem turns out to be fixable, and I’d like you to have that confidence at home.",
+      "As for gear, if you can’t name what you’d use it for, it’s probably a waste, unless it’s a steal.",
     ],
-    practical:
-      "Bring a recording or mix you’re working on, and headphones you know well. This works in person or online. If you want to learn to build tracks from scratch, you’re looking for production lessons instead.",
+    closing: `Not sure if this or production is the right fit? Production is how to make the track, and engineering is how to make it sound the way you hear it. If I mixed your song, we can also go through that session together at a discount. Lessons are $${hourlyRate} an hour, in person or online, and you can start with ${trialPhrase}.`,
   },
 };

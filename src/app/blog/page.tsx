@@ -6,7 +6,7 @@ import { getAllPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: "Blog: Recording, Mixing & Learning Music",
-  description: "Plain-English notes on recording, mixing, mastering, gear, and learning music.",
+  description: "Notes on recording, mixing and learning music, usually starting with something I got wrong.",
   alternates: { canonical: "/blog" },
 };
 
@@ -21,7 +21,7 @@ export default function BlogPage() {
       <p
         className="mt-3 max-w-xl leading-relaxed text-ink-700"
       >
-        Notes on recording, mixing, gear and learning music.
+        Notes on recording, mixing and learning music, usually starting with something I got wrong.
       </p>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">

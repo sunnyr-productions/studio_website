@@ -37,7 +37,7 @@ export function LazyCalEmbed({ calLink }: { calLink: string }) {
       {load ? (
         <CalEmbed calLink={calLink} />
       ) : (
-        <p className="p-8 text-sm text-ink-500">Loading the calendar…</p>
+        <p className="p-8 text-sm text-ink-500">Getting the calendar…</p>
       )}
     </div>
   );

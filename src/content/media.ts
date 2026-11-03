@@ -43,15 +43,15 @@ export const media = {
   },
   stratCase: {
     src: stratCaseImage,
-    alt: "A sunburst Fender Stratocaster in an open tweed case lined with red velvet",
+    alt: "A sunburst electric guitar in an open tweed case lined with red velvet",
   },
   stratBridge: {
     src: stratBridgeImage,
-    alt: "Black-and-white close-up of the bridge and strings of a Stratocaster",
+    alt: "Black-and-white close-up of the bridge and strings of an electric guitar",
   },
   taylor: {
     src: taylorImage,
-    alt: "A Taylor acoustic guitar with a marigold floral strap",
+    alt: "An acoustic guitar with a marigold floral strap",
   },
   voiceMic: {
     src: voiceMicImage,
@@ -64,7 +64,7 @@ export const media = {
   },
   band: {
     src: bandImage,
-    alt: "A band in black with their instruments, on a white floor scattered with confetti",
+    alt: "The wedding band in black and sunglasses with their instruments, on a white floor scattered with confetti",
   },
   arena: {
     src: arenaImage,
@@ -101,7 +101,7 @@ function slot(name: string, alt: string): Photo | null {
 /** Checked on each call so a newly added file shows up without a restart. */
 export function getHeroPhotos() {
   return {
-    lessons: slot("hero-lessons", "Raul playing an acoustic guitar on a bench on a mountain overlook"),
+    lessons: slot("hero-lessons", "Raul smiling and playing an acoustic guitar on a bench at a mountain overlook"),
     studio: slot("hero-studio", "Raul mixing at the desk at The sunny*r Studio"),
   };
 }

@@ -2,38 +2,32 @@ export type LessonType = {
   slug: string;
   name: string;
   blurb: string;
-  format: string;
   accent: "marigold" | "periwinkle" | "coral";
-  featured?: boolean;
 };
 
 export const lessonTypes: LessonType[] = [
   {
     slug: "guitar",
     name: "Guitar",
-    blurb: "The songs you actually listen to, at your level, in a way that works for your hands.",
-    format: "Best in person, since I need to see your hands",
+    blurb: "Acoustic or electric, using songs you already love, simplified as far as your hands need.",
     accent: "periwinkle",
   },
   {
     slug: "vocal",
     name: "Voice",
-    blurb: "For anyone who wants to sing, especially if you’re embarrassed to.",
-    format: "In-person or online",
+    blurb: "Whether you want to sing on a stage or just stop mouthing the words in the car.",
     accent: "marigold",
   },
   {
     slug: "production",
     name: "Music production",
-    blurb: "How to build a track in Logic, from your first groove to something you can play for your friends.",
-    format: "In-person or online",
+    blurb: "Making tracks from nothing in Logic: grooves, sounds, synths and how a song gets put together.",
     accent: "coral",
   },
   {
     slug: "audio-engineering",
     name: "Audio engineering",
-    blurb: "For people already making music. We open your song and talk through the decisions.",
-    format: "In-person or online",
+    blurb: "For people who already make music and want it to sound more like what they hear in their heads.",
     accent: "periwinkle",
   },
 ];
@@ -71,21 +65,21 @@ export type PricingTier = {
 
 export const pricingTiers: PricingTier[] = [
   {
-    name: "Trial Lesson",
-    price: `$${trial.price} / ${trial.minutes} min`,
-    forWho: "Half an hour to see if we get along. The fee just holds the time.",
+    name: "Trial",
+    price: `$${trial.price} for ${trial.minutes} minutes`,
+    forWho: "A low-stakes way to find out if we click.",
     accent: "marigold",
   },
   {
-    name: "Single Lesson",
-    price: `$${hourlyRate} / hour`,
-    forWho: "Same price whatever we're working on: guitar, voice, production, or engineering.",
+    name: "Single lesson",
+    price: `$${hourlyRate} an hour`,
+    forWho: "Book them one at a time for as long as you like.",
     accent: "periwinkle",
   },
   {
-    name: `${pack.lessons}-Lesson Pack`,
-    price: `$${pack.price} ($${packPerLesson} / lesson)`,
-    forWho: `Saves you $${packSavings} over booking ${pack.lessons} one at a time. Good once you know you're sticking with it.`,
+    name: "Four lessons",
+    price: `$${pack.price}`,
+    forWho: `That’s $${packPerLesson} each, or $${packSavings} less than paying one at a time, and it makes sense once you’re sure.`,
     accent: "coral",
   },
 ];

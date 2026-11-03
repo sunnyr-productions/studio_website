@@ -8,27 +8,28 @@ import { Section } from "@/components/ui/Section";
 import { Testimonials } from "@/components/ui/Testimonials";
 import { lessonPricing } from "@/content/lessons";
 import { getHeroPhotos } from "@/content/media";
-import { studioTerms } from "@/content/services";
+import { studioPrices, studioTerms } from "@/content/services";
 import { testimonials } from "@/content/testimonials";
 import raulHeadshot from "../../public/images/raul-headshot.jpg";
 
 export const metadata: Metadata = {
+  description: "One-on-one music lessons and song mixing from Raul, in Corvallis, Oregon and online.",
   alternates: { canonical: "/" },
 };
 
 const doors = [
   {
     id: "lessons",
-    title: "I want to learn",
-    body: `Guitar, voice, music production or audio engineering, in person in Corvallis or online. It starts with a $${lessonPricing.trial.price} half-hour conversation about what you want to play.`,
-    cta: "See lessons",
+    title: "Learn something",
+    body: `Guitar, singing, music production or audio engineering, one-on-one, at my place or over video. You’d start with a $${lessonPricing.trial.price} half hour where I ask what you’ve been listening to and you decide whether you can put up with me.`,
+    cta: "Lessons",
     href: "/lessons",
   },
   {
     id: "studio",
-    title: "I have a song",
-    body: `Mixing, mastering and recording for independent artists. I’m new to doing this for clients, so my first five mixing clients pay $${studioTerms.introMix.price} a song instead of $175.`,
-    cta: "See the studio",
+    title: "Finish a song",
+    body: `Mixing, mastering and recording for independent musicians, here or remotely. Working for clients is new for me, so the first five people who hire me for a mix pay $${studioTerms.introMix.price} a song rather than the usual $${studioPrices.mixing}.`,
+    cta: "The studio",
     href: "/studio",
   },
 ] as const;
@@ -42,15 +43,17 @@ export default function Home() {
         <div className="grid items-center gap-8 sm:grid-cols-[1fr_auto]">
           <div className="max-w-2xl">
             <p className="font-semibold tracking-[0.04em] text-marigold-800">
-              Music lessons and mixing in Corvallis, Oregon, and online
+              Corvallis, Oregon, and online
             </p>
             <h1 className="mt-3 font-display text-[clamp(2.5rem,3vw+1.75rem,4.25rem)] font-semibold leading-[1.08] tracking-tight text-ink-900">
-              For anyone who’s been told they’re doing music{" "}
-              <Scribble color="var(--color-marigold-500)">wrong</Scribble>.
+              Music lessons and mixing in Corvallis, starting with me{" "}
+              <Scribble color="var(--color-marigold-500)">listening</Scribble> to you
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-ink-700">
-              I’m Raul. I teach music and mix songs, and I think the right way to do both is
-              whichever one sounds and feels right to you. I’ll help you find it.
+              I’m Raul, and this is sunny*r. I’ve been singing for as long as anyone can remember and
+              playing guitar since I was ten, and these days I split my time between a day job at a
+              podcast studio and a converted bedroom full of instruments. That bedroom is where I
+              teach, and where I mix other people’s songs.
             </p>
           </div>
           <div className="relative row-start-1 h-32 w-32 overflow-hidden rounded-full border-[1.5px] border-ink-900/80 sm:col-start-2 sm:h-56 sm:w-56">
@@ -113,32 +116,34 @@ export default function Home() {
 
       <Section width="narrow">
         <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-          Why I do it this way
+          How I ended up working this way
         </h2>
         <div className="mt-5 space-y-4 text-lg leading-relaxed text-ink-700">
           <p>
-            I begged my parents for guitar lessons, and then I walked into them ashamed. I’d forget
-            the homework, or start it, struggle and give up, and I knew I was about to get scolded.
-            I found out as an adult that I’m autistic and have ADHD. At the time, I just knew that
-            other people didn’t seem to have this problem.
+            I was the kid who begged for music lessons and then dreaded them. Practice assignments
+            would slip my mind, or I’d get stuck halfway through and quit, and I went in each week
+            knowing I’d let someone down before I played a note. Nobody knew I was autistic and ADHD,
+            including me. That came much later.
           </p>
           <p>
-            I’ve had more bad music teachers than good ones. The good ones listened. One told me my
-            note-perfect “Little Wing” was correct but didn’t feel like music. A music director told
-            me I wasn’t the baritone I’d always said I was, and I ended up the highest tenor in the
-            group.
+            Plenty of my teachers were no help with any of this, but a few paid attention to what was
+            actually happening in front of them, and those are the ones I still think about. One
+            heard me play “Little Wing” perfectly and pointed out that it didn’t sound like music yet.
+            Nobody had ever said anything like that to me, and it changed what I thought I was
+            practicing for.
           </p>
           <p>
-            So if you show up to a lesson having done nothing, I’ll ask what happened. Maybe you had
-            a busy week. Maybe what I gave you was boring, and that’s on me.
+            I try to be that kind of teacher, and it turns out to be most of how I mix as well.
+            Whether it’s your fingers on a guitar neck or your voice in a chorus, I’d rather respond
+            to what I’m hearing than to a rulebook.
           </p>
         </div>
         <div className="mt-8 flex flex-wrap gap-4">
           <Button href="/about" variant="secondary">
-            More about me
+            The whole story
           </Button>
           <Button href="/music" variant="ghost">
-            Hear my music
+            Hear some music
           </Button>
         </div>
       </Section>

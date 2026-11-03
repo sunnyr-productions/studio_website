@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
 };
 
-const LAST_UPDATED = "October 7, 2026";
+const LAST_UPDATED = "November 2, 2026";
 
 /**
  * Describes what the code actually does — keep it in sync when adding a
@@ -57,11 +57,6 @@ export default function PrivacyPage() {
               <strong>Analytics.</strong> Vercel Web Analytics and Speed Insights count page views
               and measure load performance. They don’t use cookies and don’t identify you
               personally.
-            </li>
-            <li>
-              <strong>Your browser.</strong> Your light/dark theme and lessons/studio choice are
-              saved in your browser’s local storage so the site remembers them. That stays on
-              your device.
             </li>
           </ul>
 

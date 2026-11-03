@@ -1,3 +1,5 @@
+import { lessonPricing } from "@/content/lessons";
+import { studioPrices } from "@/content/services";
 import { siteConfig } from "@/lib/site-config";
 
 /**
@@ -69,11 +71,11 @@ export function localBusinessSchema() {
         serviceOffer(
           "Music lessons",
           "One-on-one guitar, vocal, production, and audio engineering lessons at one flat rate.",
-          45,
+          lessonPricing.trial.price,
         ),
-        serviceOffer("Mixing", "A balanced, release-ready mix from your raw tracks.", 175),
-        serviceOffer("Mastering", "Streaming-ready loudness and tonal polish.", 60),
-        serviceOffer("Recording sessions", "Studio tracking, engineered start to finish.", 75),
+        serviceOffer("Mixing", "A balanced, release-ready mix from your raw tracks.", studioPrices.mixing),
+        serviceOffer("Mastering", "Streaming-ready loudness and tonal polish.", studioPrices.mastering),
+        serviceOffer("Recording sessions", "Studio tracking, engineered start to finish.", studioPrices.recording),
       ],
     },
   };

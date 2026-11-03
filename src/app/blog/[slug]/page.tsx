@@ -71,7 +71,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         >
           &larr;
         </span>
-        Back to Blog
+        All posts
       </Link>
 
       <article className="mt-6 max-w-2xl">

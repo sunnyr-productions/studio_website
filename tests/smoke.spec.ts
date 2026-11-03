@@ -40,13 +40,15 @@ test("contact form submits with the API mocked", async ({ page }) => {
   });
 
   await page.goto("/contact?service=lessons");
+  // This label only appears once the form has read ?service= and hydrated.
+  await expect(page.getByLabel("What do you want to learn?")).toBeVisible();
   await page.getByLabel("Name", { exact: true }).fill("Test Person");
   await page.getByLabel("Email").fill("test@example.com");
-  await page.getByLabel("Message").fill("Hello, I'd like a trial lesson.");
+  await page.getByLabel("What do you want to learn?").fill("Hello, I'd like a trial lesson.");
   // The form rejects submissions faster than a person could type them.
   await page.waitForTimeout(2500);
   await page.getByRole("button", { name: "Send message" }).click();
 
-  await expect(page.getByRole("status")).toContainText("Thanks for reaching out");
+  await expect(page.getByRole("status")).toContainText("Got it, thanks");
   expect(payload).toMatchObject({ service: "lessons", email: "test@example.com" });
 });

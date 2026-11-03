@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -8,50 +9,40 @@ import { getStudioPhotos, media } from "@/content/media";
 
 export const metadata: Metadata = {
   title: "About Raul, Music Teacher & Audio Engineer in Corvallis",
-  description:
-    "Meet Raul: guitarist, singer, and audio engineer teaching lessons and mixing records from a home studio in Corvallis, Oregon.",
+  description: "How a kid who dreaded music lessons ended up teaching them.",
   alternates: { canonical: "/about" },
 };
 
+const link =
+  "font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600";
+
+// Instruments stay general on purpose: students visit the house, so no makes and models.
 const gearGroups = [
   {
-    title: "Room, monitoring & recording",
-    items: [
-      "DIY-treated home studio (Corvallis, OR)",
-      "Tascam 2x2 audio interface",
-      "PreSonus Eris Studio 5 monitors",
-      "HiFi-Man HE400i planar magnetic headphones",
-      "Zoom H2 portable recorder",
-    ],
+    title: "Monitoring",
+    items: ["PreSonus Eris Studio 5 monitors", "HiFi-Man HE400i headphones"],
   },
   {
     title: "Instruments on hand",
     items: [
-      "Music Man StingRay 5-string bass",
-      "Fender Stratocaster",
-      "Epiphone Les Paul 100",
-      "Banjitar (banjo-guitar)",
-      "Taylor 12e acoustic-electric guitar",
-      "MIDI piano controllers & drum pads",
+      "Electric, acoustic and classical guitars",
+      "A 5-string bass",
+      "A banjitar",
+      "Akai MPK Mini, a gift from my brother and still on my desk",
     ],
   },
   {
-    title: "Software & plugins",
-    items: [
-      "Logic Pro X",
-      "FabFilter (complete collection)",
-      "SoundToys (complete collection)",
-      "Waves, UAD, GoodHertz, and classic analog-gear emulations",
-    ],
+    title: "Software",
+    items: ["Logic Pro"],
   },
 ];
 
 const scrapbook: ScrapbookItem[] = [
-  { photo: media.polaroid, caption: "On the Rocks", tilt: "-rotate-2", placement: "lg:col-start-1" },
-  { photo: media.band, caption: "The wedding band", tilt: "rotate-1", placement: "lg:col-start-1" },
+  { photo: media.polaroid, caption: "On the Rocks, on some rocks", tilt: "-rotate-2", placement: "lg:col-start-1" },
+  { photo: media.band, caption: "The wedding band, dressed for “Wobble”", tilt: "rotate-1", placement: "lg:col-start-1" },
   {
     photo: media.arena,
-    caption: "On the Rocks, center court",
+    caption: "On the Rocks at center court",
     print: "night",
     tilt: "-rotate-1",
     // Small source (960px wide), so this keeps it from going soft on sharp screens.
@@ -76,37 +67,45 @@ export default function AboutPage() {
             <h1
               className="font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl"
             >
-              Hi, I’m Raul
+              About Raul
             </h1>
-            <p className="mt-2 text-sm text-ink-500">
-              He/they. sunny*r is pronounced “sunnier.”
+            <p className="mt-2 text-sm text-ink-500">He/they.</p>
+            <p className="mt-4 leading-relaxed text-ink-700">
+              My parents say I only ever threw one tantrum in public. I was two, and the cause was a First Act guitar on a store shelf (at Target, we think). I was already singing by then. There’s home video of me crawling around with socks on my hands, joining in on Christmas carols with my brother before I had all the words. The house ran on music: Eric Clapton CDs, Bollywood soundtracks, and ghazals, which are poems sung in Urdu or Hindi.
             </p>
             <p className="mt-4 leading-relaxed text-ink-700">
-              I’ve been a musician my entire life. There are home videos of me crawling on the floor with socks on my hands, singing Christmas carols with my brother before I could form full words. According to my parents, the only public tantrum I ever threw was at age two, over a First Act guitar on a shelf at Target.
+              I started Indian classical voice lessons at around eight, and they gave me lots of practice, if not much else. At ten I talked my way into guitar lessons by pointing out that the music store was right next to my taekwondo place. The first thing I learned was “Happy Birthday,” which I proudly played at a friend’s tenth birthday, and the first real song I remember butchering was “Sunshine of Your Love.” Given the name I ended up with, I find that pretty funny.
             </p>
             <p className="mt-4 leading-relaxed text-ink-700">
-              I started guitar lessons at 10, wanting to play Green Day. My teacher, a pretentious guy who saw himself as the next great classical guitarist, wasn’t interested in teaching anything but classical. He double-parked his car every time, and he once told me to tell my mom to stop giving him ties for Christmas. He wasn’t the only one, either: I’ve had more bad music teachers than good ones.
+              My teachers were all over the map. My first guitar teacher had big classical plans for himself and no interest in the punk I wanted to play, and he double-parked every week and once sent word through me that my mom should stop buying him ties. The next one mostly wanted to be a rock star, but he’d take any song I brought in, work it out by ear and write it down for me. Watching that made me want to do it too, so I learned.
             </p>
             <p className="mt-4 leading-relaxed text-ink-700">
-              The good ones made up for it. My next guitar teacher was honestly more interested in being a rock star, but he would listen to any song I brought in, figure it out by ear, and write out a tab for me. I thought that was so cool that I learned to do it myself. In middle and high school, my favorite teachers were my choir teachers. Choir was my escape from the stress of school, and they let me play the classroom piano, since I didn’t have one at home. Later, another guitar teacher listened to me play “Little Wing” and told me, “That’s correct, but it doesn’t feel like music.”
+              Choir is where things turned around. My middle and high school choir teachers ran the one room in the building where I could relax, and they let me loose on the classroom piano, since we didn’t have one at home. AP music theory then showed me that music was full of patterns, the same comforting kind I liked in math. And somewhere along the way, a guitar teacher heard my flawless “Little Wing” and told me it didn’t feel like music, which was the first time anyone had asked me for more than accuracy.
             </p>
             <p className="mt-4 leading-relaxed text-ink-700">
-              In college, I joined On the Rocks, an a cappella group at the University of Oregon, and became its music director. The first time I stood in front of a room of mostly older guys to teach a song, I was terrified, and getting 12 to 16 singers on the same page was a lot like herding cats. I arranged our version of{" "}
+              None of that fixed the other problem. I still couldn’t keep a practice routine, I still showed up ashamed, and I had no idea why until I was diagnosed autistic and ADHD as an adult. I try to remember that kid whenever a student tells me they didn’t get to it this week.
+            </p>
+            <p className="mt-4 leading-relaxed text-ink-700">
+              In college I auditioned for On the Rocks at the University of Oregon and announced that I was a baritone. The music director told me otherwise, and I ended up the highest tenor in the group. Before my freshman year was out, he’d also decided I should take over from him, and I can still remember how terrified I was the first time I stood in front of those mostly older guys to teach them a song. We had 12 to 16 singers at a time, some into country and some into rap, reading music at very different levels. So I made part tapes, leaned hard on analogies, and got a lot of practice at explaining one thing six ways. We kept going through the pandemic by directing remotely. I also took classes where we spliced actual tape and mixed on a console. I arranged our version of{" "}
               <a
                 href="https://open.spotify.com/track/2QffWR8a0kvTPZUYuZMB4A"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
+                className={link}
               >
                 “Move Me”
               </a>{" "}
-              and helped produce the vocals on our album <em>In the Groove</em>. I also sang in a wedding band during those years, which is how I came to sing “Wobble” off a lyric sheet, in a suit, to someone’s grandmother.
+              and helped produce the vocals on our album <em>In the Groove</em>.
             </p>
             <p className="mt-4 leading-relaxed text-ink-700">
-              I didn’t find out I’m autistic and have ADHD until I was an adult. As a kid I just knew I’d begged for these lessons, and I still walked into them ashamed because I hadn’t done the homework. I don’t want to be that kind of teacher. If you forget last week’s work, that’s fine. What I care about is whether you’re learning, and how you learn best.
+              I sang in a wedding band as well, which is how I came to read the lyrics of “Wobble” off a sheet, in a suit, to someone’s grandmother. Nobody at a wedding came to hear you. They came for the couple, and your job is to help the room feel something on their behalf. I’ve thought of music as a kind of service ever since, and I think that’s why I like teaching and mixing as much as performing.
             </p>
             <p className="mt-4 leading-relaxed text-ink-700">
-              Today I do audio and software engineering at a podcast studio, tutor computer science, and make my own music as sunny*r. Teaching music lessons and mixing for other artists are the newest parts. <a href="/music" className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600">You can hear some of it here</a>.
+              I’ve lived in Corvallis for about three years. My day job at a podcast studio is part audio and part software engineering, I tutor computer science on the side, and I write my own music as sunny*r. Lessons and client mixing are the newest things I’m doing, which is why you’re reading this.{" "}
+              <Link href="/music" className={link}>
+                Hear some of the music
+              </Link>
+              .
             </p>
           </div>
 
@@ -114,20 +113,32 @@ export default function AboutPage() {
         </div>
       </Section>
 
+      <Section width="narrow" space="tight">
+        <SectionHeading title="About the name" />
+        <div className="mt-6 space-y-4 leading-relaxed text-ink-700">
+          <p>
+            I needed an artist name one night in my now-wife’s college apartment, after playing everyone a song I was working on. I wanted something with sun in it, partly because a warm marigold yellow has always been my favorite color. I was joking about those names with a symbol in the middle when we landed on Sunnier, which doubles as Sunny R, as in Raul. It was spelled sunny.r for a while, until I decided an asterisk looked more like a star.
+          </p>
+          <p>
+            I drew the logo at an awful office job where there wasn’t enough work and you had to look busy anyway. It’s an ambigram, so it reads the same upside down, and I filled a lot of paper before I found a pattern that worked.
+          </p>
+        </div>
+      </Section>
+
       <Section>
         <SectionHeading
-          title="The room and the gear"
-          lede="I got lucky with the room. We moved into a house that happened to have a bedroom the right size for a small studio, and I found a really good deal on acoustic panels on Facebook Marketplace."
+          title="The room and what’s in it"
+          lede="The room is a stroke of luck. Our house happened to come with a bedroom the right size, and I found acoustic panels cheap on Facebook Marketplace, then spent a while measuring out where the monitors should go."
         />
         <div className="mt-6 max-w-[68ch] space-y-4 leading-relaxed text-ink-700">
           <p>
-            The one instrument I’d save in a fire is my Strat. I was impatient as a kid and wanted it to look like John Frusciante’s, so I sanded it down myself. Since then it’s been my project guitar. I learned guitar repair on it, from changing the wiring to shielding the pickup cavity, and it’s the guitar I know best.
+            Marketplace also gave me the banjitar, which has a banjo’s sound and a guitar’s tuning. I’m after the tone for my productions and have no plans to become a great banjitar player.
           </p>
           <p>
-            The banjitar was another Facebook Marketplace find. It’s a banjo with six strings, tuned like a guitar. I wanted that tone for my productions, and I’m not too concerned about being the best banjitar player in the world.
+            If there were a fire, I’d grab my Strat. As an impatient kid, I sanded it down to look like John Frusciante’s, and it has been my test subject ever since. New wiring, a shielded pickup cavity and locking tuners all happened on that guitar, and it’s how I learned to fix things.
           </p>
           <p>
-            I also bring a little field microphone when my wife and I go to national parks. When we find a small, cavernous space, I wait until no one’s walking by, set the microphone down and clap. I can turn that recording into a reverb, so a place we visited can end up on a song.
+            My favorite odd habit involves a small field recorder. On trips to national parks with my wife, I look for little cave-like spots, wait for the hikers to pass, and record myself clapping. With some processing, that clap becomes a reverb I can use on a track, so a place we’ve been can end up inside a song.
           </p>
         </div>
         <PhotoStrip

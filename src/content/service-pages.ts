@@ -1,8 +1,8 @@
-import { homeVisitNote, studioTerms } from "@/content/services";
+import { studioPrices, studioTerms } from "@/content/services";
 
 /**
  * Copy for each /studio/[slug] page, keyed by the slug in services.ts (which
- * owns the name, details and price). Written from Raul's interview answers
+ * owns the name and price). Written from Raul's interview answers
  * (docs/interview-answers.md, gitignored).
  */
 export type ServicePage = {
@@ -12,157 +12,148 @@ export type ServicePage = {
   intro: string;
   /** Lowest price in USD, for structured data. */
   minPrice: number;
-  /** Longer sections on how Raul works, shown after the need/get cards. */
-  sections: { title: string; body: string }[];
+  /** Shown after the need/get cards. `link` turns those words of the body into a link. */
+  sections: { title: string; body: string; link?: { text: string; href: string } }[];
   needTitle: string;
   need: string[];
   getTitle: string;
   get: string[];
   /** How the job runs, in a sentence or two. */
-  howItRuns: string;
+  howItRuns?: string;
   faqs: { q: string; a: string }[];
   closingTitle: string;
   closingBody: string;
   ctaLabel: string;
 };
 
-const { depositPercent, extraRevisionFee, firstVersionWeeks, introMix, revisionRounds } = studioTerms;
+const { depositPercent, introMix } = studioTerms;
 
-const deposit = `A ${depositPercent}% deposit holds your spot, and the rest is due before I send final files.`;
-
-const revisionsFaq = {
-  q: "How do revisions work?",
-  a: `${revisionRounds} rounds are included. A round is one list of notes sent together, so it helps to listen a few times and collect your thoughts first. Extra rounds are $${extraRevisionFee} each. A re-recorded vocal or a changed arrangement is new work, and I'll quote it before I start.`,
-};
-
-const sessionFilesFaq = {
-  q: "Do I get the session?",
-  a: "You get the finished files. Stems or multitracks can be added on. If you want to see how I built the mix, we can go through the session in a mixing lesson, and I can discount that if I mixed your song.",
-};
+const payment = `A ${depositPercent}% deposit holds your spot, and you pay the rest before I send final files.`;
 
 export const servicePages: Record<string, ServicePage> = {
   mixing: {
-    h1: "Mixing",
-    metaTitle: "Song Mixing in Corvallis, OR (and Remote)",
-    metaDescription:
-      "Mixing from $175/song in Corvallis, Oregon or remotely. First version within 2 weeks, with two revision rounds included.",
+    h1: "Song mixing in Corvallis and remotely",
+    metaTitle: "Song Mixing in Corvallis, OR and Remote",
+    metaDescription: `Mixing from $${studioPrices.mixing} a song, with a first version within two weeks and two rounds of revisions.`,
     intro:
-      "Before I change anything, I listen to your whole song as you sent it. If you send a reference, I'll want to know what you like about it: the tone, the balance, how one instrument sounds. My first job is figuring out what you want the song to do.",
-    minPrice: 175,
+      "You send me the tracks and tell me what you’re going for, and I turn them into a finished mix. I want to bring out whatever you were feeling when you wrote the song, which means I need to hear from you before I hear from my plugins.",
+    minPrice: studioPrices.mixing,
     sections: [
       {
-        title: "How I work",
-        body: "I start with the tedious part, which is organizing and grouping all the tracks, because it makes everything easier later. Then I mix from the top down, in small, broad strokes instead of dramatic changes. The emotion you intended is already in there, and I'm trying to bring it out.",
+        title: "What happens to your song",
+        body: "I set the tempo, key and sample rate, then group everything by role: drums, bass, guitars, keys, pads, texture. It’s tedious, and it pays off for the rest of the mix. Nearly every song gets parallel saturation on the drums and parallel compression on everything else. Beyond that, it depends entirely on the song.",
       },
       {
-        title: "If we disagree",
-        body: "Everything's worth a try. If you send a note I don't agree with, I'll still give you your version, and I'll give you mine too. Then you can listen and decide.",
+        title: "When I break the rules",
+        body: "On one dreamy song, I kept pushing the saturation until the whole mix was straining at the seams. A textbook would object, and it sounded like a daydream. I’ve also gotten this wrong in the other direction, as you can hear in the song I released twice.",
+        link: { text: "the song I released twice", href: "/blog/the-song-i-mixed-twice" },
       },
       {
-        title: "The right mix isn't always the correct one",
-        body: "On one daydreamy song, I pushed the saturation until the mix was bursting at the seams. It isn't what a textbook would tell you to do, but it suited the song. I've gotten it wrong the other way too, and I wrote about the song I had to mix twice on the blog.",
-      },
-      {
-        title: "Where I check it",
-        body: "Studio monitors and my own headphones first, then the car, a phone, a laptop, a TV soundbar, a little Bluetooth pill speaker, and earbuds.",
+        title: "How I check it",
+        body: "Last, I take it out into the world: my car, my phone, a laptop, the TV soundbar, a Bluetooth pill speaker, earbuds and headphones.",
       },
     ],
-    needTitle: "What I need from you",
+    needTitle: "Send me",
     need: [
-      "Your tracks as WAV files, all starting at the same point so they line up",
-      "Clear names on every track. \"Drum overhead left\" saves me a lot of guessing",
-      "A rough mix or a reference song, if you have one",
-      "What you like about it so far, and what bugs you",
+      "WAV files that all start from the same point",
+      "Track names that say what’s on them (please, I’m begging you)",
+      "A rough mix and references, if you have them",
+      "Notes on what’s working and what isn’t",
     ],
-    getTitle: "What you get back",
-    get: [
-      "The mix as a WAV and a streaming-ready MP3",
-      `${revisionRounds} rounds of revisions`,
-    ],
-    howItRuns: `I'll quote it before I start. ${deposit} You'll have a first version within ${firstVersionWeeks} weeks, and I can often go quicker if you need it.`,
+    getTitle: "You’ll get",
+    get: ["The finished mix as a WAV and an MP3, or any other format you need", "Two rounds of revisions"],
+    howItRuns: `You’ll get a quote first, and a ${depositPercent}% deposit holds your spot. The first version arrives within two weeks, and you pay the rest before I send final files.`,
     faqs: [
-      { q: "Who have you mixed for?", a: `Mixing for clients is a new business for me. So far I've mixed my own releases and projects with friends, and I do audio for a living in podcast production. My first ${introMix.clients} mixing clients pay $${introMix.price} a song instead of $175, in exchange for a testimonial and permission to show the work.` },
-      { q: "How many tracks can a session have?", a: "Up to 48. If your song is bigger than that, tell me and we can talk about it." },
-      revisionsFaq,
-      sessionFilesFaq,
-      { q: "Should I get it mastered too?", a: "Usually, if you're releasing it. Ideally that's someone other than your mix engineer, but I can do both if budget or simplicity matters more." },
+      {
+        q: "Who have you mixed for?",
+        a: `Mostly myself and friends, so far. That’s why my first five clients pay $${introMix.price} a song, and why I ask them for a testimonial and the OK to share the result. Mastering, if you want it, stays at the regular price.`,
+      },
+      { q: "What if I have a lot of tracks?", a: "The price covers up to 48, and I’m flexible if we talk about it first." },
+      {
+        q: "Can I have the session file?",
+        a: "It isn’t included, though stems and multitracks are available as an add-on. If you’re curious what I did, we can open it up in a lesson at a discount.",
+      },
+      {
+        q: "What counts as new work?",
+        a: "Re-recording a vocal or changing the arrangement falls outside your revisions, so I’ll quote it first.",
+      },
     ],
-    closingTitle: "Got a song ready to mix?",
-    closingBody: "Send me a link and tell me what you're going for. I'll get back to you with a quote within 2 business days.",
+    closingTitle: "Ready when you are.",
+    closingBody: "Send a link and a few words about the song, and you’ll have a quote within 2 business days.",
     ctaLabel: "Get a mixing quote",
   },
   mastering: {
-    h1: "Mastering",
-    metaTitle: "Audio Mastering in Corvallis, OR (and Remote)",
-    metaDescription:
-      "Mastering from $60/track in Corvallis, Oregon or remotely. The final polish on a finished mix, for a single or a whole EP or album.",
+    h1: "Audio mastering in Corvallis and remotely",
+    metaTitle: "Audio Mastering in Corvallis, OR and Remote",
+    metaDescription: `Mastering from $${studioPrices.mastering} a track for singles, EPs and albums.`,
     intro:
-      "When mastering is done well, it's subtle. It's the final polish, ideally by someone who didn't work on the mix, meant to catch any loose ends.",
-    minPrice: 60,
+      "Mastering should be hard to notice. It’s one last look from someone who wasn’t in the room for the mix, catching whatever slipped through before a song goes out. Ideally that’s a different person from your mix engineer.",
+    minPrice: studioPrices.mastering,
     sections: [
       {
         title: "Is your mix ready?",
-        body: "Here's the test: if you wouldn't be okay releasing the mix as it is, without mastering, it probably isn't ready. If you're hoping for something drastic, that usually needs to happen in the arrangement, production or mix. I'll tell you if I think that's the case.",
+        body: "Ask yourself whether you’d release it as it stands. If not, it needs more work before it gets to me, because big changes belong in the arrangement, the production or the mix. I’ll tell you if I think that’s where you are.",
       },
     ],
-    needTitle: "What I need from you",
-    need: [
-      "Your finished mix as a WAV, not clipping",
-      "A reference track, if there's a sound you're going for",
-    ],
-    getTitle: "What you get back",
-    get: ["The master as a WAV and a streaming-ready MP3"],
-    howItRuns: `I work from a finished mix. If yours isn't there yet, start with mixing. ${deposit}`,
+    needTitle: "Send me",
+    need: ["Your finished mix as a WAV, with no clipping", "A reference track, if you have a sound in mind"],
+    getTitle: "You’ll get",
+    get: ["The master as a WAV and an MP3, or any other format you need"],
     faqs: [
-      { q: "One song or a whole EP?", a: "Either. Single tracks start at $60, and I'll quote an EP or album as a set." },
-      { q: "How loud will it be?", a: "Loud enough to hold up next to other releases, without squashing it." },
+      {
+        q: "Can you do a whole EP?",
+        a: `Yes. A single track starts at $${studioPrices.mastering}, and a full EP or album gets one quote for the whole project.`,
+      },
+      { q: "How loud will it be?", a: "Competitive with other releases, without flattening it to get there." },
+      { q: "How do I pay?", a: payment },
     ],
-    closingTitle: "Is your mix finished?",
-    closingBody: "Send me a link and tell me how many tracks there are. I'll get back to you with a quote within 2 business days.",
+    closingTitle: "Finished mixing?",
+    closingBody: "Send a link and tell me how many tracks you have, and you’ll have a quote within 2 business days.",
     ctaLabel: "Get a mastering quote",
   },
   recording: {
-    h1: "Recording",
-    metaTitle: "Recording Studio Sessions in Corvallis, OR",
-    metaDescription:
-      "Record vocals or instruments at a treated home studio in Corvallis, Oregon from $75/hour, or get coached through recording vocals at home over video.",
+    h1: "Recording sessions in Corvallis",
+    metaTitle: "Recording Sessions in Corvallis, OR",
+    metaDescription: `Record vocals or instruments in a home studio from $${studioPrices.recording} an hour, or get vocal coaching over video.`,
     intro:
-      "The studio is a converted bedroom in my house in Corvallis, with acoustic panels, a futon and LED lights you can set however you like. It's not a grand space, but it works well for vocals and individual instruments.",
-    minPrice: 75,
+      "Recording here means a converted bedroom upstairs in my house, with acoustic panels on the walls, a futon to sit on and LED lights in whatever color helps. It’s small, so it suits singers and individual instruments. There’s a garage below it and nobody above, so you can actually let go, which I couldn’t do when I recorded my first single in a college apartment.",
+    minPrice: studioPrices.recording,
     sections: [
       {
         title: "How a session goes",
-        body: "I set up and organize the session before you get here. When you arrive, we go through what we're recording and how, what you want in your headphones, and whether you want a click. Then we take each part one by one. I like putting down a scratch version of every part first, so we have the structure of the song before we try to refine anything.",
+        body: "The session will be set up before you arrive. We start by going over what we’re tracking, what you’d like to hear in your headphones, and click or no click. I like getting a rough version of every part down first, so the whole song is there to react to, and then we go back through and improve them one at a time.",
       },
       {
-        title: "Forgetting you're recording",
-        body: "People get in their own heads when they're recording and can hear themselves back. When I helped produce vocals for my a cappella group, a lot of the job was helping everyone feel like they were back in the garage where we rehearsed. At my day job, I want people to forget the microphones are there and feel like they're talking in a living room. It's the same idea here.",
+        title: "Red light syndrome",
+        body: "Most people sing differently the moment they know it counts. I saw it producing vocals with my a cappella group, and I deal with it at work, where my job is partly making guests forget about the microphones. So we’ll take our time, and I’ll keep it relaxed until you’re sounding like yourself again.",
       },
       {
-        title: "What doesn't fit",
-        body: "I can't really record a full band here, and a full drum kit probably wouldn't work either. For anything bigger, we can rent a studio and I can record or produce you there.",
+        title: "What won’t fit",
+        body: "A full band won’t fit, and a drum kit probably wouldn’t sound great. We can rent a bigger room for those, and I’ll record or produce you there.",
       },
       {
         title: "Recording from home",
-        body: "If you're not nearby, I can coach you through recording vocals at home over video. I'll help you set your levels and coach you through the takes the same way I would in person.",
+        body: "If you’re not local, I can coach you through your own vocal takes over video, from setting levels to working through the song.",
       },
     ],
     needTitle: "Tell me",
-    need: [
-      "What you want to record, and roughly how many parts",
-      "Any demo that shows where the song is going",
-      "When you'd like to come in",
-    ],
-    getTitle: "What you get back",
-    get: ["Your multitracks and a rough bounce, the same week"],
-    howItRuns: `Sessions are quoted up front. ${deposit}`,
+    need: ["What you’re recording and roughly how many parts", "Any demo you have", "When you’d like to come in"],
+    getTitle: "You’ll get",
+    get: ["The multitracks and a rough bounce, that same week"],
     faqs: [
-      { q: "Where is the studio?", a: "Southtown, Corvallis, with free street parking nearby. I send the exact address when you book." },
-      { q: "What should I know before I come over?", a: homeVisitNote },
-      { q: "Can you mix it afterward?", a: "Yes. Mixing and mastering are quoted separately." },
+      {
+        q: "Where are you?",
+        a: "Southtown, with free parking on the street. You’ll get the address when you book.",
+      },
+      {
+        q: "Anything I should know before coming over?",
+        a: "Walk in rather than knocking or ringing, because of my dog, who also sheds a lot. The studio is upstairs and we ask for shoes off up there unless that’s a problem.",
+      },
+      { q: "Can you mix what we record?", a: "Yes, and I’ll quote that separately." },
     ],
     closingTitle: "Want to book some time?",
-    closingBody: "Tell me what you're recording and when you're free. We'll talk before you book, and if I don't think I can help, I'll say so.",
+    closingBody:
+      "Let me know what you’d like to track and what times suit you. We’ll talk before anything’s booked, and you’ll hear it from me if I’m not the right person for it.",
     ctaLabel: "Ask about a session",
   },
 };

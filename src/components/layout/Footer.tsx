@@ -19,7 +19,7 @@ export function Footer() {
             <LogoLockup />
           </Link>
           <p className="mt-4 font-display text-base italic text-marigold-800">
-            Pronounced “sunnier.”
+            Say it “sunnier.” If you said “sunny R,” you found the other half of the pun.
           </p>
           <p className="mt-2 max-w-sm text-sm text-ink-700">{siteConfig.tagline}</p>
         </div>
@@ -27,10 +27,10 @@ export function Footer() {
         <div className="flex flex-col gap-6 sm:items-end">
           <div className="flex flex-wrap gap-3 sm:justify-end">
             <Button href="/lessons#book" variant="primary" className="text-sm">
-              Book a lesson
+              Book a trial lesson
             </Button>
-            <Button href="/contact" variant="secondary" className="text-sm">
-              Get a quote
+            <Button href="/contact?service=mixing" variant="secondary" className="text-sm">
+              Ask about a song
             </Button>
           </div>
 

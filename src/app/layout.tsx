@@ -21,7 +21,7 @@ const fraunces = Fraunces({
   axes: ["opsz", "SOFT"],
 });
 
-const title = `Music Lessons, Mixing & Mastering in Corvallis, OR | ${siteConfig.name}`;
+const title = `Music Lessons & Mixing in Corvallis, OR | ${siteConfig.name}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),

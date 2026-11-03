@@ -14,25 +14,25 @@ export default function NotFound() {
       <h1
         className="mt-3 font-display text-4xl font-semibold tracking-tight text-ink-900"
       >
-        That page isn’t here
+        Nothing here
       </h1>
       <p
         className="mt-3 max-w-xl leading-relaxed text-ink-700"
       >
-        The link may be old, or the page may have moved.
+        That link is out of date, or it never worked in the first place. Try one of these.
       </p>
       <div
         className="mt-8 flex flex-wrap gap-4"
       >
-        <Button href="/">Back to home</Button>
+        <Button href="/">Home</Button>
         <Button href="/lessons" variant="secondary">
-          See lessons
+          Lessons
         </Button>
         <Button href="/studio" variant="secondary">
-          See the studio
+          Studio
         </Button>
         <Button href="/contact" variant="ghost">
-          Get in touch
+          Contact
         </Button>
       </div>
     </Section>

@@ -9,43 +9,42 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Testimonials } from "@/components/ui/Testimonials";
 import { getHeroPhotos, media } from "@/content/media";
 import { servicePages } from "@/content/service-pages";
-import { services, studioTerms } from "@/content/services";
+import { services, studioPrices, studioTerms } from "@/content/services";
 import { testimonials } from "@/content/testimonials";
 import { siteConfig } from "@/lib/site-config";
 import { faqPageSchema } from "@/lib/structured-data";
 
+const { depositPercent, extraRevisionFee, introMix } = studioTerms;
+
 export const metadata: Metadata = {
   title: "Mixing, Mastering & Recording in Corvallis, OR",
-  description:
-    "Mixing from $175 a song, mastering from $60 a track, and recording in Corvallis, Oregon or remotely. My first five mixing clients pay $125 a song.",
+  description: `Mixing from $${studioPrices.mixing} a song, mastering from $${studioPrices.mastering} a track and recording from $${studioPrices.recording} an hour. First five mixing clients pay $${introMix.price}.`,
   alternates: { canonical: "/studio" },
 };
-
-const { depositPercent, extraRevisionFee, firstVersionWeeks, introMix, revisionRounds } = studioTerms;
 
 const link =
   "font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600";
 
 const faqs = [
   {
-    q: "How long does it take?",
-    a: `You’ll have a first version of a mix within ${firstVersionWeeks} weeks, and I can often go quicker if you need it. For an EP or album, we’ll agree on a timeline first.`,
+    q: "How long will it take?",
+    a: "I’ll get you a first mix within two weeks, sooner if you have a deadline. Bigger projects get their own schedule.",
   },
   {
-    q: "How do revisions work?",
-    a: `${revisionRounds} rounds are included on every mix. A round is one list of notes sent together, and extra rounds are $${extraRevisionFee} each.`,
+    q: "What’s a round of revisions?",
+    a: `Everything you want changed, sent together in one list. Two rounds come with every mix, and more are $${extraRevisionFee} each.`,
   },
   {
-    q: "How do I pay?",
-    a: `I’ll quote it before I start. It’s ${depositPercent}% up front and the rest before I send final files.`,
+    q: "How does payment work?",
+    a: `You get a quote first. A ${depositPercent}% deposit books your spot, and you pay the rest before I send final files.`,
   },
   {
-    q: "What do I get at the end?",
-    a: "WAV and MP3 files. Stems or multitracks can be added on. After a recording session, you get your multitracks and a rough bounce the same week.",
+    q: "What files do I get?",
+    a: "A WAV and an MP3 of the finished song, plus any other format you need. Stems or multitracks cost extra. If you recorded here, the multitracks and a rough bounce reach you that same week.",
   },
   {
-    q: "Should the same person mix and master?",
-    a: "Ideally not, because a fresh pair of ears catches things. If your budget allows for a separate mastering engineer, I’d encourage it. If budget or simplicity matters more, I’ll do both from $210 a song.",
+    q: "Should one person mix and master?",
+    a: `A different person is better, since new ears catch what mine have stopped hearing. I’m happy to do both from $${studioPrices.mixAndMaster} a song when budget or simplicity wins.`,
   },
 ];
 
@@ -57,28 +56,30 @@ export default function StudioPage() {
       <Section space="hero">
         <HeroWithPhoto photo={getHeroPhotos().studio} accent="periwinkle">
           <p className="font-semibold tracking-[0.04em] text-periwinkle-700">
-            Mixing, mastering and recording in Corvallis, Oregon, and remotely
+            Corvallis, Oregon, and remote
           </p>
           <h1 className="mt-3 font-display text-[clamp(2.5rem,3vw+1.75rem,4.25rem)] font-semibold leading-[1.08] tracking-tight text-ink-900">
-            Send me your song, and tell me what you want it to do
+            Mixing, mastering and recording for independent musicians
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-ink-700">
-            I’m new to doing this for clients. I’ve mixed my own releases and projects with friends,
-            and audio is part of my day job, but I don’t have a client list to show you. So my first five mixing
-            clients pay ${introMix.price} a song instead of $175, in
-            exchange for a testimonial and permission to show the work.
+            The first thing I’ll ask about your song is what you want it to do to people. The first
+            thing you should ask me is who I’ve worked for, and the honest answer is mostly myself and
+            my friends. I’ve been recording and mixing since my teens, and audio is part of my job at
+            a podcast studio, but I haven’t run this as a business before. So I’m charging my first
+            five mixing clients ${introMix.price} a song, down from ${studioPrices.mixing}, and asking
+            each of them for a testimonial and the OK to share the result.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <Button href="/contact?service=mixing">Be one of the five</Button>
+            <Button href="/contact?service=mixing">Send me a song</Button>
             <Button href="/music" variant="secondary">
-              Hear my work
+              Hear some music
             </Button>
           </div>
         </HeroWithPhoto>
       </Section>
 
       <Section id="services" space="tight" className="scroll-mt-4">
-        <SectionHeading title="What I do" />
+        <SectionHeading title="What I can do for you" />
         <ul className="mt-6 border-t border-ink-900/20">
           {services.map((service) => (
             <li
@@ -108,23 +109,29 @@ export default function StudioPage() {
       </Section>
 
       <Section width="narrow">
-        <SectionHeading title="What working with me is like" />
+        <SectionHeading title="How I work on a song" />
         <div className="mt-6 space-y-4 text-lg leading-relaxed text-ink-700">
           <p>
-            Before I touch anything, I listen to your song the way you sent it and ask what you want
-            from it. Mixing to me is like sculpting: the emotion is already in there, and I’m carving
-            away to expose it.
+            For the first while, I don’t touch a single plugin. I get the session organized, listen
+            all the way through to exactly what you sent, and play any reference tracks you included,
+            because I want to know whether it’s the tone of that record you love or the way its
+            guitars sit. Then I work from the big picture inward, with small moves on whole groups of
+            tracks. I think of it like a block of marble: your song’s already in there, and too much
+            chiseling is how you lose it.
           </p>
           <p>
-            I’ll try anything you ask for, because the only bad idea is an unexplored one. If I think
-            a note hurts the song, I’ll still give you your version, and I’ll give you mine too.
+            If you hear something I don’t, we try it. Ideas are cheap to test, and I’m wrong often
+            enough to want to find out. When I truly disagree with a note, you’ll get the version you
+            asked for along with the one I’d pick, and you decide.
           </p>
           <p>
-            And I mix with my ears. There’s plenty of advice online about what a vocal EQ curve is
-            supposed to look like, and I followed a lot of it, until I noticed that nobody listens to
-            a curve. I wrote about that, and about{" "}
+            You can read about what I’ve learned the hard way in{" "}
             <Link href="/blog/the-song-i-mixed-twice" className={link}>
-              the song I had to mix twice
+              the song I released twice
+            </Link>{" "}
+            and my complaint about{" "}
+            <Link href="/blog/mix-with-your-ears" className={link}>
+              mixing by eye
             </Link>
             .
           </p>
@@ -132,13 +139,15 @@ export default function StudioPage() {
       </Section>
 
       <StageSection id="a-cappella" photo={media.stageGroup}>
-        <SectionHeading title="A cappella groups" />
+        <SectionHeading title="If you sing a cappella" />
         <p className="mt-4 text-lg leading-relaxed text-ink-700">
-          I spent college as music director of On the Rocks at the University of Oregon. I taught the
-          parts, ran rehearsals, arranged our version of “Move Me,” and helped produce the vocals on
-          our album <em>In the Groove</em>, which mostly meant helping everyone sing like they did in
-          the garage where we rehearsed. If your group needs an arrangement, part tapes, or someone
-          to run vocals in a session, I’d love to hear from you. That includes groups at OSU.
+          We should talk. I was music director of On the Rocks at the University of Oregon, where I
+          taught every part, ran rehearsals, arranged “Move Me” and helped produce the vocals on our
+          album <em>In the Groove</em>. Singers who sounded great in our rehearsal garage tended to
+          tighten up once they had headphones on, so much of my job was getting them back to that
+          garage in their heads. I can write you an arrangement, make part tapes that put your line in
+          one ear and the group in the other, or run your vocal session. OSU groups, I’m right here in
+          town.
         </p>
       </StageSection>
 
@@ -151,13 +160,13 @@ export default function StudioPage() {
       <Section id="faq">
         <Faq faqs={faqs} />
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          <Button href="/contact?service=mixing">Tell me about your song</Button>
+          <Button href="/contact?service=mixing">Send me a song</Button>
           <p className="text-sm text-ink-500">
-            I’ll send a quote within {siteConfig.responseTime.studio}. Looking for{" "}
+            Expect a quote within {siteConfig.responseTime.studio}. Want to learn instead?{" "}
             <Link href="/lessons" className={link}>
-              lessons
-            </Link>{" "}
-            instead?
+              See lessons
+            </Link>
+            .
           </p>
         </div>
       </Section>

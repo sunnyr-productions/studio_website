@@ -108,17 +108,17 @@ function safeFirstName(name: string): string | null {
 function nextSteps(service: string): string {
   if (service === LESSON_SERVICE) {
     return [
-      `Most people start with ${trialPhrase}. I'll write back with a few open times, or you can grab one yourself at ${siteConfig.url}/lessons#book.`,
-      `You pay at the lesson, by ${lessonPricing.paymentMethods}.`,
+      `If you’d rather not wait, you can grab ${trialPhrase} at ${siteConfig.url}/lessons#book.`,
+      `Lessons are paid in person with ${lessonPricing.paymentMethods}.`,
     ].join(" ");
   }
   if (isStudioService(service)) {
     return [
-      "I'll listen to anything you linked and send you a fixed price and a timeline.",
-      `If it looks good, a ${studioTerms.depositPercent}% deposit holds your spot, and the rest is due before I send final files.`,
+      "I’ll listen to whatever you linked and send you a price and a timeline.",
+      `If you’re happy with those, a ${studioTerms.depositPercent}% deposit holds your spot, and you pay the rest before I send final files.`,
     ].join(" ");
   }
-  return "I'll read through your message and point you in the right direction.";
+  return "I’ll read it and let you know what I can do.";
 }
 
 /**
@@ -135,7 +135,7 @@ export async function sendInquiryConfirmation(submission: ContactSubmission): Pr
   const text = [
     firstName ? `Hi ${firstName},` : "Hi there,",
     "",
-    `Thanks for getting in touch! Your message about ${serviceLabel?.toLowerCase()} came through, and I'll get back to you within ${
+    `This is an automatic note to say your message about ${serviceLabel?.toLowerCase()} reached me. I’ll write back myself within ${
       isStudioService(submission.service)
         ? siteConfig.responseTime.studio
         : submission.service === LESSON_SERVICE
@@ -145,21 +145,18 @@ export async function sendInquiryConfirmation(submission: ContactSubmission): Pr
     "",
     nextSteps(submission.service),
     "",
-    "If you think of anything else in the meantime, just reply to this email and it comes straight to me.",
+    "Anything to add? Just reply here.",
     "",
-    "Talk soon,",
-    "Raul",
-    siteConfig.name,
+    "Raul, sunny*r",
     "",
-    "(You're getting this because this address was entered in the contact form at",
-    `${siteConfig.url}. If that wasn't you, you can ignore this. Nothing else will be sent.)`,
+    `You got this because someone entered this address on the contact form at ${siteConfig.url}. If that wasn’t you, you can ignore it, and you won’t hear from me again.`,
   ].join("\n");
 
   await sendEmail({
     from: `${siteConfig.name} <${FROM_ADDRESS}>`,
     to: submission.email,
     replyTo: siteConfig.email,
-    subject: `Got your message | ${siteConfig.name}`,
+    subject: "Got your message",
     text,
   });
   return true;
