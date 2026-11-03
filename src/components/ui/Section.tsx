@@ -81,14 +81,22 @@ export function Section({
   className?: string;
   id?: string;
 }) {
+  // The content sits on a frosted panel, inset like the header so their edges
+  // and the copy's left edge line up. A narrow column gets a narrower panel.
+  // `.depth` puts its photos and copy on their own layers (see globals.css).
   return (
     <section
       id={id}
-      className={`relative overflow-hidden ${className}`}
+      className={`relative overflow-hidden px-2 sm:px-3 ${className}`}
     >
-      {pattern === "dots" && <DotsPattern />}
-      {pattern === "waveform" && <WaveformPattern />}
-      <div className={`relative mx-auto px-6 ${widthClasses[width]} ${spaceClasses[space]}`}>
+      <div
+        aria-hidden="true"
+        className={`section-panel column-inset ${width === "narrow" ? "[--column:51rem]" : ""}`}
+      >
+        {pattern === "dots" && <DotsPattern />}
+        {pattern === "waveform" && <WaveformPattern />}
+      </div>
+      <div className={`depth relative mx-auto px-4 sm:px-6 ${widthClasses[width]} ${spaceClasses[space]}`}>
         {children}
       </div>
     </section>

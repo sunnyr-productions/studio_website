@@ -22,6 +22,9 @@ const outlined = {
 
 const line = { ...outlined, fill: "none" } as const;
 
+const notesOutline = { ...outlined, stroke: "var(--color-periwinkle-600)" } as const;
+const notesLine = { ...notesOutline, fill: "none" } as const;
+
 export const skyThings: Record<
   SkyThingName,
   {
@@ -133,18 +136,20 @@ export const skyThings: Record<
       </>
     ),
   },
+  // Periwinkle rather than ink, so notes drifting behind the copy don't read as
+  // part of the text.
   notes: {
     viewBox: "0 0 80 70",
     width: 66,
     wobble: 10,
     drawing: (
       <>
-        <path d="M18 54V16l26-7v36" {...line} strokeWidth={2} />
-        <path d="M18 16l26-7v7l-26 7z" fill="var(--color-ink-700)" {...outlined} />
-        <ellipse cx="11" cy="55" rx="8" ry="6" fill="var(--color-ink-700)" {...outlined} />
-        <ellipse cx="37" cy="46" rx="8" ry="6" fill="var(--color-ink-700)" {...outlined} />
-        <path d="M66 42V20c2 5 8 6 9 12" {...line} strokeWidth={2} />
-        <ellipse cx="60" cy="43" rx="7" ry="5" fill="var(--color-ink-700)" {...outlined} />
+        <path d="M18 54V16l26-7v36" {...notesLine} strokeWidth={2} />
+        <path d="M18 16l26-7v7l-26 7z" fill="var(--color-periwinkle-600)" {...notesOutline} />
+        <ellipse cx="11" cy="55" rx="8" ry="6" fill="var(--color-periwinkle-600)" {...notesOutline} />
+        <ellipse cx="37" cy="46" rx="8" ry="6" fill="var(--color-periwinkle-600)" {...notesOutline} />
+        <path d="M66 42V20c2 5 8 6 9 12" {...notesLine} strokeWidth={2} />
+        <ellipse cx="60" cy="43" rx="7" ry="5" fill="var(--color-periwinkle-600)" {...notesOutline} />
       </>
     ),
   },

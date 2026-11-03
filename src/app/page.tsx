@@ -56,7 +56,7 @@ export default function Home() {
               and mix other people’s songs.
             </p>
           </div>
-          <div className="relative row-start-1 h-32 w-32 overflow-hidden rounded-full border-[1.5px] border-ink-900/80 sm:col-start-2 sm:h-56 sm:w-56">
+          <div className="depth-media relative row-start-1 h-32 w-32 overflow-hidden rounded-full border-[1.5px] border-ink-900/80 sm:col-start-2 sm:h-56 sm:w-56">
             <Image
               src={raulHeadshot}
               alt="Raul"

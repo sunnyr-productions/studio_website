@@ -50,6 +50,23 @@
     #2a2150 100%
   );
   --surface-card: linear-gradient(150deg, #fff7ef 0%, #fbe9dc 100%);
+
+  /* Depth, back to front. The sky's layers (Sky.tsx) and the page's panels,
+     photos and copy all stack in the one root stacking context, so a thing
+     drifting past can pass behind a section's glass, or in front of its photos
+     but behind its words. See .depth below for how the page keeps out of the
+     way. */
+  --z-cloud-back: 1;
+  --z-thing-back: 2;
+  --z-panel: 3;
+  --z-cloud-front: 4;
+  --z-media: 5;
+  --z-thing-front: 6;
+  --z-copy: 7;
+
+  /* The width every full-width panel shares (header, section panels, banners,
+     footer), so their edges line up down the page. */
+  --column-max: 74rem;
 }
 
 /* Night: the footer redefines the colour tokens, so everything inside it (text,
@@ -92,13 +109,22 @@
 }
 
 /* The orange of the On the Rocks stage backdrop, sampled from the top of the photo
-   in StageSection. Body text on it is about 5.3:1. */
+   in StageSection. Body text on it is about 5.3:1. The orange is painted on a
+   pseudo-element at the media layer, so the copy above it can sit on the copy
+   layer with the front sky things passing in between. */
 .surface-stage {
   --color-ink-500: #fff1e3;
   --color-ink-700: #fff5ea;
   --color-ink-900: #fffaf3;
-  background-color: #c82402;
   color: var(--color-ink-900);
+}
+
+.surface-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-media);
+  background-color: #c82402;
 }
 
 @theme {
@@ -160,10 +186,11 @@ body {
   background: var(--sky-day);
 }
 
+/* No backdrop blur: a back cloud only ever has the plain gradient behind it, and a
+   front one the already-frosted panels, so blur would change nothing you can see
+   and is the costliest thing on the page while you scroll. */
 .cloud-glass {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.16));
-  -webkit-backdrop-filter: blur(6px) saturate(1.15);
-  backdrop-filter: blur(6px) saturate(1.15);
 }
 
 /* The header and footer panels share one finish: a fine light border, a highlight
@@ -192,6 +219,67 @@ body {
 .surface-night {
   background: var(--sky-night);
   color: var(--color-ink-900);
+}
+
+/* Inset from the screen's edge like the header, and centered at --column-max
+   (or --column, for a narrower panel) once there's room. */
+.column-inset {
+  margin-inline: max(0.5rem, (100% - var(--column, var(--column-max))) / 2);
+}
+
+@media (min-width: 40rem) {
+  .column-inset {
+    margin-inline: max(0.75rem, (100% - var(--column, var(--column-max))) / 2);
+  }
+}
+
+/* The frosted panel behind each section's content (Section.tsx). Much thinner
+   than the header's glass, so the clouds and things behind it still show
+   through, just softened. Its light blur also keeps scrolling smooth: blur is
+   the expensive part, and these panels cover most of the page. Inset top and
+   bottom so neighbouring panels show a strip of sky between them. */
+.section-panel {
+  position: absolute;
+  inset: 0.375rem 0;
+  z-index: var(--z-panel);
+  overflow: hidden;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.14));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 10px 30px -16px rgba(31, 36, 48, 0.2);
+  -webkit-backdrop-filter: blur(5px) saturate(1.15);
+  backdrop-filter: blur(5px) saturate(1.15);
+}
+
+/* Inside a section (.depth), photos sit on the media layer and everything else
+   on the copy layer, so the front sky things pass between them. Neither can be
+   set on a box that holds the other, which would trap both in one stacking
+   context: a box holding a photo gets no z-index and passes the job on to its
+   children. Cards are the exception; they're opaque, so the whole card counts as
+   copy. In the base layer, so a utility like `absolute` or `z-10` still wins. */
+@layer base {
+  .depth-media {
+    position: relative;
+    z-index: var(--z-media);
+  }
+
+  :where(.depth, .depth :has(.depth-media)) > :where(:not(.depth-media, :has(.depth-media))),
+  :where(.depth) .surface-card:has(.depth-media) {
+    position: relative;
+    z-index: var(--z-copy);
+  }
+}
+
+/* Without :has() the rule above can't tell what holds a photo, so lift the whole
+   section above the front layers rather than risk glass blurring the words. */
+@supports not selector(:has(*)) {
+  .depth > * {
+    position: relative;
+    z-index: var(--z-copy);
+  }
 }
 
 .surface-card {

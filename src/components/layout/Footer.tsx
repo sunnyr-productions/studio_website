@@ -7,8 +7,9 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="surface-night mt-auto px-2 pb-2 pt-[230px] sm:px-3 sm:pb-3">
-      <div className="panel-glass relative">
+    <footer className="surface-night mt-auto pb-2 pt-[230px] sm:pb-3">
+      {/* Above every sky layer, which would otherwise drift across the footer's copy. */}
+      <div className="panel-glass column-inset relative z-[var(--z-copy)]">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 pb-10 pt-8 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <Link

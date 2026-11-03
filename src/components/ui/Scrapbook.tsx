@@ -23,7 +23,7 @@ export function Scrapbook({ items, className = "" }: { items: ScrapbookItem[]; c
       {items.map(({ photo, caption, print = "paper", tilt, placement = "" }) => (
         <li key={caption} className={placement}>
           <figure
-            className={`border-[1.5px] border-ink-900/80 p-2.5 shadow-[3px_4px_0_0_var(--sketch-shadow)] transition-transform duration-300 motion-safe:hover:rotate-0 ${tilt} ${
+            className={`depth-media border-[1.5px] border-ink-900/80 p-2.5 shadow-[3px_4px_0_0_var(--sketch-shadow)] transition-transform duration-300 motion-safe:hover:rotate-0 ${tilt} ${
               print === "night" ? "surface-night surface-card" : "bg-[#fffdf7]"
             }`}
           >
