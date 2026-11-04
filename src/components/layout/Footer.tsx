@@ -2,14 +2,18 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/site-config";
 import { Button } from "@/components/ui/Button";
 import { LogoLockup } from "@/components/ui/LogoLockup";
+import { Falls } from "@/components/layout/Scenery";
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="surface-night mt-auto pb-2 pt-[230px] sm:pb-3">
+    // Pulled up over the scenery's resting place, so the river reaches the edge
+    // just above the copy and falls behind it.
+    <footer className="surface-night relative -mt-[var(--footer-dusk)] pb-2 pt-[var(--footer-dusk)] sm:pb-3">
+      <Falls />
       {/* Above every sky layer, which would otherwise drift across the footer's copy. */}
-      <div className="panel-glass column-inset relative z-[var(--z-copy)]">
+      <div className="column-inset relative z-[var(--z-copy)]">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 pb-10 pt-8 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <Link

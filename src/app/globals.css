@@ -52,21 +52,27 @@
   --surface-card: linear-gradient(150deg, #fff7ef 0%, #fbe9dc 100%);
 
   /* Depth, back to front. The sky's layers (Sky.tsx) and the page's panels,
-     photos and copy all stack in the one root stacking context, so a thing
-     drifting past can pass behind a section's glass, or in front of its photos
-     but behind its words. See .depth below for how the page keeps out of the
-     way. */
+     photos and copy all stack in the one root stacking context, so the things
+     drifting past go behind a section's glass, and a big cloud can pass in front
+     of the glass but under its photos and words. See .depth below for how the
+     page keeps out of the way. The scenery (Scenery.tsx) is the forest held at
+     the bottom of the screen. */
   --z-cloud-back: 1;
-  --z-thing-back: 2;
-  --z-panel: 3;
-  --z-cloud-front: 4;
-  --z-media: 5;
-  --z-thing-front: 6;
+  --z-scenery: 2;
+  --z-thing: 3;
+  --z-panel: 4;
+  --z-cloud-front: 5;
+  --z-media: 6;
   --z-copy: 7;
 
   /* The width every full-width panel shares (header, section panels, banners,
      footer), so their edges line up down the page. */
   --column-max: 74rem;
+
+  /* The stretch of sunset at the top of the footer, above its copy. The scenery
+     comes to rest in it at the end of the page, and the river goes over the edge
+     at its foot, falling behind the footer's copy (Falls in Scenery.tsx). */
+  --footer-dusk: 230px;
 }
 
 /* Night: the footer redefines the colour tokens, so everything inside it (text,
@@ -110,8 +116,8 @@
 
 /* The orange of the On the Rocks stage backdrop, sampled from the top of the photo
    in StageSection. Body text on it is about 5.3:1. The orange is painted on a
-   pseudo-element at the media layer, so the copy above it can sit on the copy
-   layer with the front sky things passing in between. */
+   pseudo-element at the media layer, under the copy on the copy layer and over
+   the front clouds. */
 .surface-stage {
   --color-ink-500: #fff1e3;
   --color-ink-700: #fff5ea;
@@ -180,8 +186,9 @@
 }
 
 /* The sky is on <body> so it runs behind the header. The footer's night starts
-   transparent, so it picks up wherever the sky has got to. It's painted on an
-   unpositioned element, which keeps it behind the clouds (see Sky.tsx). */
+   transparent, so it picks up wherever the sky has got to. Both are painted on
+   unpositioned elements, which keeps them at the back, behind the clouds and the
+   scenery (see Sky.tsx and Scenery.tsx). */
 body {
   background: var(--sky-day);
 }
@@ -193,8 +200,8 @@ body {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.16));
 }
 
-/* The header and footer panels share one finish: a fine light border, a highlight
-   along the top edge, a soft shadow, and the same corners. */
+/* The header's panel: a fine light border, a highlight along the top edge, a soft
+   shadow, and the same corners as the section panels. */
 .panel-glass {
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 1.25rem;
@@ -205,15 +212,6 @@ body {
     0 10px 30px -12px rgba(31, 36, 48, 0.28);
   -webkit-backdrop-filter: blur(22px) saturate(1.3);
   backdrop-filter: blur(22px) saturate(1.3);
-}
-
-.surface-night .panel-glass {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    0 1px 2px rgba(10, 8, 30, 0.3),
-    0 18px 40px -16px rgba(10, 8, 30, 0.6);
 }
 
 .surface-night {
@@ -236,8 +234,11 @@ body {
 /* The frosted panel behind each section's content (Section.tsx). Much thinner
    than the header's glass, so the clouds and things behind it still show
    through, just softened. Its light blur also keeps scrolling smooth: blur is
-   the expensive part, and these panels cover most of the page. Inset top and
-   bottom so neighbouring panels show a strip of sky between them. */
+   the expensive part, and these panels cover most of the page. Like real frosted
+   glass it hazes what's behind it, lifting the dark forest toward the light
+   sky's level so the copy stays readable over it; the sky itself comes through
+   much as it is. Inset top and bottom so neighbouring panels show a strip of sky
+   between them. */
 .section-panel {
   position: absolute;
   inset: 0.375rem 0;
@@ -246,16 +247,16 @@ body {
   pointer-events: none;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 1.25rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.14));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.2));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.6),
     0 10px 30px -16px rgba(31, 36, 48, 0.2);
-  -webkit-backdrop-filter: blur(5px) saturate(1.15);
-  backdrop-filter: blur(5px) saturate(1.15);
+  -webkit-backdrop-filter: blur(5px) contrast(0.55) brightness(1.25) saturate(1.45);
+  backdrop-filter: blur(5px) contrast(0.55) brightness(1.25) saturate(1.45);
 }
 
 /* Inside a section (.depth), photos sit on the media layer and everything else
-   on the copy layer, so the front sky things pass between them. Neither can be
+   on the copy layer, both above the front clouds. Neither can be
    set on a box that holds the other, which would trap both in one stacking
    context: a box holding a photo gets no z-index and passes the job on to its
    children. Cards are the exception; they're opaque, so the whole card counts as

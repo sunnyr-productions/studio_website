@@ -10,9 +10,10 @@ import { skyThings, type SkyThingName } from "./SkyThings";
  * own sky that stays the same between visits and matches on server and client.
  * Spacing is in pixels and clipped to the page, so a short page shows less.
  *
- * Both come in a back and a front layer, which the page's panels, photos and
- * copy slot between (the --z-* tokens in globals.css). Big clouds and every
- * other thing go in front; the rest sit behind the frosted section panels.
+ * The clouds come in a back and a front layer, which the page's panels, photos
+ * and copy slot between (the --z-* tokens in globals.css): big clouds go in
+ * front, the rest behind the frosted section panels. The things all fly behind
+ * the panels, so they never cross the copy.
  */
 const SHAPES = [
   "M40 100a30 30 0 0 1-4-59a42 42 0 0 1 76-18a34 34 0 0 1 56 14a37 37 0 0 1 34 63z",
@@ -41,7 +42,7 @@ const FIRST_THING: Record<string, SkyThingName> = {
 };
 
 /** Mulberry32: small seeded generator. */
-function seeded(seed: number) {
+export function seeded(seed: number) {
   return () => {
     seed = (seed + 0x6d2b79f5) | 0;
     let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
@@ -103,8 +104,9 @@ function buildSky(pathname: string) {
       direction,
       speed: 0.28 + random() * 0.3,
       phase: random() * Math.PI * 2,
-      // The page's first thing is in front, where it's easiest to spot.
-      front: i % 2 === 0,
+      // Every other one is nearer, bigger and brighter, starting with the page's
+      // first, where it's easiest to spot.
+      near: i % 2 === 0,
     };
   });
 
@@ -153,8 +155,8 @@ function ThingShape({ thing, index }: { thing: Thing; index: number }) {
       data-thing={index}
       data-sky={thing.name}
       // Further away reads smaller and fainter.
-      className={`absolute ${thing.front ? "opacity-90" : "opacity-60"}`}
-      style={{ top: thing.top, left: `${thing.left}%`, width: thing.front ? art.width : art.width * 0.75 }}
+      className={`absolute ${thing.near ? "opacity-90" : "opacity-60"}`}
+      style={{ top: thing.top, left: `${thing.left}%`, width: thing.near ? art.width : art.width * 0.75 }}
     >
       <svg
         viewBox={art.viewBox}
@@ -212,23 +214,20 @@ export function Sky() {
     };
   }, [clouds, things]);
 
-  const layer = (front: boolean) => ({
-    clouds: clouds.map((cloud, i) =>
+  const cloudLayer = (front: boolean) =>
+    clouds.map((cloud, i) =>
       cloud.front === front ? <CloudShape key={`${pathname}-cloud-${i}`} cloud={cloud} index={i} /> : null,
-    ),
-    things: things.map((thing, i) =>
-      thing.front === front ? <ThingShape key={`${pathname}-thing-${i}`} thing={thing} index={i} /> : null,
-    ),
-  });
-  const back = layer(false);
-  const front = layer(true);
+    );
 
   return (
     <div ref={sky} aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 z-[var(--z-cloud-back)]">{back.clouds}</div>
-      <div className="absolute inset-0 z-[var(--z-thing-back)]">{back.things}</div>
-      <div className="absolute inset-0 z-[var(--z-cloud-front)]">{front.clouds}</div>
-      <div className="absolute inset-0 z-[var(--z-thing-front)]">{front.things}</div>
+      <div className="absolute inset-0 z-[var(--z-cloud-back)]">{cloudLayer(false)}</div>
+      <div className="absolute inset-0 z-[var(--z-thing)]">
+        {things.map((thing, i) => (
+          <ThingShape key={`${pathname}-thing-${i}`} thing={thing} index={i} />
+        ))}
+      </div>
+      <div className="absolute inset-0 z-[var(--z-cloud-front)]">{cloudLayer(true)}</div>
     </div>
   );
 }
