@@ -1,9 +1,12 @@
+import type { ReactNode } from "react";
 import { Logo } from "./Logo";
 
 type LogoLockupProps = {
   className?: string;
   /** "horizontal" for headers/wide spaces, "stacked" for square/social contexts. */
   variant?: "horizontal" | "stacked";
+  /** Drawn behind the mark, centred on it. */
+  behindMark?: ReactNode;
 };
 
 /**
@@ -12,7 +15,7 @@ type LogoLockupProps = {
  * They sit inside a band whose rules run in to meet the mark's own curves.
  * `.logo-lockup` in globals.css owns the sizes and the rules.
  */
-export function LogoLockup({ className = "", variant = "horizontal" }: LogoLockupProps) {
+export function LogoLockup({ className = "", variant = "horizontal", behindMark }: LogoLockupProps) {
   // The negative margin drops the tracking after the last letter, which would
   // otherwise push each word off center.
   const label =
@@ -38,7 +41,7 @@ export function LogoLockup({ className = "", variant = "horizontal" }: LogoLocku
       <span className="logo-band logo-band-start">
         <span className={`${label} ${horizontalLabelSize}`}>the</span>
       </span>
-      <Logo className="h-[var(--logo-height)] w-auto" />
+      <Logo className="h-[var(--logo-height)] w-auto" behind={behindMark} />
       <span className="logo-band logo-band-end">
         <span className={`${label} ${horizontalLabelSize}`}>studio</span>
       </span>

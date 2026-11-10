@@ -254,14 +254,51 @@ def build(fill="#db8a12"):
     )
 
 
+# The outline behind the mark: a hairline hugging the edge of every line, drawn
+# round the mark as one shape (so none where strokes overlap or join), and a soft
+# shadow just outside it, for a little more contrast on any background. The mark
+# is blurred and cut off a hair outside its edge, about 3 out, and the line is
+# what that adds. Units are the drawing's; the mark is 842 tall, so on the site
+# 10 is about a pixel.
+MARGIN = 110  # room round the drawing for the line and shadow; the site's CSS insets by this
+
+
+def outline(fill="#db8a12"):
+    mark = build(fill)
+    body = mark[mark.index("<g id=\"half\">"):mark.rindex("</svg>")]
+    x, y, w, h = 10 - MARGIN, 105 - MARGIN, 1566 + 2 * MARGIN, 842 + 2 * MARGIN
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{x} {y} {w} {h}" '
+        f'width="{w}" height="{h}">'
+        f'<filter id="o" filterUnits="userSpaceOnUse" x="{x}" y="{y}" width="{w}" height="{h}" '
+        'color-interpolation-filters="sRGB">'
+        '<feGaussianBlur in="SourceAlpha" stdDeviation="3"/>'
+        '<feComponentTransfer result="outer"><feFuncA type="linear" slope="14" intercept="-1.2"/></feComponentTransfer>'
+        '<feComposite in="outer" in2="SourceAlpha" operator="out" result="ring"/>'
+        '<feFlood flood-color="#fff"/>'
+        '<feComposite in2="ring" operator="in" result="line"/>'
+        '<feGaussianBlur in="outer" stdDeviation="14"/>'
+        '<feOffset dy="14"/>'
+        '<feComposite in2="outer" operator="out" result="shade"/>'
+        '<feFlood flood-color="#1f2430" flood-opacity="0.58"/>'
+        '<feComposite in2="shade" operator="in" result="shadow"/>'
+        '<feMerge><feMergeNode in="shadow"/><feMergeNode in="line"/></feMerge>'
+        "</filter>"
+        f'<g filter="url(#o)">{body}</g></svg>'
+    )
+
+
 if __name__ == "__main__":
     out = sys.argv[1]
     fill = sys.argv[2] if len(sys.argv) > 2 else "#db8a12"
-    # A third argument draws the heavier cut for small sizes.
+    # A third argument draws the heavier cut for small sizes, and a fourth (or a
+    # third, for the regular cut) "outline" draws the outline that goes behind it.
     if len(sys.argv) > 3 and sys.argv[3] == "small":
         STEM, THIN, SWELL, TIP, DOT = 31, 23, 41, 19, 15
     with open(out, "w", encoding="utf8") as f:
-        if len(sys.argv) > 3 and sys.argv[3] == "sun":
+        if "outline" in sys.argv[3:]:
+            f.write(outline(fill))
+        elif len(sys.argv) > 3 and sys.argv[3] == "sun":
             paths = "".join(f'<path d="{d}"/>' for d in sun(0, 0))
             f.write(
                 '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-74 -74 148 148" '

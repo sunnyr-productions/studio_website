@@ -1,19 +1,27 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { skyThings, type SkyThingName } from "./SkyThings";
 
 /**
  * What's up in the sky behind the page: frosted-glass clouds and the odd thing
- * floating past. Everything's seeded from the page's path, so each page has its
- * own sky that stays the same between visits and matches on server and client.
- * Spacing is in pixels and clipped to the page, so a short page shows less.
+ * floating past.
  *
- * The clouds come in a back and a front layer, which the page's panels, photos
- * and copy slot between (the --z-* tokens in globals.css): big clouds go in
- * front, the rest behind the frosted section panels. The things all fly behind
- * the panels, so they never cross the copy.
+ * The clouds are the sky itself, held to the screen like the scenery and drifting
+ * slowly left to right on their own, at the same easy pace as the trees, in a
+ * loop with enough of them spaced round it that one's always in view. They pay no
+ * attention to the scroll, and keep out of the footer. They come in a back and a
+ * front layer, which the page's panels, photos and copy slot between (the --z-*
+ * tokens in globals.css): big clouds go in front, the rest behind the frosted
+ * section panels.
+ *
+ * The things are the only part of the sky (or the scenery) that answer to the
+ * scroll. They're seeded from the page's path, so each page has its own that stay
+ * the same between visits and match on server and client, spaced down the page in
+ * pixels, so a short page shows fewer. The things all fly behind
+ * the panels, so they never cross the copy, and the far-off ones (planes,
+ * balloons, birds, kites) behind the forest at the bottom of the screen too.
  */
 const SHAPES = [
   "M40 100a30 30 0 0 1-4-59a42 42 0 0 1 76-18a34 34 0 0 1 56 14a37 37 0 0 1 34 63z",
@@ -22,8 +30,6 @@ const SHAPES = [
 ];
 
 const VIEW_BOX = "0 0 240 120";
-const CLOUD_SPACING_PX = 250;
-const CLOUD_COUNT = 44;
 const THING_SPACING_PX = 760;
 const THING_COUNT = 14;
 
@@ -62,25 +68,37 @@ function maskFor(path: string) {
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
+/**
+ * The same clouds on every page, so they carry on drifting as you move between
+ * them. Each layer's are spaced evenly round its loop. Nearer, bigger clouds
+ * cross a little faster, and sit higher, clear of the forest.
+ */
+const CLOUDS = (() => {
+  const random = seeded(0xc10d);
+  const layer = (count: number, front: boolean) =>
+    Array.from({ length: count }, (_, i) => {
+      const size = front ? 0.6 + random() * 0.4 : random() * 0.6;
+      const seconds = front ? 110 + random() * 30 : 150 + random() * 40;
+      const along = (i + random() * 0.5) / count;
+      return {
+        shape: SHAPES[Math.floor(random() * SHAPES.length)],
+        top: front ? 3 + random() * 27 : 4 + random() * 46,
+        width: 18 + size * 30,
+        maxWidth: 200 + size * 380,
+        flip: random() > 0.5,
+        front,
+        seconds,
+        // How far round the loop it starts, as a (negative) delay, and where it
+        // sits instead when it's held still.
+        delay: -along * seconds,
+        still: along,
+      };
+    });
+  return [...layer(4, false), ...layer(3, true)];
+})();
+
 function buildSky(pathname: string) {
   const random = seeded(hash(pathname));
-
-  const clouds = Array.from({ length: CLOUD_COUNT }, (_, i) => {
-    const size = random();
-    return {
-      shape: SHAPES[Math.floor(random() * SHAPES.length)],
-      top: 40 + i * CLOUD_SPACING_PX + random() * (CLOUD_SPACING_PX * 0.8),
-      // Alternate sides of the page, so they don't stack up in one column.
-      left: (i % 2 === 0 ? -8 : 48) + random() * 44,
-      width: 18 + size * 30,
-      maxWidth: 200 + size * 380,
-      flip: random() > 0.5,
-      // Pixels moved per pixel scrolled. Bigger clouds read as nearer, so they move more.
-      driftX: (random() > 0.5 ? 1 : -1) * (0.04 + size * 0.1),
-      driftY: 0.05 + size * 0.1,
-      front: size > 0.6,
-    };
-  });
 
   // Deal the things out like a shuffled deck, so repeats stay far apart.
   const deck: SkyThingName[] = [];
@@ -94,41 +112,48 @@ function buildSky(pathname: string) {
     deck.push(...shuffled);
   }
 
+  // They take turns coming in from the left and from the right.
+  const firstDirection = random() > 0.5 ? 1 : -1;
   const things = deck.slice(0, THING_COUNT).map((name, i) => {
-    const direction = random() > 0.5 ? 1 : -1;
+    const direction = i % 2 === 0 ? firstDirection : -firstDirection;
+    const far = skyThings[name].far;
     return {
       name,
       top: 420 + i * THING_SPACING_PX + random() * (THING_SPACING_PX * 0.5),
       // Start on the side it's heading away from, so it crosses the screen.
       left: direction > 0 ? 8 + random() * 30 : 58 + random() * 30,
       direction,
-      speed: 0.28 + random() * 0.3,
+      // Further off, it seems to cross more slowly and drift down less.
+      speed: far ? 0.16 + random() * 0.12 : 0.34 + random() * 0.26,
+      sink: far ? 0.06 : 0.12,
       phase: random() * Math.PI * 2,
-      // Every other one is nearer, bigger and brighter, starting with the page's
-      // first, where it's easiest to spot.
-      near: i % 2 === 0,
+      far,
     };
   });
 
-  return { clouds, things };
+  return things;
 }
 
-type Cloud = ReturnType<typeof buildSky>["clouds"][number];
-type Thing = ReturnType<typeof buildSky>["things"][number];
+type Cloud = (typeof CLOUDS)[number];
+type Thing = ReturnType<typeof buildSky>[number];
 
-function CloudShape({ cloud, index }: { cloud: Cloud; index: number }) {
+function CloudShape({ cloud }: { cloud: Cloud }) {
   const mask = maskFor(cloud.shape);
   return (
     <div
-      data-cloud={index}
-      className="absolute aspect-[2/1] min-w-[120px]"
-      style={{
-        top: cloud.top,
-        left: `${cloud.left}%`,
-        width: `${cloud.width}%`,
-        maxWidth: cloud.maxWidth,
-        transform: cloud.flip ? "scaleX(-1)" : undefined,
-      }}
+      className="sky-drift absolute left-0 aspect-[2/1] min-w-[120px]"
+      style={
+        {
+          top: `${cloud.top}vh`,
+          width: `${cloud.width}%`,
+          maxWidth: cloud.maxWidth,
+          transform: cloud.flip ? "scaleX(-1)" : undefined,
+          // Spread across the screen when held still; the drift takes over otherwise.
+          translate: `calc(${(cloud.still * 100).toFixed(1)}vw - 50%) 0`,
+          "--drift-time": `${cloud.seconds.toFixed(1)}s`,
+          "--drift-delay": `${cloud.delay.toFixed(1)}s`,
+        } as CSSProperties
+      }
     >
       <div className="cloud-glass absolute inset-0" style={{ maskImage: mask, WebkitMaskImage: mask }} />
       <svg
@@ -155,8 +180,8 @@ function ThingShape({ thing, index }: { thing: Thing; index: number }) {
       data-thing={index}
       data-sky={thing.name}
       // Further away reads smaller and fainter.
-      className={`absolute ${thing.near ? "opacity-90" : "opacity-60"}`}
-      style={{ top: thing.top, left: `${thing.left}%`, width: thing.near ? art.width : art.width * 0.75 }}
+      className={`absolute ${thing.far ? "opacity-70" : "opacity-95"}`}
+      style={{ top: thing.top, left: `${thing.left}%`, width: thing.far ? art.width * 0.7 : art.width }}
     >
       <svg
         viewBox={art.viewBox}
@@ -171,40 +196,29 @@ function ThingShape({ thing, index }: { thing: Thing; index: number }) {
 
 export function Sky() {
   const pathname = usePathname();
-  const { clouds, things } = useMemo(() => buildSky(pathname), [pathname]);
+  const things = useMemo(() => buildSky(pathname), [pathname]);
   const sky = useRef<HTMLDivElement>(null);
 
+  // Nothing in the sky comes into the footer: the clouds' layers (held to the
+  // screen) and the things' (down the page) all end where the falls begin.
   useEffect(() => {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const cloudElements = Array.from(sky.current?.querySelectorAll<HTMLElement>("[data-cloud]") ?? []);
-    const thingElements = Array.from(sky.current?.querySelectorAll<HTMLElement>("[data-thing]") ?? []);
+    const clouds = Array.from(sky.current?.querySelectorAll<HTMLElement>("[data-clouds]") ?? []);
+    const flyers = Array.from(sky.current?.querySelectorAll<HTMLElement>("[data-things]") ?? []);
+    const falls = document.querySelector("[data-falls]");
     let frame = 0;
-    const drift = () => {
+    const clearFooter = () => {
       frame = 0;
-      const y = window.scrollY;
-      const screen = window.innerHeight;
-      cloudElements.forEach((element) => {
-        const cloud = clouds[Number(element.dataset.cloud)];
-        // Only move what's near the screen: anything moving under a frosted panel
-        // makes the panel redraw its blur.
-        if (Math.abs(cloud.top + y * cloud.driftY - y) > screen * 2) return;
-        element.style.translate = `${y * cloud.driftX}px ${y * cloud.driftY}px`;
-      });
-      thingElements.forEach((element) => {
-        const thing = things[Number(element.dataset.thing)];
-        // Measured from when it's mid-screen, so it crosses as you pass it.
-        const passed = y + screen / 2 - thing.top;
-        if (Math.abs(passed) > screen * 1.5) return;
-        const wobble = skyThings[thing.name].wobble;
-        const swing = Math.sin(passed / 90 + thing.phase) * wobble;
-        element.style.translate = `${passed * thing.speed * thing.direction}px ${passed * 0.12 + swing}px`;
-        element.style.rotate = `${swing * 0.6}deg`;
-      });
+      if (!falls || !sky.current) return;
+      const top = falls.getBoundingClientRect().top;
+      const belowScreen = Math.max(0, window.innerHeight - top);
+      clouds.forEach((layer) => (layer.style.clipPath = belowScreen ? `inset(0 0 ${belowScreen}px 0)` : ""));
+      const belowPage = Math.max(0, sky.current.getBoundingClientRect().bottom - top);
+      flyers.forEach((layer) => (layer.style.clipPath = `inset(0 0 ${belowPage}px 0)`));
     };
     const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(drift);
+      if (!frame) frame = requestAnimationFrame(clearFooter);
     };
-    drift();
+    clearFooter();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     return () => {
@@ -212,22 +226,78 @@ export function Sky() {
       window.removeEventListener("resize", onScroll);
       cancelAnimationFrame(frame);
     };
-  }, [clouds, things]);
+  }, []);
 
-  const cloudLayer = (front: boolean) =>
-    clouds.map((cloud, i) =>
-      cloud.front === front ? <CloudShape key={`${pathname}-cloud-${i}`} cloud={cloud} index={i} /> : null,
-    );
+  useEffect(() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const thingElements = Array.from(sky.current?.querySelectorAll<HTMLElement>("[data-thing]") ?? []);
+    let frame = 0;
+    let then = 0;
+    // Where the things think the page is. It eases after the real scroll position,
+    // so they glide instead of jumping with each notch of a wheel, and come to rest
+    // gently when the page stops.
+    let y = window.scrollY;
+    const drift = (now: number) => {
+      const target = window.scrollY;
+      const elapsed = then ? Math.min(now - then, 64) : 16;
+      then = now;
+      y += (target - y) * (1 - Math.exp(-elapsed / 140));
+      if (Math.abs(target - y) < 0.5) y = target;
+      if (y === target) {
+        frame = 0;
+        then = 0;
+      } else {
+        frame = requestAnimationFrame(drift);
+      }
+      const screen = window.innerHeight;
+      thingElements.forEach((element) => {
+        const thing = things[Number(element.dataset.thing)];
+        // Measured from when it's mid-screen, so it crosses as you pass it.
+        const passed = y + screen / 2 - thing.top;
+        if (Math.abs(passed) > screen * 1.5) return;
+        const wobble = skyThings[thing.name].wobble;
+        const swing = Math.sin(passed / 90 + thing.phase) * wobble;
+        element.style.translate = `${passed * thing.speed * thing.direction}px ${passed * thing.sink + swing}px`;
+        element.style.rotate = `${swing * 0.6}deg`;
+      });
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(drift);
+    };
+    drift(performance.now());
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, [things]);
+
+  const cloudLayer = (front: boolean) => (
+    <div
+      data-clouds
+      className={`fixed inset-0 overflow-hidden ${front ? "z-[var(--z-cloud-front)]" : "z-[var(--z-cloud-back)]"}`}
+    >
+      {CLOUDS.map((cloud, i) => (cloud.front === front ? <CloudShape key={i} cloud={cloud} /> : null))}
+    </div>
+  );
 
   return (
     <div ref={sky} aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 z-[var(--z-cloud-back)]">{cloudLayer(false)}</div>
-      <div className="absolute inset-0 z-[var(--z-thing)]">
-        {things.map((thing, i) => (
-          <ThingShape key={`${pathname}-thing-${i}`} thing={thing} index={i} />
-        ))}
-      </div>
-      <div className="absolute inset-0 z-[var(--z-cloud-front)]">{cloudLayer(true)}</div>
+      {cloudLayer(false)}
+      {[true, false].map((far) => (
+        <div
+          key={String(far)}
+          data-things
+          className={`absolute inset-0 ${far ? "z-[var(--z-thing-far)]" : "z-[var(--z-thing-near)]"}`}
+        >
+          {things.map((thing, i) =>
+            thing.far === far ? <ThingShape key={`${pathname}-thing-${i}`} thing={thing} index={i} /> : null,
+          )}
+        </div>
+      ))}
+      {cloudLayer(true)}
     </div>
   );
 }

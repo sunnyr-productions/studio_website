@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/layout/Header";
 import { Sky } from "@/components/layout/Sky";
 import { Scenery } from "@/components/layout/Scenery";
+import { FogBanks } from "@/components/layout/FogBanks";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessSchema } from "@/lib/structured-data";
@@ -63,6 +64,7 @@ export default function RootLayout({
         </a>
         <JsonLd data={localBusinessSchema()} />
         <Sky />
+        <FogBanks />
         <Header />
         {/* The scenery sticks to the bottom of the screen within this box, which ends
             where the river goes over the edge in the footer, so that's where it

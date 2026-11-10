@@ -53,17 +53,18 @@
 
   /* Depth, back to front. The sky's layers (Sky.tsx) and the page's panels,
      photos and copy all stack in the one root stacking context, so the things
-     drifting past go behind a section's glass, and a big cloud can pass in front
-     of the glass but under its photos and words. See .depth below for how the
-     page keeps out of the way. The scenery (Scenery.tsx) is the forest held at
-     the bottom of the screen. */
+     drifting past go behind a section's glass (the far-off ones behind the
+     forest too), and a big cloud can pass in front of the glass but under its
+     photos and words. See .depth below for how the page keeps out of the way.
+     The scenery (Scenery.tsx) is the forest held at the bottom of the screen. */
   --z-cloud-back: 1;
-  --z-scenery: 2;
-  --z-thing: 3;
-  --z-panel: 4;
-  --z-cloud-front: 5;
-  --z-media: 6;
-  --z-copy: 7;
+  --z-thing-far: 2;
+  --z-scenery: 3;
+  --z-thing-near: 4;
+  --z-panel: 5;
+  --z-cloud-front: 6;
+  --z-media: 7;
+  --z-copy: 8;
 
   /* The width every full-width panel shares (header, section panels, banners,
      footer), so their edges line up down the page. */
@@ -73,6 +74,10 @@
      comes to rest in it at the end of the page, and the river goes over the edge
      at its foot, falling behind the footer's copy (Falls in Scenery.tsx). */
   --footer-dusk: 230px;
+
+  /* How far in from each side of the screen the forest's feet reach. The river's
+     mouth, and the falls below it, run between them, so the two always match. */
+  --forest-foot: min(13vh, 20vw);
 }
 
 /* Night: the footer redefines the colour tokens, so everything inside it (text,
@@ -231,28 +236,43 @@ body {
   }
 }
 
-/* The frosted panel behind each section's content (Section.tsx). Much thinner
-   than the header's glass, so the clouds and things behind it still show
-   through, just softened. Its light blur also keeps scrolling smooth: blur is
-   the expensive part, and these panels cover most of the page. Like real frosted
-   glass it hazes what's behind it, lifting the dark forest toward the light
-   sky's level so the copy stays readable over it; the sky itself comes through
-   much as it is. Inset top and bottom so neighbouring panels show a strip of sky
-   between them. */
+/* The fog bank behind each section's content (Section.tsx): a big, soft cloud
+   rather than a pane of glass, so it belongs to the sky and the scenery. Its top
+   and bottom billow in two rows of soft lobes and its sides feather away, all
+   cut by the mask. Thin enough that the clouds and things behind it still show
+   through, just softened, and like real fog it hazes what's behind it, lifting
+   the dark forest toward the light sky's level so the copy stays readable over
+   it; the sky itself comes through much as it is. Its light blur also keeps
+   scrolling smooth: blur is the expensive part, and these cover most of the
+   page. Inset top and bottom so neighbouring banks show a strip of sky between
+   them. The side feather is narrow on a phone, where the copy comes close. */
 .section-panel {
+  --feather: clamp(0.75rem, 3vw, 2rem);
+  --billow: radial-gradient(closest-side, #000 55%, transparent);
   position: absolute;
   inset: 0.375rem 0;
   z-index: var(--z-panel);
   overflow: hidden;
   pointer-events: none;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 1.25rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.2));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 10px 30px -16px rgba(31, 36, 48, 0.2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.22));
   -webkit-backdrop-filter: blur(5px) contrast(0.55) brightness(1.25) saturate(1.45);
   backdrop-filter: blur(5px) contrast(0.55) brightness(1.25) saturate(1.45);
+  -webkit-mask:
+    linear-gradient(90deg, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+    var(--billow) 0 0 / 7rem 4.5rem repeat-x,
+    var(--billow) 3.1rem 0.9rem / 4.6rem 3.2rem repeat-x,
+    var(--billow) 1.4rem 100% / 6.4rem 4.4rem repeat-x,
+    var(--billow) 4.4rem calc(100% - 0.8rem) / 5rem 3.4rem repeat-x,
+    linear-gradient(#000, #000) center / 100% calc(100% - 4rem) no-repeat;
+  -webkit-mask-composite: source-in, source-over, source-over, source-over, source-over, source-over;
+  mask:
+    linear-gradient(90deg, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+    var(--billow) 0 0 / 7rem 4.5rem repeat-x,
+    var(--billow) 3.1rem 0.9rem / 4.6rem 3.2rem repeat-x,
+    var(--billow) 1.4rem 100% / 6.4rem 4.4rem repeat-x,
+    var(--billow) 4.4rem calc(100% - 0.8rem) / 5rem 3.4rem repeat-x,
+    linear-gradient(#000, #000) center / 100% calc(100% - 4rem) no-repeat;
+  mask-composite: intersect, add, add, add, add, add;
 }
 
 /* Inside a section (.depth), photos sit on the media layer and everything else
@@ -348,10 +368,20 @@ body::before {
 }
 
 /* The ambigram pays off here: the wordmark reads identically upside down, so
-   hovering the header logo spins it a full 180° to show that off. */
-.logo-mark {
+   hovering the header logo spins it a full 180° to show that off. The mark and
+   its outline spin together. */
+.logo {
+  position: relative;
   display: block;
   aspect-ratio: 1566 / 842;
+  /* Symmetric ease-in-out (accelerate then settle) so the spin never reads as
+     choppy. Duration is generous enough to enjoy the half-turn. */
+  transition: transform 800ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.logo-mark {
+  position: absolute;
+  inset: 0;
   /* The art is a mask so the footer's night tokens can recolor it. Forced-colors
      mode and printing both drop backgrounds, which would erase it entirely. */
   background-color: var(--logo-ink);
@@ -359,9 +389,21 @@ body::before {
   mask: url("/images/sunnyr-logo-small.svg") center / contain no-repeat;
   forced-color-adjust: none;
   print-color-adjust: exact;
-  /* Symmetric ease-in-out (accelerate then settle) so the spin never reads as
-     choppy. Duration is generous enough to enjoy the half-turn. */
-  transition: transform 800ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* A white hairline hugging the edge of every line, drawn round the mark as one
+   shape (none where strokes overlap), with a soft shadow just outside it, so the
+   logo stands out on any background. It's its own picture behind the mark rather
+   than a filter on it: the mark's mask would clip a shadow, and in the header a
+   filter would hide the backdrop the mark is cut from. The art is drawn with
+   110 units of room each side of the 1566 × 842 mark, hence the insets. */
+.logo-outline {
+  position: absolute;
+  inset: calc(-110 / 842 * 100%) calc(-110 / 1566 * 100%);
+  background: url("/images/sunnyr-logo-outline-small.svg") center / 100% 100% no-repeat;
+  pointer-events: none;
+  forced-color-adjust: none;
+  print-color-adjust: exact;
 }
 
 /* From the sm breakpoint the mark is tall enough to carry the regular weight. */
@@ -369,6 +411,10 @@ body::before {
   .logo-mark {
     -webkit-mask-image: url("/images/sunnyr-logo.svg");
     mask-image: url("/images/sunnyr-logo.svg");
+  }
+
+  .logo-outline {
+    background-image: url("/images/sunnyr-logo-outline.svg");
   }
 }
 
@@ -463,20 +509,48 @@ body::before {
 @supports (backdrop-filter: brightness(1)) or (-webkit-backdrop-filter: brightness(1)) {
   @media screen and (forced-colors: none) {
     header.panel-glass {
+      border-color: transparent;
       background: none;
+      box-shadow: none;
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }
 
+    /* The glass is a cloud, like the section banks: it billows past the bar a
+       little at top and bottom and feathers off at the sides, so the logo and
+       links sit in its thick middle. The mask is on this pseudo-element, never
+       the header, for the same reason the glass is. */
     header.panel-glass::before {
+      --billow: radial-gradient(closest-side, #000 55%, transparent);
       content: "";
       position: absolute;
-      inset: -1px;
+      inset: -0.9rem -0.4rem;
       z-index: -1;
-      border-radius: inherit;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.4));
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.46));
       -webkit-backdrop-filter: blur(22px) saturate(1.3);
       backdrop-filter: blur(22px) saturate(1.3);
+      /* FogBanks.tsx draws the cloud's own irregular shape as --cloud; until it
+         has, these regular billows stand in. */
+      -webkit-mask: var(
+        --cloud,
+        linear-gradient(90deg, transparent, #000 1.2rem, #000 calc(100% - 1.2rem), transparent),
+        var(--billow) 0 0 / 4.6rem 2.6rem repeat-x,
+        var(--billow) 2.2rem 0.45rem / 3.4rem 2rem repeat-x,
+        var(--billow) 1rem 100% / 4.2rem 2.6rem repeat-x,
+        var(--billow) 3rem calc(100% - 0.45rem) / 3.6rem 2rem repeat-x,
+        linear-gradient(#000, #000) center / 100% calc(100% - 2.4rem) no-repeat
+      );
+      -webkit-mask-composite: var(--cloud-composite, source-in, source-over, source-over, source-over, source-over, source-over);
+      mask: var(
+        --cloud,
+        linear-gradient(90deg, transparent, #000 1.2rem, #000 calc(100% - 1.2rem), transparent),
+        var(--billow) 0 0 / 4.6rem 2.6rem repeat-x,
+        var(--billow) 2.2rem 0.45rem / 3.4rem 2rem repeat-x,
+        var(--billow) 1rem 100% / 4.2rem 2.6rem repeat-x,
+        var(--billow) 3rem calc(100% - 0.45rem) / 3.6rem 2rem repeat-x,
+        linear-gradient(#000, #000) center / 100% calc(100% - 2.4rem) no-repeat
+      );
+      mask-composite: var(--cloud-composite, intersect, add, add, add, add, add);
     }
 
     header .logo-mark {
@@ -490,16 +564,16 @@ body::before {
 /* Hover: a half turn, which lands on a legible ambigram. (No hover-media gate: the mark is a home link, so a
    touch tap that briefly spins it before navigating is harmless — gating it
    off silently broke the effect on touchscreen laptops and hybrids.) */
-.group:hover .logo-mark {
+.group:hover .logo {
   transform: rotate(180deg);
 }
 
 /* Reduced motion: no transition, and don't spin on hover. */
 @media (prefers-reduced-motion: reduce) {
-  .logo-mark {
+  .logo {
     transition: none;
   }
-  .group:hover .logo-mark {
+  .group:hover .logo {
     transform: rotate(0deg);
   }
 }
@@ -543,5 +617,54 @@ body::before {
 
   .animate-fade-up {
     animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* The scenery's own motion (Scenery.tsx). A tree or fern swings to one side and
+     back, easing at each end like a branch in a breeze; each has its own swing,
+     pace and starting point (--sway, --sway-time, --sway-delay). */
+  @keyframes scenery-sway {
+    from {
+      transform: skewX(calc(var(--sway) * -1));
+    }
+    to {
+      transform: skewX(var(--sway));
+    }
+  }
+
+  .scenery-sway {
+    animation: scenery-sway var(--sway-time) ease-in-out var(--sway-delay) infinite alternate;
+  }
+
+  /* Running water moves its dashes one whole pattern along (--flow-to) and starts
+     again, steadily, so there's no seam. The falls only run while they're on
+     screen. */
+  @keyframes scenery-flow {
+    to {
+      stroke-dashoffset: var(--flow-to);
+    }
+  }
+
+  .scenery-flow {
+    animation: scenery-flow var(--flow-time) linear infinite;
+  }
+
+  [data-falls]:not([data-falling]) .scenery-flow {
+    animation-play-state: paused;
+  }
+
+  /* The clouds (Sky.tsx) drift left to right, from just off one side of the
+     screen to just off the other, and round again; each has its own pace and
+     starting point (--drift-time, --drift-delay). */
+  @keyframes sky-drift {
+    from {
+      translate: -100% 0;
+    }
+    to {
+      translate: 100vw 0;
+    }
+  }
+
+  .sky-drift {
+    animation: sky-drift var(--drift-time) linear var(--drift-delay) infinite;
   }
 }

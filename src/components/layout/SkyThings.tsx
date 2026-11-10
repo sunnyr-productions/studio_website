@@ -32,6 +32,8 @@ export const skyThings: Record<
     width: number;
     /** How far it swings or bobs as you scroll. */
     wobble: number;
+    /** High and far off (behind the forest), or close by (in front of it). */
+    far: boolean;
     drawing: ReactNode;
   }
 > = {
@@ -39,6 +41,7 @@ export const skyThings: Record<
     viewBox: "0 0 150 44",
     width: 150,
     wobble: 0,
+    far: true,
     drawing: (
       <>
         <path d="M2 24h46" {...line} strokeDasharray="1 7" />
@@ -52,6 +55,7 @@ export const skyThings: Record<
     viewBox: "0 0 90 60",
     width: 76,
     wobble: 9,
+    far: false,
     drawing: (
       <>
         <path d="M4 48c8-8 12 4 18-4s-6-8 0-12" {...line} strokeDasharray="2 5" />
@@ -64,6 +68,7 @@ export const skyThings: Record<
     viewBox: "0 0 70 110",
     width: 62,
     wobble: 12,
+    far: true,
     drawing: (
       <>
         <path d="M36 4l24 26-24 36-24-36z" fill="var(--color-coral-400)" {...outlined} />
@@ -77,6 +82,7 @@ export const skyThings: Record<
     viewBox: "0 0 90 44",
     width: 84,
     wobble: 0,
+    far: true,
     drawing: (
       <>
         <path d="M6 24c6-8 11-8 15 0 4-8 9-8 15 0" {...line} />
@@ -89,6 +95,7 @@ export const skyThings: Record<
     viewBox: "0 0 90 54",
     width: 66,
     wobble: 16,
+    far: false,
     drawing: (
       <>
         <path d="M2 42c8 10 18 8 20-2s-12-10-12 0 16 6 26-4" {...line} strokeDasharray="1 5" />
@@ -104,6 +111,7 @@ export const skyThings: Record<
     viewBox: "0 0 90 40",
     width: 72,
     wobble: 0,
+    far: false,
     drawing: (
       <>
         <path d="M2 14h14M6 24h10" {...line} />
@@ -116,6 +124,7 @@ export const skyThings: Record<
     viewBox: "0 0 40 90",
     width: 38,
     wobble: 6,
+    far: false,
     drawing: (
       <>
         <path d="M20 48c-8 8 7 12 0 20s6 12 0 20" {...line} />
@@ -127,6 +136,7 @@ export const skyThings: Record<
     viewBox: "0 0 80 110",
     width: 82,
     wobble: 3,
+    far: true,
     drawing: (
       <>
         <path d="M40 2C18 2 4 18 4 38c0 18 18 32 26 42h20c8-10 26-24 26-42C76 18 62 2 40 2z" fill="var(--color-marigold-400)" {...outlined} />
@@ -142,6 +152,7 @@ export const skyThings: Record<
     viewBox: "0 0 80 70",
     width: 66,
     wobble: 10,
+    far: false,
     drawing: (
       <>
         <path d="M18 54V16l26-7v36" {...notesLine} strokeWidth={2} />

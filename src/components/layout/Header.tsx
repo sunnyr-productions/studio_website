@@ -2,6 +2,7 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/site-config";
 import { LogoLockup } from "@/components/ui/LogoLockup";
 import { MobileNav } from "./MobileNav";
+import { Sun } from "./Sun";
 
 export function Header() {
   return (
@@ -12,7 +13,7 @@ export function Header() {
           aria-label={siteConfig.name}
           className="group rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marigold-600"
         >
-          <LogoLockup />
+          <LogoLockup behindMark={<Sun />} />
         </Link>
 
         <div className="flex items-center gap-2 sm:gap-6">

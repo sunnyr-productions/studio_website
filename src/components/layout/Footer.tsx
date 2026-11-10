@@ -9,8 +9,9 @@ export function Footer() {
 
   return (
     // Pulled up over the scenery's resting place, so the river reaches the edge
-    // just above the copy and falls behind it.
-    <footer className="surface-night relative -mt-[var(--footer-dusk)] pb-2 pt-[var(--footer-dusk)] sm:pb-3">
+    // just above the copy and falls behind it. Clipped, since the cliffs beside
+    // the falls run on past the screen's edges.
+    <footer className="surface-night relative -mt-[var(--footer-dusk)] overflow-hidden pb-2 pt-[var(--footer-dusk)] sm:pb-3">
       <Falls />
       {/* Above every sky layer, which would otherwise drift across the footer's copy. */}
       <div className="column-inset relative z-[var(--z-copy)]">
