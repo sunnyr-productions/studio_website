@@ -29,7 +29,7 @@ export function Faq({ faqs }: { faqs: { q: string; a: string }[] }) {
           <div key={faq.q}>
             <details
               style={{ borderRadius: "var(--radius-sketch-sm)" }}
-              className="surface-card group border-[1.5px] border-ink-900/20 px-5 py-4 shadow-[2px_3px_0_0_var(--sketch-shadow)] transition-shadow open:shadow-[3px_4px_0_0_var(--sketch-shadow)]"
+              className="surface-card card group px-5 py-4"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-base font-semibold text-ink-900 [&::-webkit-details-marker]:hidden">
                 {faq.q}

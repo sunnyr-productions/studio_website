@@ -453,7 +453,7 @@ const ROCKS = [
  * The firs on each side, in from the edge by `offset` times their own width so
  * they keep tight to it at any size. Height and bottom are % of the screen's
  * height; the front row's feet are off the bottom of the screen, which puts them
- * nearer to you. On a narrow screen they're squeezed to `cap` % of its width.
+ * nearer to you. On a narrow screen they're held to `cap` % of its width.
  */
 const STANDS = [
   { offset: -0.15, height: 42, bottom: 4, cap: 18, back: true },
@@ -473,12 +473,15 @@ const FIRS = SIDES.flatMap((side) =>
     // The right side isn't a mirror of the left.
     const height = stand.height * (0.96 + random() * 0.06);
     const width = `min(${((height * FIR_BOX.width) / FIR_BOX.height).toFixed(2)}vh, ${stand.cap}vw)`;
+    // On a narrow screen a tree gets narrower, and shorter too beyond a point,
+    // so it's never squeezed thinner than about four fifths of its shape.
+    const tall = `min(${height.toFixed(2)}vh, ${((stand.cap * FIR_BOX.height) / FIR_BOX.width / 0.8).toFixed(2)}vw)`;
     return {
       back: stand.back,
       ...fir(random, !stand.back),
       style: {
         ...fromEdge(side, `calc(${"atRiver" in stand ? "var(--forest-foot) + " : ""}${width} * ${stand.offset})`),
-        bottom: `${stand.bottom}vh`, height: `${height.toFixed(2)}vh`, width },
+        bottom: `${stand.bottom}vh`, height: tall, width },
       // Further off, they seem to move less.
       sway: swaying(stand.back ? 0.3 : 0.55, 4.4 + random() * 1.25, random()),
     };
@@ -584,8 +587,8 @@ const riverBox = "absolute bottom-0 left-[var(--forest-foot)] h-[20vh] w-[calc(1
 /**
  * The falls, in the same box as the river (so exactly as wide as its mouth) and
  * stretched down the footer, 300 units deep: the whole river going over the edge
- * in one curtain that darkens into the night. The cliff either side runs on past
- * the box to the edges of the screen.
+ * in one curtain that darkens into the night. The cliff faces either side
+ * (CliffFace) run out to the edges of the screen.
  */
 const FALLS = { width: VALLEY.width, height: 300 };
 const MOUTH = [LEFT_BANK[4][0], RIGHT_BANK[4][0]];
@@ -636,56 +639,115 @@ function lip(top: number, lobeWidth: [number, number], lobeDepth: [number, numbe
 }
 
 // Where the river bends over the edge it catches the light, in long, slow swells.
-const BRINK = lip(-2, [40, 90], [3, 7], 16, [20, 6]);
+const BRINK = lip(-2, [130, 230], [2, 4], 16, [20, 6]);
 /**
  * Whitewater along the lip: no outline, just foam that thickens as the river
  * reaches the edge and thins out below it (the gradient does both), its lower
  * edge rising and falling in long, low swells. The swells are wide because the
  * falls are stretched across the screen, and narrow ones bead up on a phone.
  */
-const WHITEWATER = lip(-26, [60, 120], [4, 8], 20, [36, 18]);
-/** Trails of foam pulled down off the lip into the curtain, tapering as they go. */
-const FOAM_TRAILS = Array.from({ length: 22 }, () => {
-  const x = MOUTH[0] + 8 + random() * (MOUTH[1] - MOUTH[0] - 16);
-  const width = 7 + random() * 9;
-  const length = 16 + random() * 26;
+const WHITEWATER = lip(-26, [140, 260], [3, 6], 13, [36, 18]);
+/** Veils of foam pulled down off the lip into the curtain, fading as they go. */
+const FOAM_TRAILS = Array.from({ length: 12 }, () => {
+  const x = MOUTH[0] + 20 + random() * (MOUTH[1] - MOUTH[0] - 40);
+  const width = 14 + random() * 18;
+  const length = 22 + random() * 22;
   // A soft, rounded tongue rather than a point.
   return `M${pt(x - width / 2, 6)}C${pt(x - width / 2, length)} ${pt(x + width / 2, length)} ${pt(x + width / 2, 6)}Z`;
 });
 
-/** The rocky lip either side of the mouth, under the forest's feet, mossy on top. */
-const LEDGES = [-1, 1].map((side) => {
-  const edge = side < 0 ? MOUTH[0] : MOUTH[1];
-  const out = (x: number) => edge + side * x;
-  const corners: Point[] = [
-    [out(-14), -4],
-    [out(1500), -4],
-    [out(1500), 19],
-    [out(110), 15],
-    [out(72), 21],
-    [out(40), 14],
-    [out(14), 18],
-    [out(-8), 9],
-  ];
-  const rock = `${rounded(corners).d}Z`;
-  let moss = `M${pt(out(-12), -4)}L${pt(out(1500), -4)}L${pt(out(1500), 4)}`;
-  for (let x = 1500; x > -10; ) {
-    const next = Math.max(-10, x - (x > 160 ? 60 : 14 + random() * 12));
-    moss += `Q${pt(out((x + next) / 2), 6 + random() * 5)} ${pt(out(next), 3)}`;
-    x = next;
-  }
-  return { rock, moss: `${moss}Z` };
-});
+/**
+ * The cliff either side of the falls: a natural rock face, built from the same
+ * lumpy stones as the river (stone) in every size, heaped in loose, tilted layers
+ * like a cliff's strata, each layer overlapping the feet of the one above, with
+ * dark crevices between them. Moss on the ledges, ferns growing out of it, and
+ * darker, wet rock by the water. Drawn for the left side, with the falls at its
+ * right edge; the right side is its own, mirrored. Tall, so it's cut to the
+ * footer's height from the top, and scaled to the width between the screen's
+ * edge and the falls. It starts a little above the river's lip, so its mossy top
+ * row caps the bank, and fades into the night a little way down.
+ */
+const CLIFF = { width: 160, height: 2400 };
 
-/** The cliff either side of the falls, dropping away into the dark, and a few cracks in it. */
-const CLIFFS = [
-  `M${pt(-1500, 0)}L${pt(MOUTH[0] + 12, 0)}L${pt(MOUTH[0] - 6, 160)}L${pt(-1500, 160)}Z`,
-  `M${pt(MOUTH[1] - 12, 0)}L${pt(FALLS.width + 1500, 0)}L${pt(FALLS.width + 1500, 160)}L${pt(MOUTH[1] + 6, 160)}Z`,
+/** Lit and shaded tones for dry rock, and for wet rock by the water. Dusky, since it's night down here. */
+const CLIFF_ROCK = [
+  ["#4a526b", "#363c53"],
+  ["#525b75", "#3a4058"],
+  ["#454c64", "#32374d"],
 ];
-const CRACKS = [
-  `M${pt(MOUTH[0] - 18, 20)}l${pt(5, 16)}l${pt(-4, 14)}M${pt(MOUTH[0] - 40, 26)}l${pt(-3, 12)}`,
-  `M${pt(MOUTH[1] + 20, 22)}l${pt(-4, 15)}l${pt(5, 12)}M${pt(MOUTH[1] + 42, 24)}l${pt(3, 13)}`,
-];
+const CLIFF_WET = ["#3d445c", "#2c3146"];
+
+function cliffFace(random: () => number) {
+  const rocks: ({ x: number; y: number; w: number; h: number; wet: boolean; tone: number; flip: boolean } & ReturnType<typeof stone>)[] = [];
+  const ferns: { x: number; y: number; size: number; fronds: ReturnType<typeof fern> }[] = [];
+  for (let y = -2; y < CLIFF.height; ) {
+    // One layer: its depth, and how much it tilts across the face.
+    const band = 30 + random() * 50;
+    const tilt = (random() - 0.5) * 0.3;
+    for (let right = CLIFF.width + 12 - random() * 24; right > -40; ) {
+      const w = band * (1 + random() * 1.4);
+      const h = band * (0.85 + random() * 0.6);
+      // How close to the water, 0 far off to 1 at the falls, and how high up.
+      const near = Math.max(0, Math.min(1, right / CLIFF.width));
+      const high = 1 - Math.min(1, Math.max(0, y) / 700);
+      // The top row is the cliff's cap, under the bank's grass, so it's all moss.
+      const mossy = y < 10 || random() < 0.2 + 0.55 * high * (0.4 + 0.6 * near);
+      const top = y + (right - w / 2 - CLIFF.width / 2) * tilt + (random() - 0.5) * 10;
+      rocks.push({ x: right - w, y: top, w, h, wet: near > 0.82, tone: Math.floor(random() * CLIFF_ROCK.length), flip: random() < 0.5, ...stone(random, mossy) });
+      if (mossy && random() < 0.2 * high + 0.04) {
+        ferns.push({ x: right - w * (0.3 + random() * 0.4), y: top + h * 0.3, size: 0.24 + random() * 0.14, fronds: fern(random) });
+      }
+      // Neighbours overlap, so the layer reads as one heap of rock.
+      right -= w * (0.6 + random() * 0.28);
+    }
+    y += band * (0.6 + random() * 0.22);
+  }
+  return { rocks, ferns };
+}
+
+const CLIFFS = [cliffFace(random), cliffFace(random)];
+
+function CliffFace({ side }: { side: Side }) {
+  const face = CLIFFS[side === "left" ? 0 : 1];
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox={`0 0 ${CLIFF.width} ${CLIFF.height}`}
+      preserveAspectRatio="xMaxYMin slice"
+      className={`pointer-events-none absolute top-[calc(var(--footer-dusk)-1.25rem)] z-[var(--z-media)] h-[calc(100%-var(--footer-dusk)+1.25rem)] w-[calc(var(--forest-foot)+4px)] [mask-image:linear-gradient(to_bottom,#000_6rem,transparent_32rem)] ${side === "left" ? "left-0" : "right-0 -scale-x-100"}`}
+    >
+      {/* The shadowed rock showing in the crevices between the stones, from below
+          the top row, so the bank shows between the cap stones' tops. */}
+      <rect y={34} width={CLIFF.width} height={CLIFF.height} fill="#262a3e" />
+      {face.rocks.map((rock, i) => {
+        const [lit, shaded] = rock.wet ? CLIFF_WET : CLIFF_ROCK[rock.tone];
+        // Each stone is drawn on its waterline in ROCK_BOX; this sets it in its place.
+        const place = rock.flip
+          ? `translate(${pt(rock.x + rock.w, rock.y)}) scale(${(-rock.w / ROCK_BOX.width).toFixed(3)} ${(rock.h / WATERLINE).toFixed(3)})`
+          : `translate(${pt(rock.x, rock.y)}) scale(${(rock.w / ROCK_BOX.width).toFixed(3)} ${(rock.h / WATERLINE).toFixed(3)})`;
+        return (
+          <g key={i} transform={place}>
+            <path d={rock.outline} fill={lit} />
+            <path d={rock.shade} fill={shaded} />
+            {rock.moss && <path d={rock.moss} fill="#486541" {...ink} strokeOpacity={0.4} strokeWidth={1.1} />}
+            {rock.shine && <path d={rock.shine} {...line} stroke="rgba(255,255,255,0.12)" />}
+            <path d={rock.outline} {...line} strokeOpacity={0.4} strokeWidth={1.2} />
+          </g>
+        );
+      })}
+      {face.ferns.map(({ x, y, size, fronds }, i) => (
+        <g key={i} transform={`translate(${pt(x - (FERN_BOX.width * size) / 2, y - FERN_BOX.height * size)}) scale(${size.toFixed(2)})`}>
+          {fronds.map((frond, j) => (
+            <g key={j}>
+              <path d={frond.leaf} fill="#446a40" {...ink} strokeOpacity={0.4} />
+              <path d={frond.rib} {...line} stroke="#2f5a2c" strokeWidth={1.1} />
+            </g>
+          ))}
+        </g>
+      ))}
+    </svg>
+  );
+}
 
 /**
  * The falls: where the river goes over the edge at the end of the page and pours
@@ -707,113 +769,74 @@ export function Falls() {
   }, []);
 
   return (
-    <svg
-      ref={falls}
-      data-falls
-      aria-hidden="true"
-      viewBox={`0 0 ${FALLS.width} ${FALLS.height}`}
-      preserveAspectRatio="none"
-      className="pointer-events-none absolute left-[var(--forest-foot)] top-[var(--footer-dusk)] z-[var(--z-media)] h-[calc(100%-var(--footer-dusk))] w-[calc(100%-2*var(--forest-foot))] overflow-visible"
-    >
-      <defs>
-        <linearGradient id="falls-water" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={FALLS.height}>
-          {/* Lit where it comes over the edge, and quickly into the dark, so the
-              footer's copy reads against it. */}
-          <stop offset="0" stopColor="#5a93a8" />
-          <stop offset="0.03" stopColor="#3f7590" stopOpacity="0.95" />
-          <stop offset="0.12" stopColor="#2c506f" stopOpacity="0.92" />
-          <stop offset="0.5" stopColor="#263d60" stopOpacity="0.8" />
-          <stop offset="1" stopColor="#22325a" stopOpacity="0.45" />
-        </linearGradient>
-        <linearGradient id="falls-streak" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={FALLS.height}>
-          <stop offset="0" stopColor="#fff" stopOpacity="0.45" />
-          <stop offset="0.12" stopColor="#fff" stopOpacity="0.14" />
-          <stop offset="0.5" stopColor="#fff" stopOpacity="0.08" />
-          <stop offset="1" stopColor="#fff" stopOpacity="0.03" />
-        </linearGradient>
-        <linearGradient id="falls-cliff" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="160">
-          <stop offset="0" stopColor="#3e4552" stopOpacity="0.95" />
-          <stop offset="1" stopColor="#3e4552" stopOpacity="0" />
-        </linearGradient>
-        {/* From the river's own blue at the edge, brightening where it bends over,
-            and back into the curtain's. */}
-        <linearGradient id="falls-brink" gradientUnits="userSpaceOnUse" x1="0" y1="-2" x2="0" y2="24">
-          <stop offset="0" stopColor={paint.skyInWater} />
-          <stop offset="0.35" stopColor="#8fc1cf" />
-          <stop offset="1" stopColor="#5a93a8" />
-        </linearGradient>
-        {/* The foam gathers gradually over the last stretch of the river, is
-            thickest just over the edge, and thins out below, clear of the footer's copy. */}
-        <linearGradient id="falls-foam" gradientUnits="userSpaceOnUse" x1="0" y1="-26" x2="0" y2="30">
-          <stop offset="0" stopColor="#fff" stopOpacity="0" />
-          <stop offset="0.22" stopColor="#fff" stopOpacity="0.35" />
-          <stop offset="0.4" stopColor="#fff" stopOpacity="0.82" />
-          <stop offset="0.6" stopColor="#f2f8fa" stopOpacity="0.6" />
-          <stop offset="1" stopColor="#e6f2f6" stopOpacity="0" />
-        </linearGradient>
-        <filter id="falls-soft" filterUnits="userSpaceOnUse" x={MOUTH[0] - 50} y={-60} width={MOUTH[1] - MOUTH[0] + 100} height={150}>
-          <feGaussianBlur stdDeviation="3" />
-        </filter>
-        <linearGradient id="falls-trail" gradientUnits="userSpaceOnUse" x1="0" y1="4" x2="0" y2="50">
-          <stop offset="0" stopColor="#fff" stopOpacity="0.5" />
-          <stop offset="1" stopColor="#fff" stopOpacity="0" />
-        </linearGradient>
-        <radialGradient id="falls-mist">
-          <stop offset="0" stopColor="#fff" stopOpacity="0.16" />
-          <stop offset="1" stopColor="#fff" stopOpacity="0" />
-        </radialGradient>
-        {/* The lip's foam and light keep to the curtain's own wavering edges (and
-            the little way above it the foam crests), and the moss to its ledge,
-            so nothing ends in a square corner. */}
-        <clipPath id="falls-lip">
-          <rect x={MOUTH[0]} y={-40} width={MOUTH[1] - MOUTH[0]} height={40} />
-          <path d={CURTAIN} />
-        </clipPath>
-        {LEDGES.map(({ rock }, i) => (
-          <clipPath key={i} id={`falls-ledge-${i}`}>
-            <path d={rock} />
+    <>
+      <CliffFace side="left" />
+      <CliffFace side="right" />
+      <svg
+        ref={falls}
+        data-falls
+        aria-hidden="true"
+        viewBox={`0 0 ${FALLS.width} ${FALLS.height}`}
+        preserveAspectRatio="none"
+        className="pointer-events-none absolute left-[var(--forest-foot)] top-[var(--footer-dusk)] z-[var(--z-media)] h-[calc(100%-var(--footer-dusk))] w-[calc(100%-2*var(--forest-foot))] overflow-visible"
+      >
+        <defs>
+          <linearGradient id="falls-water" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={FALLS.height}>
+            {/* Lit where it comes over the edge, and quickly into the dark, so the
+                footer's copy reads against it. */}
+            <stop offset="0" stopColor="#5a93a8" />
+            <stop offset="0.03" stopColor="#3f7590" stopOpacity="0.95" />
+            <stop offset="0.12" stopColor="#2c506f" stopOpacity="0.92" />
+            <stop offset="0.5" stopColor="#263d60" stopOpacity="0.8" />
+            <stop offset="1" stopColor="#22325a" stopOpacity="0.45" />
+          </linearGradient>
+          <linearGradient id="falls-streak" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={FALLS.height}>
+            <stop offset="0" stopColor="#fff" stopOpacity="0.45" />
+            <stop offset="0.12" stopColor="#fff" stopOpacity="0.14" />
+            <stop offset="0.5" stopColor="#fff" stopOpacity="0.08" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0.03" />
+          </linearGradient>
+          <radialGradient id="falls-mist">
+            <stop offset="0" stopColor="#fff" stopOpacity="0.16" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0" />
+          </radialGradient>
+          {/* The lip's foam and light keep to the curtain's own wavering edges (and
+              the little way above it the foam crests), and the moss to its ledge,
+              so nothing ends in a square corner. */}
+          <clipPath id="falls-lip">
+            <rect x={MOUTH[0]} y={-40} width={MOUTH[1] - MOUTH[0]} height={40} />
+            <path d={CURTAIN} />
           </clipPath>
+        </defs>
+        <path d={CURTAIN} fill="url(#falls-water)" />
+        {STREAMS.map(({ d, light }, i) => (
+          <path key={i} d={d} fill={light ? "#fff" : "#16243f"} fillOpacity={light ? 0.07 : 0.22} />
         ))}
-      </defs>
-      {CLIFFS.map((d, i) => (
-        <path key={i} d={d} fill="url(#falls-cliff)" />
-      ))}
-      {CRACKS.map((d, i) => (
-        <path key={i} d={d} {...line} strokeOpacity={0.35} />
-      ))}
-      <path d={CURTAIN} fill="url(#falls-water)" />
-      {STREAMS.map(({ d, light }, i) => (
-        <path key={i} d={d} fill={light ? "#fff" : "#16243f"} fillOpacity={light ? 0.07 : 0.22} />
-      ))}
-      {STREAKS.map((streak, i) => (
-        <path
-          key={i}
-          className="scenery-flow"
-          style={flowing(streak.dash, streak.speed)}
-          d={streak.d}
-          {...line}
-          stroke="url(#falls-streak)"
-          strokeDasharray={streak.dash}
-        />
-      ))}
-      <g clipPath="url(#falls-lip)">
-        <path d={BRINK} fill="url(#falls-brink)" />
-        {FOAM_TRAILS.map((d, i) => (
-          <path key={i} d={d} fill="url(#falls-trail)" />
+        {STREAKS.map((streak, i) => (
+          <path
+            key={i}
+            className="scenery-flow"
+            style={flowing(streak.dash, streak.speed)}
+            d={streak.d}
+            {...line}
+            stroke="url(#falls-streak)"
+            strokeDasharray={streak.dash}
+          />
         ))}
-        <path d={WHITEWATER} fill="url(#falls-foam)" filter="url(#falls-soft)" />
-      </g>
-      {LEDGES.map(({ rock, moss }, i) => (
-        <g key={i}>
-          <path d={rock} fill={paint.wetStone[0]} />
-          <path d={moss} fill={paint.moss} clipPath={`url(#falls-ledge-${i})`} />
-          <path d={rock} {...line} />
+        <g clipPath="url(#falls-lip)">
+          <path d={BRINK} fill="url(#falls-brink)" />
+          <g filter="url(#falls-soft)">
+            {FOAM_TRAILS.map((d, i) => (
+              <path key={i} d={d} fill="url(#falls-trail)" />
+            ))}
+          </g>
+          <path d={WHITEWATER} fill="url(#falls-foam)" filter="url(#falls-soft)" />
         </g>
-      ))}
-      {[180, 500, 820].map((x) => (
-        <ellipse key={x} cx={x} cy={FALLS.height - 20} rx={200} ry={50} fill="url(#falls-mist)" />
-      ))}
-    </svg>
+        {[180, 500, 820].map((x) => (
+          <ellipse key={x} cx={x} cy={FALLS.height - 20} rx={200} ry={50} fill="url(#falls-mist)" />
+        ))}
+      </svg>
+    </>
   );
 }
 

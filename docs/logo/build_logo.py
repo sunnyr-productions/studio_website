@@ -256,7 +256,8 @@ def build(fill="#db8a12"):
 
 # The outline behind the mark: a hairline hugging the edge of every line, drawn
 # round the mark as one shape (so none where strokes overlap or join), and a soft
-# shadow just outside it, for a little more contrast on any background. The mark
+# shadow all round it, for a little more contrast on any background. The shadow
+# isn't offset, so like the mark it looks the same either way up. The mark
 # is blurred and cut off a hair outside its edge, about 3 out, and the line is
 # what that adds. Units are the drawing's; the mark is 842 tall, so on the site
 # 10 is about a pixel.
@@ -277,10 +278,9 @@ def outline(fill="#db8a12"):
         '<feComposite in="outer" in2="SourceAlpha" operator="out" result="ring"/>'
         '<feFlood flood-color="#fff"/>'
         '<feComposite in2="ring" operator="in" result="line"/>'
-        '<feGaussianBlur in="outer" stdDeviation="14"/>'
-        '<feOffset dy="14"/>'
+        '<feGaussianBlur in="outer" stdDeviation="12"/>'
         '<feComposite in2="outer" operator="out" result="shade"/>'
-        '<feFlood flood-color="#1f2430" flood-opacity="0.58"/>'
+        '<feFlood flood-color="#1f2430" flood-opacity="0.5"/>'
         '<feComposite in2="shade" operator="in" result="shadow"/>'
         '<feMerge><feMergeNode in="shadow"/><feMergeNode in="line"/></feMerge>'
         "</filter>"

@@ -51,7 +51,7 @@ export function WaveformPlayer({
   return (
     <div
       style={{ borderRadius: "var(--radius-sketch)" }}
-      className="border-[1.5px] border-ink-900/25 bg-cream-50 p-5 shadow-[3px_4px_0_0_var(--sketch-shadow)] transition-all duration-300 motion-safe:hover:-translate-x-0.5 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[5px_6px_0_0_var(--sketch-shadow)]"
+      className="card card-lift bg-cream-50 p-5"
     >
       <div className="flex items-center justify-between gap-4">
         <div>

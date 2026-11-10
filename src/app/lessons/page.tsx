@@ -189,7 +189,7 @@ export default function LessonsPage() {
             </p>
             <div
               style={{ borderRadius: "var(--radius-sketch-sm)" }}
-              className="mt-8 overflow-hidden border-[1.5px] border-ink-900/20 bg-cream-50 shadow-[3px_4px_0_0_var(--sketch-shadow)]"
+              className="card mt-8 overflow-hidden bg-cream-50"
             >
               <LazyCalEmbed calLink={siteConfig.calLink} />
             </div>

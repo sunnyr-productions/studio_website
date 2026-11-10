@@ -5,7 +5,7 @@ type LogoLockupProps = {
   className?: string;
   /** "horizontal" for headers/wide spaces, "stacked" for square/social contexts. */
   variant?: "horizontal" | "stacked";
-  /** Drawn behind the mark, centred on it. */
+  /** Drawn behind the mark, centred on it (the header's sun). */
   behindMark?: ReactNode;
 };
 
@@ -41,7 +41,11 @@ export function LogoLockup({ className = "", variant = "horizontal", behindMark 
       <span className="logo-band logo-band-start">
         <span className={`${label} ${horizontalLabelSize}`}>the</span>
       </span>
-      <Logo className="h-[var(--logo-height)] w-auto" behind={behindMark} />
+      {/* Not on the mark itself: it spins on hover, and the sun shouldn't. */}
+      <span className="relative">
+        {behindMark}
+        <Logo className="h-[var(--logo-height)] w-auto" />
+      </span>
       <span className="logo-band logo-band-end">
         <span className={`${label} ${horizontalLabelSize}`}>studio</span>
       </span>

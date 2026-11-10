@@ -102,7 +102,7 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
         </div>
         <div
           style={{ borderRadius: "var(--radius-sketch)" }}
-          className="surface-card mt-12 border-[1.5px] border-ink-900/80 p-6 sm:p-8"
+          className="surface-card card card-marigold mt-12 p-6 sm:p-8"
         >
           <p className="leading-relaxed text-ink-700">{page.closing}</p>
           <div className="mt-6 flex flex-wrap gap-4">

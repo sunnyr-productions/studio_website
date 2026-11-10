@@ -56,7 +56,7 @@ export default function Home() {
               and mix other people’s songs.
             </p>
           </div>
-          <div className="depth-media relative row-start-1 h-32 w-32 overflow-hidden rounded-full border-[1.5px] border-ink-900/80 sm:col-start-2 sm:h-56 sm:w-56">
+          <div className="depth-media relative row-start-1 h-32 w-32 overflow-hidden photo-frame rounded-full sm:col-start-2 sm:h-56 sm:w-56">
             <Image
               src={raulHeadshot}
               alt="Raul"
@@ -76,10 +76,8 @@ export default function Home() {
               <div
                 key={door.id}
                 style={{ borderRadius: "var(--radius-sketch)" }}
-                className={`surface-card relative flex h-full flex-col gap-5 border-[1.5px] border-ink-900/80 p-6 transition-transform duration-300 motion-safe:hover:-translate-y-1 sm:flex-row sm:gap-6 sm:p-8 ${
-                  door.id === "lessons"
-                    ? "shadow-[6px_8px_0_0_var(--color-marigold-400)]"
-                    : "shadow-[6px_8px_0_0_var(--color-periwinkle-400)]"
+                className={`surface-card card card-lift relative flex h-full flex-col gap-5 p-6 sm:flex-row sm:gap-6 sm:p-8 ${
+                  door.id === "lessons" ? "card-marigold" : "card-periwinkle"
                 }`}
               >
                 {photo && (

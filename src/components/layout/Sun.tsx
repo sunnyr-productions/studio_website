@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 
 /**
- * The sun, behind the logo, glowing through the header's cloud: a radiant golden
- * disc with a soft corona round it, somewhere between drawn and real. It sits just
- * in front of the cloud's glass (which would blur it away to nothing), softened
- * and a little see-through so the cloud shows through it, and its light spills
- * out past the cloud's top. Centred on the mark, nearly twice its height.
+ * The sun, behind the logo and behind the header's cloud: a radiant golden disc
+ * with a wide corona, which the cloud's frosted glass softens into light shining
+ * through it, evenly, so the cloud stays one even layer. Centred on the mark, three
+ * times its height. Below the cloud its rays reach out across the sky (SunRays).
  *
  * The page runs through a day from sunrise at the top to sunset at the footer
  * (--sky-day in globals.css), and the sun follows it as you scroll: soft gold at
@@ -56,13 +55,36 @@ export function Sun() {
   useEffect(() => {
     const svg = sun.current;
     if (!svg) return;
-    const paint = (day: number) => paletteAt(day).forEach((color, i) => svg.style.setProperty(NAMES[i], color));
+    // The colours go on the sun and its rays (SunRays) only, never the whole page,
+    // which would have the browser restyle everything on every frame of a scroll;
+    // and only when they've changed.
+    const rays = document.querySelector<HTMLElement>(".sun-rays");
+    const lit = [svg, rays].filter((element): element is SVGSVGElement | HTMLElement => !!element);
+    let painted = "";
+    const paint = (day: number) => {
+      const colors = paletteAt(day);
+      if (colors.join() === painted) return;
+      painted = colors.join();
+      lit.forEach((element) => colors.forEach((color, i) => element.style.setProperty(NAMES[i], color)));
+    };
+    // Where the rays start. The header holds still, so this only changes with the window.
+    const place = () => {
+      if (!rays) return;
+      const box = svg.getBoundingClientRect();
+      rays.style.left = `${(box.left + box.width / 2).toFixed(0)}px`;
+      rays.style.top = `${(box.top + box.height / 2).toFixed(0)}px`;
+    };
     let shown = dayNow();
     paint(shown);
+    place();
+    window.addEventListener("resize", place, { passive: true });
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
       const onScroll = () => paint(dayNow());
       window.addEventListener("scroll", onScroll, { passive: true });
-      return () => window.removeEventListener("scroll", onScroll);
+      return () => {
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", place);
+      };
     }
     // The colour eases after the scroll, so even a quick jump down the page turns
     // it over a second or so rather than all at once.
@@ -86,10 +108,9 @@ export function Sun() {
       if (!frame) frame = requestAnimationFrame(follow);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", place);
       cancelAnimationFrame(frame);
     };
   }, []);
@@ -100,31 +121,65 @@ export function Sun() {
       ref={sun}
       aria-hidden="true"
       viewBox="-100 -100 200 200"
-      className="pointer-events-none absolute left-1/2 top-1/2 z-[-1] aspect-square h-[190%] w-auto -translate-x-1/2 -translate-y-1/2 opacity-85 blur-[1.5px]"
+      className="pointer-events-none absolute left-1/2 top-1/2 z-[-2] aspect-square h-[300%] w-auto -translate-x-1/2 -translate-y-1/2"
       style={Object.fromEntries(NAMES.map((name, i) => [name, dawn[i]]))}
     >
       <defs>
         <radialGradient id="sun-corona">
-          <stop offset="0.3" style={{ stopColor: "var(--sun-glow)" }} stopOpacity="0.95" />
-          <stop offset="0.5" style={{ stopColor: "var(--sun-haze)" }} stopOpacity="0.55" />
-          <stop offset="0.75" style={{ stopColor: "var(--sun-rim)" }} stopOpacity="0.18" />
+          <stop offset="0.2" style={{ stopColor: "var(--sun-core)" }} />
+          <stop offset="0.36" style={{ stopColor: "var(--sun-glow)" }} stopOpacity="0.95" />
+          <stop offset="0.6" style={{ stopColor: "var(--sun-haze)" }} stopOpacity="0.5" />
           <stop offset="1" style={{ stopColor: "var(--sun-rim)" }} stopOpacity="0" />
         </radialGradient>
-        <radialGradient id="sun-disc" cx="0.42" cy="0.4" r="0.65">
+        <radialGradient id="sun-disc" cx="0.45" cy="0.42" r="0.6">
           <stop offset="0" style={{ stopColor: "var(--sun-core)" }} />
-          <stop offset="0.55" style={{ stopColor: "var(--sun-middle)" }} />
+          <stop offset="0.6" style={{ stopColor: "var(--sun-middle)" }} />
           <stop offset="1" style={{ stopColor: "var(--sun-rim)" }} />
         </radialGradient>
       </defs>
       <circle r="100" fill="url(#sun-corona)" />
-      <circle
-        r="38"
-        fill="url(#sun-disc)"
-        style={{ stroke: "var(--sun-rim)" }}
-        strokeOpacity="0.6"
-        strokeWidth="1"
-        vectorEffect="non-scaling-stroke"
-      />
+      <circle r="26" fill="url(#sun-disc)" />
     </svg>
+  );
+}
+
+/** The rays: [angle from straight down, how wide, how long], the long ones near the middle. */
+const RAYS: [number, number, number][] = [
+  [-62, 5, 0.55],
+  [-44, 7, 0.75],
+  [-27, 4, 0.9],
+  [-12, 8, 1],
+  [4, 5, 0.95],
+  [19, 7, 1],
+  [35, 4, 0.8],
+  [51, 6, 0.65],
+  [68, 4, 0.5],
+];
+
+/**
+ * Light from the sun behind the header's cloud, fanning out below it in soft
+ * shafts that swing a little and brighten and fade, slowly, as light through
+ * moving cloud does. They're in the sky, behind the forest and the fog, in the
+ * sun's own colours (set on them by Sun as it follows the day), from where it
+ * puts them.
+ */
+export function SunRays() {
+  return (
+    <div aria-hidden="true" className="sun-rays pointer-events-none absolute left-[14rem] top-[3.5rem] h-0 w-0">
+      {RAYS.map(([angle, spread, length], i) => (
+        <span
+          key={i}
+          className="sun-ray"
+          style={
+            {
+              "--ray-angle": `${angle}deg`,
+              "--ray-width": `${spread}vh`,
+              "--ray-length": `${(length * 75).toFixed(0)}vh`,
+              "--ray-delay": `${(-i * 1.7).toFixed(1)}s`,
+            } as CSSProperties
+          }
+        />
+      ))}
+    </div>
   );
 }

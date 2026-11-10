@@ -4,9 +4,10 @@ import type { Photo as PhotoData } from "@/content/media";
 
 type Accent = "marigold" | "periwinkle";
 
-const shadow: Record<Accent | "none", string> = {
-  marigold: "shadow-[6px_8px_0_0_var(--color-marigold-400)]",
-  periwinkle: "shadow-[6px_8px_0_0_var(--color-periwinkle-400)]",
+// The accent tints the frame's soft glow (.photo-frame in globals.css).
+const glow: Record<Accent | "none", string> = {
+  marigold: "card-marigold",
+  periwinkle: "card-periwinkle",
   none: "",
 };
 
@@ -14,9 +15,9 @@ const shadow: Record<Accent | "none", string> = {
 const blur = (photo: PhotoData) => (typeof photo.src === "string" ? undefined : ("blur" as const));
 
 /**
- * A photo in the site's sticker frame: sketch-radius outline with a solid
- * offset shadow, cropped to a fixed aspect ratio so any upload fits the slot.
- * Use accent="none" inside something that already has the shadow, like a card.
+ * A photo in a thin white mount with a soft shadow tinted by its accent, in the
+ * site's stone-round shape, cropped to a fixed aspect ratio so any upload fits
+ * the slot. Use accent="none" inside something that already has a frame, like a card.
  */
 export function Photo({
   photo,
@@ -37,7 +38,7 @@ export function Photo({
   return (
     <div
       style={{ borderRadius: "var(--radius-sketch)" }}
-      className={`depth-media relative overflow-hidden border-[1.5px] border-ink-900/80 ${aspect} ${shadow[accent]} ${className}`}
+      className={`depth-media relative overflow-hidden ${accent === "none" ? "" : "photo-frame"} ${aspect} ${glow[accent]} ${className}`}
     >
       <Image
         src={photo.src}

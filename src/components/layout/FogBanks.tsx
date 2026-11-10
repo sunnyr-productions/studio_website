@@ -37,24 +37,48 @@ function blocksIn(element: Element, depth = 0): Element[] {
 }
 
 /**
- * One billowing cloud round a box: a rounded body with lobes along its edges,
- * reaching `reach` past it, with its lobes scaled by `size`.
+ * One billowing cloud round a box: a rounded body reaching `reach` past it,
+ * with puffs of radius `puff` (smallest to largest) set mostly inside its edges
+ * so they swell out of it gently rather than stand off it like beads. `edges`
+ * picks which sides billow; the rest stay smooth.
  */
-function cloud(x: number, y: number, width: number, height: number, random: () => number, reach = REACH, size = 1) {
+function cloud(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  random: () => number,
+  reach: [number, number],
+  puff: [number, number],
+  edges = { top: true, bottom: true, sides: true },
+) {
   const [rx, ry] = reach;
   const left = x - rx;
   const top = y - ry;
   const right = x + width + rx;
   const bottom = y + height + ry;
-  const shapes = [`<rect x="${left}" y="${top}" width="${right - left}" height="${bottom - top}" rx="${ry}"/>`];
-  const lobe = (cx: number, cy: number, r: number) => shapes.push(`<circle cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" r="${r.toFixed(0)}"/>`);
-  for (let cx = left + 18; cx < right - 10; cx += 36 + random() * 22) {
-    lobe(cx, top + 4, (16 + random() * 16) * size);
-    lobe(cx + 18, bottom - 4, (16 + random() * 16) * size);
-  }
-  for (let cy = top + 22; cy < bottom - 14; cy += 34 + random() * 18) {
-    lobe(left + 4, cy, (14 + random() * 12) * size);
-    lobe(right - 4, cy + 14, (14 + random() * 12) * size);
+  const round = Math.min(Math.max(ry, puff[1]), (bottom - top) / 2);
+  const shapes = [`<rect x="${left.toFixed(0)}" y="${top.toFixed(0)}" width="${(right - left).toFixed(0)}" height="${(bottom - top).toFixed(0)}" rx="${round.toFixed(0)}"/>`];
+  const size = () => puff[0] + random() * (puff[1] - puff[0]);
+  const lobe = (cx: number, cy: number, r: number) =>
+    shapes.push(`<circle cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" r="${r.toFixed(0)}"/>`);
+  // Along an edge from a to b, puffs about their own width apart, each pushed out
+  // past the edge by a share of its size.
+  const along = (from: number, to: number, place: (at: number, r: number) => void) => {
+    for (let at = from + puff[0]; at < to - puff[0] * 0.5; ) {
+      const r = size();
+      place(at, r);
+      at += r * (1.1 + random() * 0.5);
+    }
+  };
+  // How far in from the edge a puff sits: some swell well out, some barely, so
+  // the outline wanders rather than running straight.
+  const inset = () => 0.15 + random() * 0.7;
+  if (edges.top) along(left + round * 0.5, right - round * 0.5, (at, r) => lobe(at, top + r * inset(), r));
+  if (edges.bottom) along(left + round * 0.5, right - round * 0.5, (at, r) => lobe(at, bottom - r * inset(), r));
+  if (edges.sides && bottom - top > puff[1] * 2) {
+    along(top + round, bottom - round, (at, r) => lobe(left + r * inset(), at, r));
+    along(top + round, bottom - round, (at, r) => lobe(right - r * inset(), at, r));
   }
   return shapes.join("");
 }
@@ -100,9 +124,9 @@ function shape(panel: HTMLElement) {
   // blocks crowd together the layers stack up, and the fog thins toward the
   // edges of what's there.
   const mask = maskOf(area.width, area.height, [
-    { blocks: boxes.map(([x, y, w, h]) => around(x, y, w, h, [72, 56], 56)), density: 0.22, soften: 28 },
-    { blocks: boxes.map(([x, y, w, h]) => cloud(x, y, w, h, random)), density: 0.5, soften: 10 },
-    { blocks: boxes.map(([x, y, w, h]) => around(x, y, w, h, [12, 10], 14)), density: 1, soften: 6 },
+    { blocks: boxes.map(([x, y, w, h]) => cloud(x, y, w, h, random, [64, 52], [46, 78])), density: 0.24, soften: 26 },
+    { blocks: boxes.map(([x, y, w, h]) => cloud(x, y, w, h, random, REACH, [24, 42])), density: 0.5, soften: 13 },
+    { blocks: boxes.map(([x, y, w, h]) => around(x, y, w, h, [12, 10], 14)), density: 1, soften: 7 },
   ]);
   panel.style.setProperty("-webkit-mask", mask);
   panel.style.setProperty("mask", mask);
@@ -111,8 +135,8 @@ function shape(panel: HTMLElement) {
 /**
  * The header's cloud. Its glass is a pseudo-element (see globals.css) reaching
  * 0.4rem past the bar at each side and 0.9rem above and below, so the cloud is
- * drawn in that box and handed over as --cloud, with lobes small enough to stay
- * inside it.
+ * drawn in that box and handed over as --cloud: a smooth, rounded bar with a few
+ * soft billows along its top, small enough to stay inside the box.
  */
 function shapeHeader(header: HTMLElement) {
   const box = header.getBoundingClientRect();
@@ -120,8 +144,9 @@ function shapeHeader(header: HTMLElement) {
   const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
   const [ex, ey] = [0.4 * rem, 0.9 * rem];
   const random = seeded(Math.round(box.width));
-  const clouds = cloud(ex + 12, ey + 6, box.width - 24, box.height - 12, random, [12, 6], 0.6);
-  header.style.setProperty("--cloud", maskOf(box.width + 2 * ex, box.height + 2 * ey, [{ blocks: [clouds], density: 1, soften: 3 }]));
+  const puff: [number, number] = [ey * 0.75, ey * 1.1];
+  const clouds = cloud(ex + 10, ey + 4, box.width - 20, box.height - 8, random, [0, 0], puff, { top: true, bottom: false, sides: false });
+  header.style.setProperty("--cloud", maskOf(box.width + 2 * ex, box.height + 2 * ey, [{ blocks: [clouds], density: 1, soften: 4 }]));
   // One layer, so none of the stand-in's compositing.
   header.style.setProperty("--cloud-composite", "add");
 }

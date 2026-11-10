@@ -2,25 +2,21 @@
 
 :root {
   --background: #fbeee3;
-  --foreground: #1f2430;
+  --foreground: #1d3229;
 
-  /* The site's one recurring silhouette — an intentionally uneven rounded
-     shape, never a plain rectangle or a perfect pill. Reused on every card,
+  /* The site's one recurring silhouette: a smooth, slightly uneven round like a
+     river stone, never a plain rectangle or a perfect pill. Reused on every card,
      button, and input so it reads as a deliberate signature, not a default. */
-  --radius-sketch: 1.75rem 1rem 1.75rem 1rem/1rem 1.75rem 1rem 1.75rem;
-  --radius-sketch-sm: 1.1rem 0.6rem 1.1rem 0.6rem/0.6rem 1.1rem 0.6rem 1.1rem;
-  --radius-sketch-pill: 1.6rem 1rem 1.6rem 0.9rem/1rem 1.6rem 0.9rem 1.6rem;
+  --radius-sketch: 2rem 1.6rem 2.2rem 1.5rem/1.6rem 2rem 1.5rem 2.2rem;
+  --radius-sketch-sm: 1.3rem 1.05rem 1.4rem 1rem/1.05rem 1.3rem 1rem 1.4rem;
+  --radius-sketch-pill: 2rem 1.7rem 2rem 1.6rem/1.8rem 2rem 1.6rem 2rem;
 
   /* Tokens that must NOT invert between themes.
      --color-ink-fixed: text/outline/shadow on the marigold CTA and the
      avatar — marigold is light in both themes, so its foreground stays dark.
-     --sketch-shadow: the neutral (accent-less) sticker offset shadow, dark
-     ink on light paper / near-black on the night surface.
-     --logo-ink: the wordmark's fixed color, full marigold at night. By day the
-     header logo reads its backdrop instead (see .logo-mark); this deep marigold
-     is what it falls back to, and what prints. */
+     --logo-ink: the wordmark's color, deep marigold by day and full marigold at
+     night. Its white outline (.logo-outline) keeps it clear of any background. */
   --color-ink-fixed: #1f2430;
-  --sketch-shadow: rgba(31, 36, 48, 0.14);
   --logo-ink: #c97404;
 
   /* The site is one day. The page runs from sunrise at the top, through full
@@ -53,16 +49,16 @@
 
   /* Depth, back to front. The sky's layers (Sky.tsx) and the page's panels,
      photos and copy all stack in the one root stacking context, so the things
-     drifting past go behind a section's glass (the far-off ones behind the
-     forest too), and a big cloud can pass in front of the glass but under its
-     photos and words. See .depth below for how the page keeps out of the way.
-     The scenery (Scenery.tsx) is the forest held at the bottom of the screen. */
+     drifting past go behind a section's fog, the far-off ones behind the
+     forest and its nearer, bigger clouds too. See .depth below for how the page
+     keeps out of the way. The scenery (Scenery.tsx) is the forest held at the
+     bottom of the screen. */
   --z-cloud-back: 1;
   --z-thing-far: 2;
-  --z-scenery: 3;
-  --z-thing-near: 4;
-  --z-panel: 5;
-  --z-cloud-front: 6;
+  --z-cloud-front: 3;
+  --z-scenery: 4;
+  --z-thing-near: 5;
+  --z-panel: 6;
   --z-media: 7;
   --z-copy: 8;
 
@@ -115,7 +111,6 @@
   /* Error text (forms, checkout) — Tailwind's red-700 is too dim on night */
   --color-red-700: #f2918a;
 
-  --sketch-shadow: rgba(0, 0, 0, 0.55);
   --logo-ink: #f5a623;
 }
 
@@ -174,10 +169,11 @@
   --color-coral-700: #a5423b;
   --color-coral-800: #7e332f;
 
-  /* Ink — body text (softer than pure black) */
-  --color-ink-500: #2c3241;
-  --color-ink-700: #252b3a;
-  --color-ink-900: #1f2430;
+  /* Ink: body text, a deep forest green rather than black, as dark as before so
+     it reads just as well over the sky and the fog. */
+  --color-ink-500: #2c3a35;
+  --color-ink-700: #24312d;
+  --color-ink-900: #1d3229;
 
   /* Cream — the paper, tinted on purpose so nothing reads as plain white.
      50 is the page (peach), 100 the lavender morning-mist step (tint
@@ -196,13 +192,6 @@
    scenery (see Sky.tsx and Scenery.tsx). */
 body {
   background: var(--sky-day);
-}
-
-/* No backdrop blur: a back cloud only ever has the plain gradient behind it, and a
-   front one the already-frosted panels, so blur would change nothing you can see
-   and is the costliest thing on the page while you scroll. */
-.cloud-glass {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.16));
 }
 
 /* The header's panel: a fine light border, a highlight along the top edge, a soft
@@ -307,6 +296,128 @@ body {
   background: var(--surface-card);
 }
 
+/* Cards, panels and framed photos sit on the page like sunlit paper: a fine
+   light edge, a highlight along the top, and a soft shadow, warmed or tinted by
+   the card's accent (--card-glow), in place of an outline and a hard offset. */
+@layer components {
+  .card {
+    --card-glow: rgba(120, 72, 60, 0.32);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 1px 2px rgba(80, 50, 40, 0.08),
+      0 6px 14px -8px rgba(80, 50, 40, 0.18),
+      0 22px 40px -20px var(--card-glow);
+  }
+
+  .card-marigold {
+    --card-glow: rgba(219, 138, 18, 0.6);
+  }
+
+  .card-periwinkle {
+    --card-glow: rgba(94, 111, 194, 0.55);
+  }
+
+  .card-coral {
+    --card-glow: rgba(201, 85, 74, 0.5);
+  }
+
+  /* A card that's a link lifts toward you, its shadow lengthening. */
+  .card-lift {
+    transition:
+      translate 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card-lift:hover {
+      translate: 0 -3px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 1px 2px rgba(80, 50, 40, 0.08),
+        0 10px 20px -10px rgba(80, 50, 40, 0.2),
+        0 30px 50px -22px var(--card-glow);
+    }
+  }
+
+  .surface-night .card {
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 22px 40px -20px rgba(0, 0, 0, 0.6);
+  }
+
+  /* A photo in a thin white mount, like a print. */
+  .photo-frame {
+    --card-glow: rgba(120, 72, 60, 0.32);
+    border: 3px solid #fffaf3;
+    box-shadow:
+      0 1px 2px rgba(80, 50, 40, 0.12),
+      0 6px 14px -8px rgba(80, 50, 40, 0.2),
+      0 22px 40px -20px var(--card-glow);
+  }
+
+  /* Buttons are drawn like the scenery: an ink outline, flat cartoon shading (a
+     lit face curving over a shaded one, the way the river stones are shaded), a
+     glint of light up top, and a soft shadow on the ground beneath. A sunlit
+     marigold for the main choice, cloud white for the second. Both lift a little
+     on hover, their shadow spreading, and settle when pressed. */
+  .btn-primary,
+  .btn-secondary {
+    border: 1.6px solid var(--color-ink-fixed);
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.55),
+      0 7px 12px -7px rgba(60, 40, 30, 0.45);
+  }
+
+  .btn-primary:hover,
+  .btn-secondary:hover {
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.6),
+      0 11px 16px -8px rgba(60, 40, 30, 0.4);
+  }
+
+  .btn-primary {
+    color: var(--color-ink-fixed);
+    background: radial-gradient(130% 115% at 32% 12%, #ffd06a 0 56%, #f0a11f 57% 100%);
+  }
+
+  .btn-primary:hover {
+    background: radial-gradient(130% 115% at 32% 12%, #ffd981 0 58%, #f5a826 59% 100%);
+  }
+
+  .btn-secondary {
+    color: var(--color-periwinkle-800);
+    background: radial-gradient(130% 115% at 32% 12%, #ffffff 0 56%, #e3e5f7 57% 100%);
+  }
+
+  .btn-secondary:hover {
+    background: radial-gradient(130% 115% at 32% 12%, #ffffff 0 58%, #eaecfa 59% 100%);
+  }
+
+  /* At night the second choice is dusk, outlined in starlight, since ink would
+     vanish into the dark. */
+  .surface-night .btn-secondary {
+    color: var(--color-periwinkle-800);
+    border-color: rgba(194, 202, 245, 0.7);
+    background: radial-gradient(130% 115% at 32% 12%, #423b78 0 56%, #2c2754 57% 100%);
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.16),
+      0 7px 12px -7px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* The display face is Fraunces at its softest, which gives it the rounded,
+   chunky warmth of an old park poster. Its semibold is drawn a good deal heavier
+   than a plain semibold, short of full black. */
+.font-display {
+  font-variation-settings: "SOFT" 100;
+}
+
+.font-display.font-semibold {
+  font-weight: 740;
+}
+
 /* Body copy runs at 17px; every rem-based size scales with it. */
 html {
   font-size: 106.25%;
@@ -392,10 +503,10 @@ body::before {
 }
 
 /* A white hairline hugging the edge of every line, drawn round the mark as one
-   shape (none where strokes overlap), with a soft shadow just outside it, so the
-   logo stands out on any background. It's its own picture behind the mark rather
-   than a filter on it: the mark's mask would clip a shadow, and in the header a
-   filter would hide the backdrop the mark is cut from. The art is drawn with
+   shape (none where strokes overlap), with a soft shadow all round it, so the
+   logo stands out on any background. The shadow isn't offset, so it looks right
+   after the logo's half turn too. It's its own picture behind the mark rather
+   than a filter on it, which the mark's mask would clip. The art is drawn with
    110 units of room each side of the 1566 × 842 mark, hence the insets. */
 .logo-outline {
   position: absolute;
@@ -500,12 +611,32 @@ body::before {
   left: var(--logo-reach-far);
 }
 
-/* By day the logo is a tinted, darkened view of whatever is behind it, so its
-   contrast stays even over sky, cards, and photos alike. The recipe trades some
-   contrast for color: any darker and the marigold turns brown. A backdrop-filter
-   only sees as far as the nearest ancestor with its own filter, so the header's
-   glass moves to a pseudo-element: on the header itself it would hide the page
-   from the logo. Retune with docs/logo/ if the sky or the glass changes. */
+/* The sun's rays (SunRays in Sun.tsx): soft shafts of its glow fanning down from
+   behind the header's cloud, each a narrow wedge that's brightest just below the
+   cloud and gone well before its end. */
+.sun-ray {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--ray-width);
+  height: var(--ray-length);
+  transform-origin: 50% 0;
+  transform: translateX(-50%) rotate(var(--ray-angle));
+  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    180deg,
+    transparent 4%,
+    color-mix(in srgb, var(--sun-glow, #ffe2c4) 70%, transparent) 16%,
+    color-mix(in srgb, var(--sun-haze, #f8b490) 30%, transparent) 50%,
+    transparent 92%
+  );
+  filter: blur(6px);
+  opacity: 0.55;
+}
+
+/* The header's glass is on a pseudo-element, not the header itself, so its cloud
+   mask shapes only the glass and not the logo and links in it, and the sun can
+   sit behind it to shine through. */
 @supports (backdrop-filter: brightness(1)) or (-webkit-backdrop-filter: brightness(1)) {
   @media screen and (forced-colors: none) {
     header.panel-glass {
@@ -551,12 +682,6 @@ body::before {
         linear-gradient(#000, #000) center / 100% calc(100% - 2.4rem) no-repeat
       );
       mask-composite: var(--cloud-composite, intersect, add, add, add, add, add);
-    }
-
-    header .logo-mark {
-      background-color: transparent;
-      -webkit-backdrop-filter: brightness(0.45) sepia(1) saturate(5) hue-rotate(-3deg);
-      backdrop-filter: brightness(0.45) sepia(1) saturate(5) hue-rotate(-3deg);
     }
   }
 }
@@ -666,5 +791,33 @@ body::before {
 
   .sky-drift {
     animation: sky-drift var(--drift-time) linear var(--drift-delay) infinite;
+  }
+
+  /* The sun's rays swing gently as a fan, and each brightens and fades on its own
+     slow breath, like light through moving cloud. */
+  @keyframes sun-rays-swing {
+    from {
+      rotate: -2.5deg;
+    }
+    to {
+      rotate: 2.5deg;
+    }
+  }
+
+  @keyframes sun-ray-breathe {
+    from {
+      opacity: 0.25;
+    }
+    to {
+      opacity: 0.7;
+    }
+  }
+
+  .sun-rays {
+    animation: sun-rays-swing 16s ease-in-out infinite alternate;
+  }
+
+  .sun-ray {
+    animation: sun-ray-breathe 6.5s ease-in-out var(--ray-delay) infinite alternate;
   }
 }

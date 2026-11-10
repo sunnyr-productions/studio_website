@@ -3,18 +3,18 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { skyThings, type SkyThingName } from "./SkyThings";
+import { SunRays } from "./Sun";
 
 /**
- * What's up in the sky behind the page: frosted-glass clouds and the odd thing
+ * What's up in the sky behind the page: soft, sunlit clouds and the odd thing
  * floating past.
  *
  * The clouds are the sky itself, held to the screen like the scenery and drifting
  * slowly left to right on their own, at the same easy pace as the trees, in a
  * loop with enough of them spaced round it that one's always in view. They pay no
  * attention to the scroll, and keep out of the footer. They come in a back and a
- * front layer, which the page's panels, photos and copy slot between (the --z-*
- * tokens in globals.css): big clouds go in front, the rest behind the frosted
- * section panels.
+ * front layer (the --z-* tokens in globals.css): the far-off things fly between
+ * them, and both are behind the forest and the sections' fog.
  *
  * The things are the only part of the sky (or the scenery) that answer to the
  * scroll. They're seeded from the page's path, so each page has its own that stay
@@ -23,13 +23,7 @@ import { skyThings, type SkyThingName } from "./SkyThings";
  * the panels, so they never cross the copy, and the far-off ones (planes,
  * balloons, birds, kites) behind the forest at the bottom of the screen too.
  */
-const SHAPES = [
-  "M40 100a30 30 0 0 1-4-59a42 42 0 0 1 76-18a34 34 0 0 1 56 14a37 37 0 0 1 34 63z",
-  "M30 100a26 26 0 0 1 8-50a34 34 0 0 1 58-18a44 44 0 0 1 78 10a30 30 0 0 1 40 30a15 15 0 0 1-4 28z",
-  "M48 96a24 24 0 0 1 2-46a36 36 0 0 1 66-14a28 28 0 0 1 48 12a27 27 0 0 1 28 48z",
-];
-
-const VIEW_BOX = "0 0 240 120";
+const VIEW_BOX = { width: 240, height: 120 };
 const THING_SPACING_PX = 760;
 const THING_COUNT = 14;
 
@@ -63,25 +57,42 @@ function hash(text: string) {
   return h;
 }
 
-function maskFor(path: string) {
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='${VIEW_BOX}' preserveAspectRatio='none'><path d='${path}'/></svg>`;
-  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+/**
+ * A cloud drawn as a heap of puffs: a long, flat-bottomed base with a puff
+ * rounding off each end, and three to five puffs on top, biggest in the middle,
+ * all in VIEW_BOX. Circles as [x, y, r].
+ */
+function puffs(random: () => number) {
+  const { width, height } = VIEW_BOX;
+  const base = height * 0.78;
+  const circles: [number, number, number][] = [];
+  circles.push([44, base - 14, 18 + random() * 6], [width - 44, base - 14, 18 + random() * 6]);
+  const count = 3 + Math.floor(random() * 3);
+  for (let i = 0; i < count; i++) {
+    const t = (i + 0.5) / count;
+    const middle = 1 - Math.abs(t - 0.5) * 1.4;
+    const r = 22 + middle * 20 + random() * 8;
+    circles.push([46 + t * (width - 92) + (random() - 0.5) * 12, base - r * 0.75 - random() * 8, r]);
+  }
+  return circles;
 }
-
 /**
  * The same clouds on every page, so they carry on drifting as you move between
  * them. Each layer's are spaced evenly round its loop. Nearer, bigger clouds
- * cross a little faster, and sit higher, clear of the forest.
+ * cross faster, the far ones slowly, for a sense of depth, and the near ones sit
+ * higher, clear of the forest.
  */
 const CLOUDS = (() => {
   const random = seeded(0xc10d);
   const layer = (count: number, front: boolean) =>
     Array.from({ length: count }, (_, i) => {
       const size = front ? 0.6 + random() * 0.4 : random() * 0.6;
-      const seconds = front ? 110 + random() * 30 : 150 + random() * 40;
+      // Seconds to cross: the nearer and bigger a cloud, the faster it seems to go,
+      // so the far ones take three times as long as the near.
+      const seconds = front ? 85 + (1 - size) * 75 : 210 + (0.6 - size) * 180;
       const along = (i + random() * 0.5) / count;
       return {
-        shape: SHAPES[Math.floor(random() * SHAPES.length)],
+        puffs: puffs(random),
         top: front ? 3 + random() * 27 : 4 + random() * 46,
         width: 18 + size * 30,
         maxWidth: 200 + size * 380,
@@ -137,8 +148,14 @@ function buildSky(pathname: string) {
 type Cloud = (typeof CLOUDS)[number];
 type Thing = ReturnType<typeof buildSky>[number];
 
-function CloudShape({ cloud }: { cloud: Cloud }) {
-  const mask = maskFor(cloud.shape);
+/**
+ * One cloud: its puffs merged into a single soft shape, lit from above and
+ * shaded underneath, translucent so the sky's colour comes through it.
+ */
+function CloudShape({ cloud, index }: { cloud: Cloud; index: number }) {
+  const { width, height } = VIEW_BOX;
+  const base = height * 0.78;
+  const id = `cloud-${index}`;
   return (
     <div
       className="sky-drift absolute left-0 aspect-[2/1] min-w-[120px]"
@@ -155,19 +172,23 @@ function CloudShape({ cloud }: { cloud: Cloud }) {
         } as CSSProperties
       }
     >
-      <div className="cloud-glass absolute inset-0" style={{ maskImage: mask, WebkitMaskImage: mask }} />
-      <svg
-        viewBox={VIEW_BOX}
-        preserveAspectRatio="none"
-        className="absolute inset-0 h-full w-full overflow-visible"
-      >
-        <path
-          d={cloud.shape}
-          fill="none"
-          stroke="rgba(255,255,255,0.55)"
-          strokeWidth="1"
-          vectorEffect="non-scaling-stroke"
-        />
+      <svg viewBox={`0 0 ${width} ${height}`} className="absolute inset-0 h-full w-full overflow-visible">
+        <defs>
+          <linearGradient id={`${id}-light`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0.15" stopColor="#ffffff" />
+            <stop offset="0.65" stopColor="#f6f3fb" />
+            <stop offset="1" stopColor="#d9d3ea" />
+          </linearGradient>
+          <filter id={`${id}-soft`} x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="1.4" />
+          </filter>
+        </defs>
+        <g opacity={cloud.front ? 0.62 : 0.48} filter={`url(#${id}-soft)`} fill={`url(#${id}-light)`}>
+          <rect x={30} y={base - 26} width={width - 60} height={30} rx={15} />
+          {cloud.puffs.map(([x, y, r], i) => (
+            <circle key={i} cx={x.toFixed(1)} cy={y.toFixed(1)} r={r.toFixed(1)} />
+          ))}
+        </g>
       </svg>
     </div>
   );
@@ -279,7 +300,9 @@ export function Sky() {
       data-clouds
       className={`fixed inset-0 overflow-hidden ${front ? "z-[var(--z-cloud-front)]" : "z-[var(--z-cloud-back)]"}`}
     >
-      {CLOUDS.map((cloud, i) => (cloud.front === front ? <CloudShape key={i} cloud={cloud} /> : null))}
+      {CLOUDS.map((cloud, i) => (cloud.front === front ? <CloudShape key={i} cloud={cloud} index={i} /> : null))}
+      {/* With the nearer clouds, so they keep out of the footer too. */}
+      {front && <SunRays />}
     </div>
   );
 

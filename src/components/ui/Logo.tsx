@@ -1,9 +1,5 @@
-import type { ReactNode } from "react";
-
 type LogoProps = {
   className?: string;
-  /** Drawn behind the mark, centred on it (the header's sun). */
-  behind?: ReactNode;
 };
 
 /**
@@ -14,10 +10,9 @@ type LogoProps = {
  * draws a hairline round the edge of its lines and a soft shadow, so it stands
  * out on any background. Size it with a height utility on `className` (e.g. `h-14 w-auto`).
  */
-export function Logo({ className = "", behind }: LogoProps) {
+export function Logo({ className = "" }: LogoProps) {
   return (
     <div role="img" aria-label="sunny*r" className={`logo ${className}`}>
-      {behind}
       <span aria-hidden="true" className="logo-outline" />
       <span aria-hidden="true" className="logo-mark" />
     </div>

@@ -17,7 +17,7 @@ export function CtaPanel({
   return (
     <div
       style={{ borderRadius: "var(--radius-sketch)" }}
-      className="border-[1.5px] border-ink-900/80 bg-gradient-to-br from-periwinkle-100 via-coral-100 to-marigold-100 px-6 py-12 text-center shadow-[6px_8px_0_0_var(--color-marigold-400)] sm:px-12 sm:py-16"
+      className="card card-marigold bg-gradient-to-br from-periwinkle-100 via-coral-100 to-marigold-100 px-6 py-12 text-center sm:px-12 sm:py-16"
     >
       <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">{title}</h2>
       <p className="mx-auto mt-3 max-w-xl text-lg leading-relaxed text-ink-700">{body}</p>

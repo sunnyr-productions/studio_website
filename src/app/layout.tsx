@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree, Fraunces } from "next/font/google";
+import { Fraunces, Nunito } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -12,7 +12,8 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessSchema } from "@/lib/structured-data";
 import { siteConfig } from "@/lib/site-config";
 
-const bodyFont = Figtree({
+// Rounded and friendly, to sit with the soft display face and the drawn scenery.
+const bodyFont = Nunito({
   variable: "--font-body",
   subsets: ["latin"],
 });
