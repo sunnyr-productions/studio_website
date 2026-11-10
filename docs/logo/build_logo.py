@@ -258,9 +258,12 @@ def build(fill="#db8a12"):
 # round the mark as one shape (so none where strokes overlap or join), and a soft
 # shadow all round it, for a little more contrast on any background. The shadow
 # isn't offset, so like the mark it looks the same either way up. The mark
-# is blurred and cut off a hair outside its edge, about 3 out, and the line is
-# what that adds. Units are the drawing's; the mark is 842 tall, so on the site
-# 10 is about a pixel.
+# is blurred and cut off a little outside its edge (about 1.4 x LINE out), and the
+# line is what that adds. Units are the drawing's; the mark is 842 tall and shown
+# about 68px tall on phones (the small cut) and 107-119px above that, so a pixel is
+# 12 units on phones and 7-8 above. Thinner than a pixel and the line shimmers as
+# the logo turns.
+LINE = 6
 MARGIN = 110  # room round the drawing for the line and shadow; the site's CSS insets by this
 
 
@@ -273,7 +276,7 @@ def outline(fill="#db8a12"):
         f'width="{w}" height="{h}">'
         f'<filter id="o" filterUnits="userSpaceOnUse" x="{x}" y="{y}" width="{w}" height="{h}" '
         'color-interpolation-filters="sRGB">'
-        '<feGaussianBlur in="SourceAlpha" stdDeviation="3"/>'
+        f'<feGaussianBlur in="SourceAlpha" stdDeviation="{LINE}"/>'
         '<feComponentTransfer result="outer"><feFuncA type="linear" slope="14" intercept="-1.2"/></feComponentTransfer>'
         '<feComposite in="outer" in2="SourceAlpha" operator="out" result="ring"/>'
         '<feFlood flood-color="#fff"/>'
@@ -295,6 +298,7 @@ if __name__ == "__main__":
     # third, for the regular cut) "outline" draws the outline that goes behind it.
     if len(sys.argv) > 3 and sys.argv[3] == "small":
         STEM, THIN, SWELL, TIP, DOT = 31, 23, 41, 19, 15
+        LINE = 9
     with open(out, "w", encoding="utf8") as f:
         if "outline" in sys.argv[3:]:
             f.write(outline(fill))

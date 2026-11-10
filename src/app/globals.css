@@ -426,7 +426,7 @@ html {
 html {
   background: var(--background);
   /* In-page links land clear of the sticky header. */
-  scroll-padding-top: 8rem;
+  scroll-padding-top: 10rem;
 }
 
 body {
@@ -529,40 +529,74 @@ body::before {
   }
 }
 
-/* The band around the words, ruled at the top and foot of the mark's N (21% and
-   79% of its height), with a heavier foot for it to stand on. The mark is point
-   symmetric, so its curves reach further out at the bottom left and top right:
-   each rule runs in to meet the curve on its own line. The reaches are fractions
-   of the mark's height, measured from the art. Periwinkle is marigold's complement,
-   so the rules stay separate from the mark where they meet it. */
+/* The band around the words, ruled top and foot, with a heavier foot for it to
+   stand on, centred on the mark. The mark is bigger than the band (--logo-height
+   against --band-height, about 1.4 to 1): its hairline outline needs the size to
+   stay crisp as it turns, and the words and rules keep their own size. With the
+   band at 0.71 of the mark's height, its rules cross the mark at 29.5% and 70.5%
+   of its height. The mark is point symmetric, so its curves reach further out at the
+   bottom left and top right: each rule runs in to meet the curve on its own line.
+   The reaches are fractions of the mark's height, measured from the art at those
+   heights. Periwinkle is marigold's complement, so the rules stay separate from
+   the mark where they meet it. */
 .logo-lockup {
-  --logo-height: 48px;
+  --logo-height: 68px;
+  --band-height: 48px;
   --logo-foot: 2px;
-  --logo-gap: calc(var(--logo-height) * 0.14);
-  --logo-reach-near: calc(var(--logo-gap) * -1 - var(--logo-height) * 0.056);
-  --logo-reach-far: calc(var(--logo-gap) * -1 - var(--logo-height) * 0.208);
+  --logo-gap: calc(var(--band-height) * 0.14);
+  --logo-reach-near: calc(var(--logo-gap) * -1 - var(--logo-height) * 0.057);
+  --logo-reach-far: calc(var(--logo-gap) * -1 - var(--logo-height) * 0.24);
   display: inline-flex;
   flex-shrink: 0;
+  align-items: center;
   column-gap: var(--logo-gap);
 }
 
 @media (max-width: 359px) {
   .logo-lockup {
-    --logo-height: 36px;
+    --logo-height: 50px;
+    --band-height: 36px;
   }
 }
 
 @media (min-width: 40rem) {
   .logo-lockup {
-    --logo-height: 4.5rem;
+    --logo-height: 6.3rem;
+    --band-height: 4.5rem;
     --logo-foot: 2.5px;
   }
 }
 
 @media (min-width: 64rem) {
   .logo-lockup {
-    --logo-height: 5rem;
+    --logo-height: 7rem;
+    --band-height: 5rem;
     --logo-foot: 3px;
+  }
+}
+
+/* A short screen, like a phone on its side, gets the compact lockup and the
+   heavier cut of the mark however wide it is: the header stays with you down
+   the page, and at full size it would take a third of the screen. */
+@media (max-height: 520px) {
+  .logo-lockup {
+    --logo-height: 50px;
+    --band-height: 36px;
+    --logo-foot: 2px;
+  }
+
+  .logo-mark {
+    -webkit-mask-image: url("/images/sunnyr-logo-small.svg");
+    mask-image: url("/images/sunnyr-logo-small.svg");
+  }
+
+  .logo-outline {
+    background-image: url("/images/sunnyr-logo-outline-small.svg");
+  }
+
+  /* The words at their phone size too, to go with the mark. */
+  .logo-band > span {
+    font-size: 10px;
   }
 }
 
@@ -571,8 +605,8 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-block: calc(var(--logo-height) * 0.21);
-  padding-inline: calc(var(--logo-height) * 0.12);
+  height: calc(var(--band-height) * 0.58);
+  padding-inline: calc(var(--band-height) * 0.12);
 }
 
 .logo-band::before,
@@ -613,8 +647,19 @@ body::before {
 
 /* The sun's rays (SunRays in Sun.tsx): soft shafts of its glow fanning down from
    behind the header's cloud, each a narrow wedge that's brightest just below the
-   cloud and gone well before its end. */
+   cloud and gone well before its end. The wedge is a mask, a fan of light from
+   the ray's top that's full down its middle and fades to nothing at its sides
+   (--ray-half is the angle from the middle to a side), so its edges are soft
+   with no blur filter: the rays change colour with the sun as you scroll, and a
+   filter would have every one of them blurred again on each frame of that. */
 .sun-ray {
+  --wedge: conic-gradient(
+    from 180deg at 50% 0,
+    #000 calc(var(--ray-half) * 0.3),
+    transparent var(--ray-half),
+    transparent calc(360deg - var(--ray-half)),
+    #000 calc(360deg - var(--ray-half) * 0.3)
+  );
   position: absolute;
   left: 0;
   top: 0;
@@ -622,7 +667,6 @@ body::before {
   height: var(--ray-length);
   transform-origin: 50% 0;
   transform: translateX(-50%) rotate(var(--ray-angle));
-  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
   background: linear-gradient(
     180deg,
     transparent 4%,
@@ -630,7 +674,8 @@ body::before {
     color-mix(in srgb, var(--sun-haze, #f8b490) 30%, transparent) 50%,
     transparent 92%
   );
-  filter: blur(6px);
+  -webkit-mask-image: var(--wedge);
+  mask-image: var(--wedge);
   opacity: 0.55;
 }
 
@@ -773,7 +818,7 @@ body::before {
     animation: scenery-flow var(--flow-time) linear infinite;
   }
 
-  [data-falls]:not([data-falling]) .scenery-flow {
+  [data-falls]:not([data-falling]) ~ [data-streaks] .scenery-flow {
     animation-play-state: paused;
   }
 

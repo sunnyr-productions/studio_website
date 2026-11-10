@@ -59,13 +59,21 @@ export function Sun() {
     // which would have the browser restyle everything on every frame of a scroll;
     // and only when they've changed.
     const rays = document.querySelector<HTMLElement>(".sun-rays");
-    const lit = [svg, rays].filter((element): element is SVGSVGElement | HTMLElement => !!element);
-    let painted = "";
+    // In steps too small to see, so a scroll doesn't repaint them on every frame.
+    // The rays are big and faint, so theirs are coarser: a few dozen down the page.
+    const lit: [HTMLElement | SVGSVGElement | null, number, string][] = [
+      [svg, 240, ""],
+      [rays, 40, ""],
+    ];
     const paint = (day: number) => {
-      const colors = paletteAt(day);
-      if (colors.join() === painted) return;
-      painted = colors.join();
-      lit.forEach((element) => colors.forEach((color, i) => element.style.setProperty(NAMES[i], color)));
+      lit.forEach((light) => {
+        const [element, steps, painted] = light;
+        if (!element) return;
+        const colors = paletteAt(Math.round(day * steps) / steps);
+        if (colors.join() === painted) return;
+        light[2] = colors.join();
+        colors.forEach((color, i) => element.style.setProperty(NAMES[i], color));
+      });
     };
     // Where the rays start. The header holds still, so this only changes with the window.
     const place = () => {
@@ -156,6 +164,9 @@ const RAYS: [number, number, number][] = [
   [68, 4, 0.5],
 ];
 
+/** How much wider a ray's box is than the ray looks (see .sun-ray in globals.css). */
+const WIDER = 1.6;
+
 /**
  * Light from the sun behind the header's cloud, fanning out below it in soft
  * shafts that swing a little and brighten and fade, slowly, as light through
@@ -173,8 +184,11 @@ export function SunRays() {
           style={
             {
               "--ray-angle": `${angle}deg`,
-              "--ray-width": `${spread}vh`,
+              // The box is wider than the ray looks, since it fades toward its
+              // sides, and the wedge of light just fills it at its foot.
+              "--ray-width": `${(spread * WIDER).toFixed(1)}vh`,
               "--ray-length": `${(length * 75).toFixed(0)}vh`,
+              "--ray-half": `${((Math.atan((spread * WIDER) / 2 / (length * 75)) * 180) / Math.PI).toFixed(2)}deg`,
               "--ray-delay": `${(-i * 1.7).toFixed(1)}s`,
             } as CSSProperties
           }

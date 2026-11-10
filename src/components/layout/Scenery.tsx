@@ -32,11 +32,18 @@ const swaying = (degrees: number, seconds: number, start: number) =>
 
 /**
  * A run for .scenery-flow: the dashes move one whole pattern along and start
- * again, seamlessly, at `speed` units a millisecond.
+ * again, seamlessly, at `speed` units a millisecond. Moving dashes are redrawn
+ * rather than slid along, so a slow run can be given a number of `steps` a second
+ * to move in, with none of them big enough to see, and be redrawn only that often.
  */
-const flowing = (dash: string, speed: number) => {
+const flowing = (dash: string, speed: number, steps = 0) => {
   const pattern = dash.split(" ").reduce((sum, length) => sum + Number(length), 0);
-  return { "--flow-to": -pattern, "--flow-time": `${(pattern / speed / 1000).toFixed(2)}s` } as CSSProperties;
+  const seconds = pattern / speed / 1000;
+  return {
+    "--flow-to": -pattern,
+    "--flow-time": `${seconds.toFixed(2)}s`,
+    ...(steps ? { animationTimingFunction: `steps(${Math.round(seconds * steps)})` } : null),
+  } as CSSProperties;
 };
 
 // The fixed ink, not --color-ink-700: the footer turns that to cream for its
@@ -51,12 +58,10 @@ const ink = {
 
 const line = { ...ink, fill: "none" } as const;
 
-/** Each colour with the darker shade of it that the side away from the light takes. */
+/** Each colour with the darker shade of it that the side away from the light takes. The greens are in `greens`. */
 const paint = {
   farGround: "#3a5d4d",
-  backFir: ["#5b8a6e", "#4c7a60"],
   backBark: ["#8c6d5a", "#76594a"],
-  frontFir: ["#3e6e4c", "#2f5a3d"],
   frontBark: ["#7b4f36", "#5f3b28"],
   bank: "#557f45",
   water: "#3a7086",
@@ -65,11 +70,32 @@ const paint = {
   treesInWater: "#2b5868",
   stone: ["#a19d92", "#827e74"],
   wetStone: ["#77878c", "#5d6d72"],
-  moss: "#6d9a45",
-  fern: "#4e8a46",
   fernRib: "#2f5a2c",
   foam: "rgba(255,255,255,0.8)",
 } as const;
+
+/**
+ * The forest's greens. No two trees, stones or ferns need be quite the same:
+ * each takes one of these, lit and shaded. The front firs are the deepest and
+ * warmest, the back ones lighter and bluer with the distance, and the woods
+ * behind them hazier still. Moss runs from yellow-green in the sun to deep and
+ * cool in the damp, and darker again on the cliffs, down in the night.
+ */
+const greens = {
+  frontFir: [["#3e6e4c", "#2f5a3d"], ["#467240", "#355b31"], ["#356650", "#284f3f"], ["#4b7747", "#385d36"], ["#2f604a", "#234b39"]],
+  backFir: [["#5b8a6e", "#4c7a60"], ["#678f66", "#577f58"], ["#527f70", "#456f62"], ["#6a9474", "#5a8465"]],
+  woods: [["#4f7666", "#43695b"], ["#5a7d63", "#4d6f57"], ["#466f61", "#3b6053"], ["#62866a", "#55785d"], ["#557a6d", "#486c60"]],
+  midFir: [["#47755a", "#39624a"], ["#4f7a52", "#3f6544"]],
+  moss: ["#6d9a45", "#80a84a", "#5f9048", "#8ba34b", "#558a4f", "#94ae56", "#4f8046"],
+  fern: ["#4e8a46", "#5b9548", "#43804b", "#64904a", "#3f7a44"],
+  // Up the shady side of an old trunk: never the sunny yellow-greens.
+  trunkMoss: ["#5f8a45", "#567f48", "#4f7a44", "#668f4a"],
+  cliffMoss: ["#486541", "#536e3f", "#3f5f47", "#58744a", "#44683f", "#4d6a4b"],
+  cliffFern: ["#446a40", "#4e7444", "#3d6248"],
+};
+
+/** Bark for the woods and the dead trees standing in them, weathered grey. */
+const woodsBark = [["#86705f", "#6f5c4e"], ["#8d8073", "#746a5f"], ["#7c6656", "#665345"]];
 
 type Point = [number, number];
 type Side = "left" | "right";
@@ -324,6 +350,12 @@ const riverAt = (x: number, y: number) => ({
 });
 
 const random = seeded(0x0f1c);
+const defaultRandom = random;
+// The colours are picked from a stream of their own, and the woods drawn from
+// another, so neither moves a single bough or stone of the rest.
+const tones = seeded(0x6ee7);
+const pick = <T,>(list: readonly T[]) => list[Math.floor(tones() * list.length)];
+const woodsRandom = seeded(0x3d5a);
 
 /**
  * The far shore: a dark wall of firs along the horizon. Unlike the valley it's
@@ -334,7 +366,7 @@ const HORIZON = { width: 2000, height: VALLEY.height };
 const farShore = (x: number) => 68 - 7 * bump(x, 700, 400) - 5 * bump(x, 1400, 450);
 
 /** A far-off fir: a ragged spire, its tiers jutting out unevenly. */
-function spire(x: number, base: number, height: number, width: number) {
+function spire(x: number, base: number, height: number, width: number, random = defaultRandom) {
   const top = base - height;
   const side = (dir: number): Point[] => [
     [x + dir * width * (0.35 + random() * 0.2), top + height * (0.26 + random() * 0.08)],
@@ -348,15 +380,22 @@ function spire(x: number, base: number, height: number, width: number) {
   return `M${points.map((point) => pt(...point)).join("L")}Z`;
 }
 
-/** Two rows of them, the back one taller and hazier. Trees of a colour share a path. */
+/**
+ * Two rows of them, the back one taller and hazier. Trees of a colour share a
+ * path. They part in the middle (`clear` either side of it), where the river
+ * comes down out of the hills (STREAM).
+ */
 const FAR_FIRS = [
-  { colors: ["#5a8273", "#4f786a", "#628a79", "#557d6c"], shortest: 22, tallest: 42, gap: 14, line: 0.3 },
-  { colors: ["#3d6150", "#456a57", "#355a49", "#4b7059", "#40664f"], shortest: 12, tallest: 30, gap: 11, line: 0.45 },
+  { colors: ["#5a8273", "#4f786a", "#628a79", "#557d6c"], shortest: 22, tallest: 42, gap: 14, line: 0.3, clear: 30 },
+  { colors: ["#3d6150", "#456a57", "#355a49", "#4b7059", "#40664f"], shortest: 12, tallest: 30, gap: 11, line: 0.45, clear: 24 },
 ].map((row) => {
   const paths = row.colors.map(() => "");
   for (let x = -10; x < HORIZON.width + 10; x += row.gap * (0.5 + random())) {
     const height = row.shortest + random() * (row.tallest - row.shortest);
-    paths[Math.floor(random() * paths.length)] += spire(x, farShore(x) + 6, height, height * (0.2 + random() * 0.12));
+    const color = Math.floor(random() * paths.length);
+    // Drawn either way, so the trees either side keep their shapes.
+    const tree = spire(x, farShore(x) + 6, height, height * (0.2 + random() * 0.12));
+    if (Math.abs(x - HORIZON.width / 2) > row.clear) paths[color] += tree;
   }
   return { line: row.line, trees: paths.map((d, i) => ({ d, fill: row.colors[i] })) };
 });
@@ -364,12 +403,72 @@ const FAR_FIRS = [
 const farPoints = Array.from({ length: 22 }, (_, i): Point => [i * 100 - 50, farShore(i * 100 - 50)]);
 const FAR_GROUND = `M${pt(...farPoints[0])}${through(farPoints)}L${pt(HORIZON.width + 50, HORIZON.height + 10)}L${pt(-50, HORIZON.height + 10)}Z`;
 
-// In the river's own box: wide even in the distance, and opening out to the whole
-// of it as it reaches you, the banks running almost with its sides. Its far end
-// starts a touch above the horizon, over the bank's skyline, so the river comes
-// out from among the stones there rather than from behind a line.
-const LEFT_BANK: Point[] = [[191, rise(191) - 2], [163, 90], [145, 120], [89, 150], [0, 200], [-25, 216]];
-const RIGHT_BANK: Point[] = [[807, rise(807) - 2], [839, 90], [864, 120], [918, 150], [1000, 200], [1025, 216]];
+/**
+ * Rolling hills beyond the far shore, where the river comes from: three ranges of
+ * them, paler and bluer the further off, falling away either side of the valley
+ * in the middle that the river winds down, with firs dotted over them in clumps.
+ * At HORIZON's scale and lined up with it, but taller, to stand up above it; y
+ * here is HORIZON's plus HILLS.rise.
+ */
+const HILLS = { width: HORIZON.width, height: 340, rise: 140 };
+const RANGES = (() => {
+  const random = seeded(0x41f5);
+  return [
+    {
+      fill: "#a9bcb0",
+      treeColor: "#93ab9d",
+      line: 0.2,
+      ridge: (x: number) => 150 - 30 * bump(x, 520, 330) - 36 * bump(x, 1500, 360) + 18 * bump(x, 1000, 140),
+    },
+    {
+      fill: "#86a593",
+      treeColor: "#6f917d",
+      line: 0.28,
+      ridge: (x: number) =>
+        172 - 22 * bump(x, 760, 240) - 24 * bump(x, 1290, 260) - 12 * bump(x, 180, 260) - 14 * bump(x, 1820, 260) + 16 * bump(x, 1010, 110),
+    },
+    {
+      fill: "#6c937c",
+      treeColor: "#567e69",
+      line: 0.36,
+      ridge: (x: number) =>
+        190 - 14 * bump(x, 600, 200) - 16 * bump(x, 1400, 220) - 8 * bump(x, 880, 120) - 9 * bump(x, 1130, 120) + 8 * bump(x, 1000, 70),
+    },
+  ].map((range, i) => {
+    const points = Array.from({ length: 42 }, (_, k): Point => [k * 50 - 25, range.ridge(k * 50 - 25)]);
+    const ridge = `M${pt(...points[0])}${through(points)}`;
+    // Further off, the trees are smaller and closer together.
+    const [spacing, size] = [[22, 6], [16, 8], [12, 11]][i];
+    let trees = "";
+    for (let x = -10; x < HILLS.width + 10; x += spacing * (0.4 + random() * 1.4)) {
+      // The valley floor's clear, and they grow in clumps, not hedges.
+      if (Math.abs(x - HILLS.width / 2) < 70 + i * 25 || random() < 0.35) continue;
+      const height = size * (0.6 + random() * 0.8);
+      trees += spire(x, range.ridge(x) + 2 + random() * (4 + i * 4), height, height * 0.3, random);
+    }
+    return { ...range, ridge, land: `${ridge}L${pt(HILLS.width + 25, HILLS.height)}L${pt(-25, HILLS.height)}Z`, trees };
+  });
+})();
+
+/**
+ * The river, small in the distance, winding down the valley between the hills
+ * and on through the gap in the far shore's firs, widening as it comes, into the
+ * near end of the river. In the river's box like the river, so it meets it at
+ * any width, but taller, by HILLS.rise, to reach up into the hills: points are
+ * [x, y, width]. It comes from behind the far range's dip.
+ */
+const STREAM_COURSE: [number, number, number][] = [
+  [507, 147, 1.4], [497, 152, 2], [510, 158, 2.8], [528, 164, 3.6], [512, 170, 4.6], [484, 176, 6],
+  [470, 182, 7.6], [486, 188, 10], [512, 193, 15], [514, 196.5, 26], [500, 199.5, 40],
+];
+
+// In the river's own box: narrow where it comes out of the hills (STREAM) at the
+// horizon, and opening out quickly, in perspective, to the whole of the box as it
+// reaches you, the banks running almost with its sides. Its far end starts a touch
+// above the horizon, over the bank's skyline, so it runs on from the stream there
+// rather than from behind a line.
+const LEFT_BANK: Point[] = [[480, rise(480) - 2], [380, 68], [230, 86], [160, 112], [95, 148], [0, 200], [-25, 216]];
+const RIGHT_BANK: Point[] = [[520, rise(520) - 2], [620, 68], [770, 86], [840, 112], [905, 148], [1000, 200], [1025, 216]];
 
 /** The near bank's skyline, across the whole screen. */
 const bankPoints: Point[] = [];
@@ -383,6 +482,10 @@ const water = (left: Point[], right: Point[]) =>
   `M${pt(...left[0])}${through(left)}L${pt(...right[right.length - 1])}${through([...right].reverse())}Z`;
 
 const RIVER = water(LEFT_BANK, RIGHT_BANK);
+const STREAM = water(
+  STREAM_COURSE.map(([x, y, w]): Point => [x - w / 2, y]),
+  STREAM_COURSE.map(([x, y, w]): Point => [x + w / 2, y]),
+);
 const SKY_IN_WATER = water(downstream(0.3), downstream(0.66));
 const TREES_IN_WATER = [water(downstream(0), downstream(0.1)), water(downstream(0.9), downstream(1))];
 
@@ -403,9 +506,11 @@ const RIPPLES = [
  * Stones where they meet the water or the bank, and their width in vh (or `cap`
  * vw, on a narrow screen). Further off is further up the valley and smaller.
  */
+const FAR_STONES = [198, 224, 257, 300, 340, 382, 431, 475, 517, 565, 609, 653, 700, 740, 776, 801];
 const ROCKS = [
-  // A line of them along the horizon, which the river comes out from between.
-  ...[198, 224, 257, 300, 340, 382, 431, 475, 517, 565, 609, 653, 700, 740, 776, 801].map((x) => ({
+  // A few along the horizon, which the river comes out from between. (All are
+  // drawn, so the rest keep their shapes, and those not in the water dropped.)
+  ...FAR_STONES.map((x) => ({
     x,
     y: rise(x) + 1 + random() * 3,
     size: 0.9 + random() * 1.4,
@@ -443,11 +548,12 @@ const ROCKS = [
   return {
     ...rock,
     ...stone(random, rock.mossy),
+    mossColor: pick(greens.moss),
     // Small, far-off rocks get a lighter line, like everything else in the distance.
     fine: rock.size < 3,
     style: { left, bottom: `calc(${bottom} - ${width} * ${drop})`, width, aspectRatio: `${ROCK_BOX.width} / ${ROCK_BOX.height}` },
   };
-});
+}).filter((rock, i) => i >= FAR_STONES.length || Math.abs(rock.x - VALLEY.width / 2) < 72);
 
 /**
  * The firs on each side, in from the edge by `offset` times their own width so
@@ -483,9 +589,100 @@ const FIRS = SIDES.flatMap((side) =>
         ...fromEdge(side, `calc(${"atRiver" in stand ? "var(--forest-foot) + " : ""}${width} * ${stand.offset})`),
         bottom: `${stand.bottom}vh`, height: tall, width },
       // Further off, they seem to move less.
-      sway: swaying(stand.back ? 0.3 : 0.55, 4.4 + random() * 1.25, random()),
+      sway: swaying(stand.back ? 0.3 : 0.55, 4.4 + random() * 1.25, random()) as CSSProperties | undefined,
+      needles: pick(stand.back ? greens.backFir : greens.frontFir),
+      barkColors: (stand.back ? paint.backBark : paint.frontBark) as readonly string[],
+      mossColor: pick(greens.trunkMoss),
+      line: stand.back ? 0.5 : 1,
     };
   }),
+);
+
+type Tree = (typeof FIRS)[number];
+
+/**
+ * A dead fir still standing, as old-growth woods are full of: a bare, tapering
+ * trunk snapped off jaggedly at the top, with stubs where its limbs were. In
+ * FIR_BOX, like a living one.
+ */
+function snag(random: () => number) {
+  const x = FIR_BOX.width / 2;
+  const base = FIR_BOX.height;
+  const top = 70 + random() * 90;
+  const foot = 8 + random() * 2.5;
+  const tip = 3.5 + random() * 1.5;
+  const shoulder = base - 18;
+  const trunk =
+    `M${pt(x - foot * 1.6, base)}Q${pt(x - foot, base - 3)} ${pt(x - foot, shoulder)}L${pt(x - tip, top + 7)}` +
+    `L${pt(x - tip * 0.3, top)}L${pt(x + tip * 0.2, top + 6)}L${pt(x + tip * 0.6, top + 2)}L${pt(x + tip, top + 9)}` +
+    `L${pt(x + foot, shoulder)}Q${pt(x + foot, base - 3)} ${pt(x + foot * 1.6, base)}Z`;
+  const trunkShade =
+    `M${pt(x + tip * 0.3, top + 5)}L${pt(x + tip, top + 9)}L${pt(x + foot, shoulder)}` +
+    `Q${pt(x + foot, base - 3)} ${pt(x + foot * 1.6, base)}L${pt(x + foot * 0.3, base)}Z`;
+  const girth = (y: number) => tip + ((foot - tip) * (y - top)) / (shoulder - top);
+  let bark = `M${pt(x - 1.5, base - 6)}L${pt(x - 0.8, top + 24)}M${pt(x + 2, base - 12)}L${pt(x + 1, top + 40)}`;
+  for (let y = top + 26; y < base - 50; y += 24 + random() * 34) {
+    const side = random() < 0.5 ? -1 : 1;
+    bark += `M${pt(x + side * girth(y), y)}l${pt(side * (4 + random() * 6), -(1.5 + random() * 3))}`;
+  }
+  return { trunk, trunkShade, moss: "", bark, boughs: [] as ReturnType<typeof bough>[] };
+}
+
+/**
+ * The woods behind: a crowd of firs and the odd dead one between the far shore
+ * and the swaying trees, in from the edge by `offset` times their own width,
+ * their feet beyond the bank's skyline. They're further off than anything that
+ * sways, so they hold still, and they're hazier, in the woods' own greens. A
+ * couple more, big and old, stand just behind the front row, their bare trunks
+ * showing between it.
+ */
+const WOODS_STANDS = [
+  { offset: 0.35, height: 40, bottom: 7, cap: 13, dead: false },
+  { offset: 1.25, height: 31, bottom: 9, cap: 10, dead: false },
+  { offset: 0.05, height: 46, bottom: 6, cap: 14, dead: true },
+  { offset: 2.1, height: 27, bottom: 10, cap: 9, dead: false },
+  { offset: 1.75, height: 37, bottom: 8, cap: 11, dead: true },
+  { offset: 3, height: 22, bottom: 11, cap: 7, dead: false },
+  { offset: 2.6, height: 30, bottom: 9.5, cap: 8, dead: true },
+  { offset: 3.9, height: 18, bottom: 12, cap: 6, dead: false },
+  { offset: 4.6, height: 15, bottom: 12.5, cap: 5, dead: false },
+];
+const MID_STANDS = [
+  { offset: 0.3, height: 50, bottom: -3, cap: 16 },
+  { offset: 1.05, height: 44, bottom: -1, cap: 13 },
+];
+
+const placed = (side: Side, stand: { offset: number; height: number; bottom: number; cap: number }) => {
+  const height = stand.height * (0.95 + woodsRandom() * 0.1);
+  const width = `min(${((height * FIR_BOX.width) / FIR_BOX.height).toFixed(2)}vh, ${stand.cap}vw)`;
+  const tall = `min(${height.toFixed(2)}vh, ${((stand.cap * FIR_BOX.height) / FIR_BOX.width / 0.8).toFixed(2)}vw)`;
+  return { ...fromEdge(side, `calc(${width} * ${stand.offset})`), bottom: `${stand.bottom}vh`, height: tall, width };
+};
+
+const WOODS: Tree[] = SIDES.flatMap((side) =>
+  WOODS_STANDS.map((stand) => ({
+    back: true,
+    ...(stand.dead ? snag(woodsRandom) : fir(woodsRandom, woodsRandom() < 0.5)),
+    style: placed(side, stand),
+    sway: undefined,
+    needles: pick(greens.woods),
+    barkColors: pick(woodsBark),
+    mossColor: pick(greens.cliffMoss),
+    line: 0.38,
+  })),
+);
+
+const MID_WOODS: Tree[] = SIDES.flatMap((side) =>
+  MID_STANDS.map((stand) => ({
+    back: false,
+    ...fir(woodsRandom, true),
+    style: placed(side, stand),
+    sway: undefined,
+    needles: pick(greens.midFir),
+    barkColors: ["#6e5141", "#573f32"],
+    mossColor: pick(greens.trunkMoss),
+    line: 0.7,
+  })),
 );
 
 const fernBox = (size: number, cap: number) => ({
@@ -509,24 +706,22 @@ const FERNS = [
     { x: 170, y: 70, size: 2.5, cap: 5 },
     { x: 830, y: 69, size: 2.5, cap: 5 },
   ].map(({ x, y, size, cap }) => ({ centered: true, style: { ...riverAt(x, y), ...fernBox(size, cap) } })),
-].map((spot) => ({ ...spot, fronds: fern(random), sway: swaying(1.2, 2.8 + random() * 0.8, random()) }));
+].map((spot) => ({ ...spot, fronds: fern(random), sway: swaying(1.2, 2.8 + random() * 0.8, random()), green: pick(greens.fern) }));
 
-function FirShape({ index }: { index: number }) {
-  const tree = FIRS[index];
-  const needles = tree.back ? paint.backFir : paint.frontFir;
-  const bark = tree.back ? paint.backBark : paint.frontBark;
+function FirShape({ tree }: { tree: Tree }) {
+  const { needles, barkColors: bark } = tree;
   return (
-    <div className="scenery-sway absolute origin-bottom" style={{ ...tree.style, ...tree.sway }}>
+    <div className={`${tree.sway ? "scenery-sway " : ""}absolute origin-bottom`} style={{ ...tree.style, ...tree.sway }}>
       <svg
         viewBox={`0 0 ${FIR_BOX.width} ${FIR_BOX.height}`}
         preserveAspectRatio="none"
         className="h-full w-full overflow-visible"
-        strokeOpacity={tree.back ? 0.5 : 1}
+        strokeOpacity={tree.line}
       >
         <path d={tree.trunk} fill={bark[0]} />
         <path d={tree.trunkShade} fill={bark[1]} />
         <path d={tree.trunk} {...line} />
-        {tree.moss && <path d={tree.moss} fill={paint.moss} {...ink} strokeOpacity={0.6} />}
+        {tree.moss && <path d={tree.moss} fill={tree.mossColor} {...ink} strokeOpacity={0.6 * tree.line} />}
         {tree.bark && <path d={tree.bark} {...line} strokeWidth={1.2} />}
         {tree.boughs.map(({ body, shade }, i) => (
           <g key={i}>
@@ -552,7 +747,7 @@ function FernShape({ index }: { index: number }) {
       <svg viewBox={`0 0 ${FERN_BOX.width} ${FERN_BOX.height}`} className="h-full w-full overflow-visible">
         {fern.fronds.map((frond, i) => (
           <g key={i}>
-            <path d={frond.leaf} fill={paint.fern} {...ink} strokeOpacity={0.4} />
+            <path d={frond.leaf} fill={fern.green} {...ink} strokeOpacity={0.4} />
             <path d={frond.rib} {...line} stroke={paint.fernRib} strokeWidth={1.2} />
           </g>
         ))}
@@ -574,7 +769,7 @@ function RockShape({ rock }: { rock: (typeof ROCKS)[number] }) {
         <path d={rock.outline} fill={stone[0]} />
         <path d={rock.shade} fill={stone[1]} />
         <path d={rock.outline} {...line} strokeWidth={rock.fine ? 1.2 : 1.6} />
-        {rock.moss && <path d={rock.moss} fill={paint.moss} {...ink} strokeWidth={rock.fine ? 1.2 : 1.6} />}
+        {rock.moss && <path d={rock.moss} fill={rock.mossColor} {...ink} strokeWidth={rock.fine ? 1.2 : 1.6} />}
         {rock.shine && <path d={rock.shine} {...line} stroke="rgba(255,255,255,0.75)" />}
       </svg>
     </div>
@@ -583,6 +778,10 @@ function RockShape({ rock }: { rock: (typeof ROCKS)[number] }) {
 
 const valleyBox = "absolute inset-x-0 bottom-0 h-[20vh] w-full";
 const riverBox = "absolute bottom-0 left-[var(--forest-foot)] h-[20vh] w-[calc(100%-2*var(--forest-foot))] overflow-visible";
+// The hills and the stream stand up above the valley, at its scale: HILLS.height
+// is 34vh as VALLEY.height is 20.
+const hillsBox = "absolute inset-x-0 bottom-0 h-[34vh] w-full";
+const streamBox = "absolute bottom-0 left-[var(--forest-foot)] h-[34vh] w-[calc(100%-2*var(--forest-foot))]";
 
 /**
  * The falls, in the same box as the river (so exactly as wide as its mouth) and
@@ -591,7 +790,7 @@ const riverBox = "absolute bottom-0 left-[var(--forest-foot)] h-[20vh] w-[calc(1
  * (CliffFace) run out to the edges of the screen.
  */
 const FALLS = { width: VALLEY.width, height: 300 };
-const MOUTH = [LEFT_BANK[4][0], RIGHT_BANK[4][0]];
+const MOUTH = [LEFT_BANK[LEFT_BANK.length - 2][0], RIGHT_BANK[RIGHT_BANK.length - 2][0]];
 const DROPS = [0, 30, 90, 170, 240, 300];
 // The edges fall straight, wavering a little as they go.
 const fallingEdge = (x: number, dir: number) =>
@@ -662,12 +861,17 @@ const FOAM_TRAILS = Array.from({ length: 12 }, () => {
  * like a cliff's strata, each layer overlapping the feet of the one above, with
  * dark crevices between them. Moss on the ledges, ferns growing out of it, and
  * darker, wet rock by the water. Drawn for the left side, with the falls at its
- * right edge; the right side is its own, mirrored. Tall, so it's cut to the
- * footer's height from the top, and scaled to the width between the screen's
- * edge and the falls. It starts a little above the river's lip, so its mossy top
- * row caps the bank, and fades into the night a little way down.
+ * right edge; the right side is its own, mirrored. Scaled to the width between
+ * the screen's edge and the falls, and drawn as far down (`drawn`) as it shows
+ * before fading into the night (CliffRock), at any size of screen.
  */
-const CLIFF = { width: 160, height: 2400 };
+const CLIFF = { width: 160, height: 3600, drawn: 1400 };
+/**
+ * How far the rock can run on in under the falls, past their edge (at 160). Each
+ * layer of stones ends where it ends, so the cliff's edge is as ragged as the
+ * rock, and shows through the water's thin edges rather than stopping at a line.
+ */
+const CLIFF_UNDER = 56;
 
 /** Lit and shaded tones for dry rock, and for wet rock by the water. Dusky, since it's night down here. */
 const CLIFF_ROCK = [
@@ -678,74 +882,446 @@ const CLIFF_ROCK = [
 const CLIFF_WET = ["#3d445c", "#2c3146"];
 
 function cliffFace(random: () => number) {
-  const rocks: ({ x: number; y: number; w: number; h: number; wet: boolean; tone: number; flip: boolean } & ReturnType<typeof stone>)[] = [];
-  const ferns: { x: number; y: number; size: number; fronds: ReturnType<typeof fern> }[] = [];
-  for (let y = -2; y < CLIFF.height; ) {
+  const rocks: ({ x: number; y: number; w: number; h: number; wet: boolean; tone: number; flip: boolean; mossColor: string } & ReturnType<typeof stone>)[] = [];
+  const ferns: { x: number; y: number; size: number; fronds: ReturnType<typeof fern>; green: string }[] = [];
+  // Down the cliff's ragged edge, a little in from each layer's last stone: the
+  // shadowed rock behind the stones stops there too.
+  const edge: Point[] = [];
+  for (let y = -2; y < CLIFF.drawn; ) {
     // One layer: its depth, and how much it tilts across the face.
     const band = 30 + random() * 50;
     const tilt = (random() - 0.5) * 0.3;
-    for (let right = CLIFF.width + 12 - random() * 24; right > -40; ) {
+    for (let right = CLIFF.width + 4 + random() * (CLIFF_UNDER - 8), first = true; right > -40; first = false) {
       const w = band * (1 + random() * 1.4);
       const h = band * (0.85 + random() * 0.6);
+      if (first) edge.push([right - w * 0.2, y + h * 0.15], [right - w * 0.12, y + h * 0.55]);
       // How close to the water, 0 far off to 1 at the falls, and how high up.
       const near = Math.max(0, Math.min(1, right / CLIFF.width));
       const high = 1 - Math.min(1, Math.max(0, y) / 700);
       // The top row is the cliff's cap, under the bank's grass, so it's all moss.
       const mossy = y < 10 || random() < 0.2 + 0.55 * high * (0.4 + 0.6 * near);
       const top = y + (right - w / 2 - CLIFF.width / 2) * tilt + (random() - 0.5) * 10;
-      rocks.push({ x: right - w, y: top, w, h, wet: near > 0.82, tone: Math.floor(random() * CLIFF_ROCK.length), flip: random() < 0.5, ...stone(random, mossy) });
+      rocks.push({ x: right - w, y: top, w, h, wet: near > 0.82, tone: Math.floor(random() * CLIFF_ROCK.length), flip: random() < 0.5, ...stone(random, mossy), mossColor: pick(greens.cliffMoss) });
       if (mossy && random() < 0.2 * high + 0.04) {
-        ferns.push({ x: right - w * (0.3 + random() * 0.4), y: top + h * 0.3, size: 0.24 + random() * 0.14, fronds: fern(random) });
+        ferns.push({ x: right - w * (0.3 + random() * 0.4), y: top + h * 0.3, size: 0.24 + random() * 0.14, fronds: fern(random), green: pick(greens.cliffFern) });
       }
       // Neighbours overlap, so the layer reads as one heap of rock.
       right -= w * (0.6 + random() * 0.28);
     }
     y += band * (0.6 + random() * 0.22);
   }
-  return { rocks, ferns };
+  const inside = edge.filter(([, y]) => y > 34);
+  const backing =
+    `M${pt(0, 34)}L${pt(inside[0][0], 34)}${inside.map((point) => `L${pt(...point)}`).join("")}` +
+    `L${pt(inside[inside.length - 1][0], CLIFF.height)}L${pt(0, CLIFF.height)}Z`;
+  return { rocks, ferns, backing };
 }
 
 const CLIFFS = [cliffFace(random), cliffFace(random)];
 
-function CliffFace({ side }: { side: Side }) {
-  const face = CLIFFS[side === "left" ? 0 : 1];
+/** Where a stone from ROCK_BOX goes on the cliff: drawn on its waterline there, set in its place here. */
+const placeStone = (rock: { x: number; y: number; w: number; h: number; flip: boolean }) =>
+  rock.flip
+    ? `translate(${pt(rock.x + rock.w, rock.y)}) scale(${(-rock.w / ROCK_BOX.width).toFixed(3)} ${(rock.h / WATERLINE).toFixed(3)})`
+    : `translate(${pt(rock.x, rock.y)}) scale(${(rock.w / ROCK_BOX.width).toFixed(3)} ${(rock.h / WATERLINE).toFixed(3)})`;
+
+/**
+ * The cliff behind the falls, the same heaped stones as the faces either side,
+ * wet all over, the odd one mossy, and so `width` by `depth` in CLIFF's units,
+ * as a picture: there are hundreds of stones, and drawn once as an image they
+ * cost nothing as the water runs over them. It's seen only through the water.
+ */
+function cliffWall(width: number, depth: number) {
+  const random = seeded(0x5ca1);
+  let body = `<rect width="${width}" height="${depth}" fill="#262a3e"/>`;
+  for (let y = -10; y < depth; ) {
+    const band = 30 + random() * 50;
+    const tilt = (random() - 0.5) * 0.3;
+    for (let right = width + 40; right > -40; ) {
+      const w = band * (1 + random() * 1.4);
+      const h = band * (0.85 + random() * 0.6);
+      const top = y + (right - w / 2 - width / 2) * tilt * 0.3 + (random() - 0.5) * 10;
+      const rock = { x: right - w, y: top, w, h, flip: random() < 0.5, ...stone(random, random() < 0.08) };
+      const [lit, shaded] = random() < 0.6 ? CLIFF_WET : CLIFF_ROCK[Math.floor(random() * CLIFF_ROCK.length)];
+      const moss = greens.cliffMoss[Math.floor(random() * greens.cliffMoss.length)];
+      const stroke = `stroke="#1f2430" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"`;
+      body +=
+        `<g transform="${placeStone(rock)}"><path d="${rock.outline}" fill="${lit}"/><path d="${rock.shade}" fill="${shaded}"/>` +
+        (rock.moss ? `<path d="${rock.moss}" fill="${moss}" ${stroke} stroke-opacity="0.4" stroke-width="1.1"/>` : "") +
+        `<path d="${rock.outline}" fill="none" ${stroke} stroke-opacity="0.4" stroke-width="1.2"/></g>`;
+      right -= w * (0.6 + random() * 0.28);
+    }
+    y += band * (0.6 + random() * 0.22);
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${depth}" width="${width}" height="${depth}">${body}</svg>`;
+}
+
+const roundInk = `stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"`;
+
+/**
+ * One of the cliff's faces as a picture (the right one mirrored): a thousand
+ * paths that never change, so they're kept out of the page's HTML and drawn once
+ * as an image instead.
+ */
+function cliffFacePicture(face: (typeof CLIFFS)[number], mirrored: boolean) {
+  const width = CLIFF.width + CLIFF_UNDER;
+  // The shadowed rock showing in the crevices between the stones, from below the
+  // top row, so the bank shows between the cap stones' tops, and out to the
+  // cliff's ragged edge.
+  let body = `<path d="${face.backing}" fill="#262a3e"/>`;
+  for (const rock of face.rocks) {
+    const [lit, shaded] = rock.wet ? CLIFF_WET : CLIFF_ROCK[rock.tone];
+    body +=
+      `<g transform="${placeStone(rock)}"><path d="${rock.outline}" fill="${lit}"/><path d="${rock.shade}" fill="${shaded}"/>` +
+      (rock.moss ? `<path d="${rock.moss}" fill="${rock.mossColor}" stroke="#1f2430" ${roundInk} stroke-opacity="0.4" stroke-width="1.1"/>` : "") +
+      (rock.shine ? `<path d="${rock.shine}" fill="none" stroke="#fff" ${roundInk} stroke-opacity="0.12" stroke-width="1.6"/>` : "") +
+      `<path d="${rock.outline}" fill="none" stroke="#1f2430" ${roundInk} stroke-opacity="0.4" stroke-width="1.2"/></g>`;
+  }
+  for (const { x, y, size, fronds, green } of face.ferns) {
+    body +=
+      `<g transform="translate(${pt(x - (FERN_BOX.width * size) / 2, y - FERN_BOX.height * size)}) scale(${size.toFixed(2)})">` +
+      fronds
+        .map(
+          (frond) =>
+            `<path d="${frond.leaf}" fill="${green}" stroke="#1f2430" ${roundInk} stroke-opacity="0.4" stroke-width="1.6"/>` +
+            `<path d="${frond.rib}" fill="none" stroke="#2f5a2c" ${roundInk} stroke-width="1.1"/>`,
+        )
+        .join("") +
+      `</g>`;
+  }
+  if (mirrored) body = `<g transform="translate(${width} 0) scale(-1 1)">${body}</g>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${CLIFF.drawn}" width="${width}" height="${CLIFF.drawn}">${body}</svg>`;
+}
+
+/**
+ * The cliff: its faces either side of the falls, and the wall right across
+ * behind them and the water, so it's all one cliff with the water falling over
+ * it. Three pictures on one element, made in the browser: the faces once, sized
+ * from the forest's foot in CSS, and the wall (cliffWall) at the faces' scale, as
+ * big as the screen needs and again only if it needs to be bigger. It starts a
+ * little above the river's lip, where the faces' mossy top row caps the bank
+ * (the wall starts at the lip), and fades into the night a little way down.
+ */
+function CliffRock() {
+  const rock = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const box = rock.current;
+    const falls = document.querySelector("[data-falls]");
+    if (!box || !falls) return;
+    const picture = (svg: string) => URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+    const faces = [picture(cliffFacePicture(CLIFFS[0], false)), picture(cliffFacePicture(CLIFFS[1], true))];
+    let wall = "";
+    const built = { width: 0, depth: 0 };
+    const fit = () => {
+      // The faces' scale: CLIFF.width units to the forest's foot, plus their overlap.
+      const foot = falls.getBoundingClientRect().left - box.getBoundingClientRect().left;
+      const scale = (foot + 4) / CLIFF.width;
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const width = box.offsetWidth / scale + 40;
+      const depth = Math.min(box.offsetHeight, 31 * rem) / scale + 40;
+      if (width > built.width || depth > built.depth) {
+        built.width = Math.ceil(width / 200) * 200;
+        built.depth = Math.ceil(depth / 200) * 200;
+        if (wall) URL.revokeObjectURL(wall);
+        wall = picture(cliffWall(built.width, built.depth));
+        box.style.backgroundImage = `url(${faces[0]}), url(${faces[1]}), url(${wall})`;
+      }
+      const face = `calc((var(--forest-foot) + 4px) * ${(CLIFF.width + CLIFF_UNDER) / CLIFF.width}) auto`;
+      box.style.backgroundSize = `${face}, ${face}, ${(built.width * scale).toFixed(1)}px ${(built.depth * scale).toFixed(1)}px`;
+    };
+    box.style.backgroundPosition = "left top, right top, center 1.25rem";
+    fit();
+    box.style.opacity = "1";
+    window.addEventListener("resize", fit, { passive: true });
+    return () => {
+      window.removeEventListener("resize", fit);
+      [...faces, wall].forEach((url) => url && URL.revokeObjectURL(url));
+    };
+  }, []);
+
+  return (
+    <div
+      ref={rock}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 bottom-0 top-[calc(var(--footer-dusk)-1.25rem)] z-[var(--z-media)] bg-no-repeat opacity-0 transition-opacity duration-500 [mask-image:linear-gradient(to_bottom,#000_6rem,transparent_32rem)]"
+    />
+  );
+}
+
+/**
+ * The forest floor's edge, where it rounds over the top of the cliff either side
+ * of the falls: a mossy bank of turf, its top in low hummocks the trees and ferns
+ * stand in, its underside hanging over the cliff's top stones in lobes, with roots
+ * and a few small ferns. By the falls it curves down to the water at the lip.
+ * Drawn for the left side, the falls at its right edge, at a fixed scale in a box
+ * 3.2rem tall that starts 1.3rem above the lip (CLIFF_TOP.lip), and cropped to
+ * the width from the screen's edge to the falls.
+ */
+const CLIFF_TOP = { width: 600, height: 60, lip: 24.4 };
+
+function cliffTop(random: () => number) {
+  const edge = CLIFF_TOP.width - 5;
+  const { lip } = CLIFF_TOP;
+  // Over the top from the water's edge out past the screen's: down from the lip,
+  // then hummocks and dips.
+  const top: Point[] = [[edge + 1, lip], [edge - 5, lip - 11], [edge - 16, 6 + random() * 2]];
+  for (let x = edge - 30, high = true; x > -50; x -= 10 + random() * 22, high = !high) {
+    top.push([x, high ? 1.5 + random() * 3 : 6 + random() * 2.5]);
+  }
+  let d = `M${pt(...top[0])}${through(top)}L${pt(-60, 29)}`;
+  // Back along the underside in lobes, drooping over the stones below.
+  const under: Point[] = [];
+  for (let x = -60; x < edge - 6; ) {
+    const next = Math.min(edge - 6, x + 12 + random() * 26);
+    const sag = 31 + random() * 7;
+    d += `Q${pt((x + next) / 2, sag)} ${pt(next, 27 + random() * 2.5)}`;
+    under.push([(x + next) / 2, sag - 4]);
+    x = next;
+  }
+  d += `Q${pt(edge - 1, lip + 9)} ${pt(edge + 1, lip + 4)}Z`;
+
+  // Roots dangling from under the lobes, and moss cushions on the stones they hang over.
+  const roots: string[] = [];
+  const cushions: { d: string; fill: string }[] = [];
+  for (const [x, y] of under) {
+    if (random() < 0.3) {
+      const length = 8 + random() * 18;
+      roots.push(`M${pt(x, y)}q${pt((random() - 0.5) * 8, length * 0.5)} ${pt((random() - 0.5) * 6, length)}`);
+    }
+    if (random() < 0.35) {
+      const w = 8 + random() * 10;
+      cushions.push({
+        d: `M${pt(x - w, y + 3)}Q${pt(x - w * 0.7, y - 5)} ${pt(x, y - 3)}Q${pt(x + w * 0.8, y - 5)} ${pt(x + w, y + 3)}Q${pt(x, y + 7)} ${pt(x - w, y + 3)}Z`,
+        fill: pick(greens.cliffMoss),
+      });
+    }
+  }
+  // Small ferns growing up out of the top.
+  const ferns = top
+    .filter(([x], i) => i > 2 && x > -10 && random() < 0.22)
+    .map(([x, y]) => ({ x, y: y + 3, size: 0.18 + random() * 0.12, fronds: fern(random), green: pick(greens.fern) }));
+  return { d, roots, cushions, ferns };
+}
+
+const CLIFF_TOPS = (() => {
+  const random = seeded(0x7c1f);
+  return [cliffTop(random), cliffTop(random)];
+})();
+
+function CliffTop({ side }: { side: Side }) {
+  const top = CLIFF_TOPS[side === "left" ? 0 : 1];
+  const id = `cliff-top-${side}`;
   return (
     <svg
       aria-hidden="true"
-      viewBox={`0 0 ${CLIFF.width} ${CLIFF.height}`}
+      viewBox={`0 0 ${CLIFF_TOP.width} ${CLIFF_TOP.height}`}
       preserveAspectRatio="xMaxYMin slice"
-      className={`pointer-events-none absolute top-[calc(var(--footer-dusk)-1.25rem)] z-[var(--z-media)] h-[calc(100%-var(--footer-dusk)+1.25rem)] w-[calc(var(--forest-foot)+4px)] [mask-image:linear-gradient(to_bottom,#000_6rem,transparent_32rem)] ${side === "left" ? "left-0" : "right-0 -scale-x-100"}`}
+      className={`pointer-events-none absolute top-[calc(var(--footer-dusk)-1.3rem)] z-[var(--z-media)] h-[3.2rem] w-[calc(var(--forest-foot)+5px)] overflow-visible ${side === "left" ? "left-0" : "right-0 -scale-x-100"}`}
     >
-      {/* The shadowed rock showing in the crevices between the stones, from below
-          the top row, so the bank shows between the cap stones' tops. */}
-      <rect y={34} width={CLIFF.width} height={CLIFF.height} fill="#262a3e" />
-      {face.rocks.map((rock, i) => {
-        const [lit, shaded] = rock.wet ? CLIFF_WET : CLIFF_ROCK[rock.tone];
-        // Each stone is drawn on its waterline in ROCK_BOX; this sets it in its place.
-        const place = rock.flip
-          ? `translate(${pt(rock.x + rock.w, rock.y)}) scale(${(-rock.w / ROCK_BOX.width).toFixed(3)} ${(rock.h / WATERLINE).toFixed(3)})`
-          : `translate(${pt(rock.x, rock.y)}) scale(${(rock.w / ROCK_BOX.width).toFixed(3)} ${(rock.h / WATERLINE).toFixed(3)})`;
-        return (
-          <g key={i} transform={place}>
-            <path d={rock.outline} fill={lit} />
-            <path d={rock.shade} fill={shaded} />
-            {rock.moss && <path d={rock.moss} fill="#486541" {...ink} strokeOpacity={0.4} strokeWidth={1.1} />}
-            {rock.shine && <path d={rock.shine} {...line} stroke="rgba(255,255,255,0.12)" />}
-            <path d={rock.outline} {...line} strokeOpacity={0.4} strokeWidth={1.2} />
-          </g>
-        );
-      })}
-      {face.ferns.map(({ x, y, size, fronds }, i) => (
+      <defs>
+        {/* The bank's own green on top, so the ground runs on into it, and into
+            the shade underneath where it hangs over the dark. */}
+        <linearGradient id={id} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="38">
+          <stop offset="0" stopColor={paint.bank} />
+          <stop offset="0.45" stopColor="#4a7040" />
+          <stop offset="1" stopColor="#2f4b36" />
+        </linearGradient>
+      </defs>
+      {top.cushions.map(({ d, fill }, i) => (
+        <path key={i} d={d} fill={fill} {...ink} strokeOpacity={0.4} strokeWidth={1.1} />
+      ))}
+      {top.roots.map((d, i) => (
+        <path key={i} d={d} {...line} strokeOpacity={0.5} strokeWidth={1.1} />
+      ))}
+      <path d={top.d} fill={`url(#${id})`} {...ink} />
+      {top.ferns.map(({ x, y, size, fronds, green }, i) => (
         <g key={i} transform={`translate(${pt(x - (FERN_BOX.width * size) / 2, y - FERN_BOX.height * size)}) scale(${size.toFixed(2)})`}>
           {fronds.map((frond, j) => (
-            <g key={j}>
-              <path d={frond.leaf} fill="#446a40" {...ink} strokeOpacity={0.4} />
-              <path d={frond.rib} {...line} stroke="#2f5a2c" strokeWidth={1.1} />
-            </g>
+            <path key={j} d={frond.leaf} fill={green} {...ink} strokeOpacity={0.4} />
           ))}
         </g>
       ))}
     </svg>
+  );
+}
+
+/**
+ * A coho salmon, red for spawning, leaping out of the falls as you come to the
+ * end of the page and over the lip into the river, nose up as it rises and down
+ * as it dives, with spray where it leaves the water and a splash where it goes
+ * back in. Like the things in the sky, the scroll only sets it off: it makes the
+ * whole leap in one go, and leaps back the other way if you scroll back up.
+ * Drawn facing right.
+ */
+const SALMON_ACROSS = 0.6;
+/** Its arc, as a curve through three points in units of about 1vh from where it leaves the falls. */
+const LEAP: Point[] = [[0, 6], [6, -25], [12, -9]];
+
+const salmonInk = { ...ink, strokeWidth: 1.4 } as const;
+
+function SalmonShape() {
+  return (
+    <svg viewBox="0 0 120 46" className="h-full w-full overflow-visible">
+      <path d="M26 23L6 7Q12 22 5 39L26 28Z" fill="#8f3940" {...salmonInk} />
+      <path d="M60 9L68 1L77 9Z" fill="#8f3940" {...salmonInk} />
+      <path d="M38 15Q41 10 45 14" fill="#8f3940" {...salmonInk} />
+      <path d="M60 35L55 42L66 37ZM42 33L37 39L48 35Z" fill="#8f3940" {...salmonInk} />
+      <path d="M22 24C34 11 60 7 86 9C100 11 111 15 117 21C114 27 106 31 94 33C72 37 44 36 22 27Z" fill="#c8434b" />
+      <path d="M22 24C34 11 60 7 86 9C100 11 111 15 117 21C104 18 90 18 70 19C50 20 34 22 22 24Z" fill="#3f604a" />
+      <path d="M36 31C56 36 80 36 96 32C88 37 60 39 36 31Z" fill="#ead9d0" />
+      <path d="M93 10C101 11 111 15 117 21C114 27 106 31 96 32C92 25 91 16 93 10Z" fill="#4d6b4f" />
+      <path d="M22 24C34 11 60 7 86 9C100 11 111 15 117 21C114 27 106 31 94 33C72 37 44 36 22 27Z" {...salmonInk} fill="none" />
+      <path d="M96 12C92 18 92 26 96 31M117 21Q111 25 104 24M113 17Q119 15 120 20" {...salmonInk} fill="none" strokeOpacity={0.8} />
+      <path d="M91 29Q86 36 80 36Q83 31 86 28Z" fill="#8f3940" {...salmonInk} />
+      <circle cx="105" cy="17.5" r="2.2" fill="var(--color-ink-fixed)" />
+      <circle cx="105.7" cy="16.8" r="0.7" fill="#fff" />
+      <path d="M48 15h.01M58 13h.01M70 12h.01M80 12h.01M53 18h.01M66 16h.01" {...salmonInk} strokeWidth={2.6} />
+    </svg>
+  );
+}
+
+function SplashShape() {
+  return (
+    <svg viewBox="0 0 60 32" className="h-full w-full overflow-visible">
+      <ellipse cx="30" cy="27" rx="24" ry="4" {...line} stroke="rgba(255,255,255,0.85)" />
+      <path d="M22 25C19 17 15 13 9 11M27 24C26 15 24 9 21 4M33 24C34 15 36 9 39 4M38 25C41 17 45 13 51 11" {...line} stroke="rgba(255,255,255,0.8)" />
+      <circle cx="8" cy="9" r="1.6" fill="#fff" />
+      <circle cx="20" cy="2" r="1.4" fill="#fff" />
+      <circle cx="40" cy="2" r="1.4" fill="#fff" />
+      <circle cx="52" cy="9" r="1.6" fill="#fff" />
+    </svg>
+  );
+}
+
+function Salmon() {
+  const leap = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const box = leap.current;
+    const footer = box?.closest("footer");
+    const falls = document.querySelector<SVGSVGElement>("[data-falls]");
+    const fish = box?.querySelector<HTMLElement>("[data-fish]");
+    const [spray, splash] = Array.from(box?.querySelectorAll<HTMLElement>("[data-splash]") ?? []);
+    if (!box || !footer || !falls || !fish || !spray || !splash) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let leaps: Animation[] = [];
+    let leapt = false;
+
+    const bell = (t: number, a: number, peak: number, b: number) =>
+      t <= a || t >= b ? 0 : t < peak ? (t - a) / (peak - a) : (b - t) / (b - peak);
+
+    // The whole leap, as three animations played together: the fish along its arc,
+    // the spray where it leaves the falls and the splash where it goes back in.
+    const build = () => {
+      const unit = Math.min(innerHeight, innerWidth * 1.8) / 100;
+      const mouth = falls.getBoundingClientRect();
+      const from = mouth.left - footer.getBoundingClientRect().left + mouth.width * SALMON_ACROSS - (LEAP[2][0] * unit) / 2;
+      const size = (element: HTMLElement, width: number, height: number) => {
+        element.style.width = `${width * unit}px`;
+        element.style.height = `${height * unit}px`;
+        element.style.left = `${(-width * unit) / 2}px`;
+        element.style.top = `${(-height * unit) / 2}px`;
+      };
+      size(fish, 8, (8 * 46) / 120);
+      size(spray, 5, 2.7);
+      size(splash, 6.5, 3.5);
+
+      const [a, b, c] = LEAP;
+      const steps = 30;
+      const samples = Array.from({ length: steps + 1 }, (_, k) => k / steps);
+      // Along a parabola at an even pace across, as a thrown thing goes.
+      const fishFrames = samples.map((t) => {
+        const u = 1 - t;
+        const x = (u * u * a[0] + 2 * u * t * b[0] + t * t * c[0]) * unit;
+        const y = (u * u * a[1] + 2 * u * t * b[1] + t * t * c[1]) * unit;
+        const dx = 2 * u * (b[0] - a[0]) + 2 * t * (c[0] - b[0]);
+        const dy = 2 * u * (b[1] - a[1]) + 2 * t * (c[1] - b[1]);
+        return {
+          translate: `${(from + x).toFixed(1)}px ${y.toFixed(1)}px`,
+          rotate: `${((Math.atan2(dy, dx) * 180) / Math.PI).toFixed(1)}deg`,
+          // Smaller as it goes, upstream and away.
+          scale: (1 - 0.22 * t).toFixed(3),
+          opacity: Math.min(1, Math.max(0, (t - 0.015) / 0.04), Math.max(0, (0.97 - t) / 0.06)),
+        };
+      });
+      const sprayAt = `${(from + a[0] * unit).toFixed(1)}px ${((a[1] - 3) * unit).toFixed(1)}px`;
+      const sprayFrames = samples.map((t) => ({ translate: sprayAt, scale: (0.6 + t * 2.4).toFixed(3), opacity: bell(t, 0.02, 0.1, 0.32) }));
+      const splashAt = `${(from + c[0] * unit).toFixed(1)}px ${((c[1] + 1) * unit).toFixed(1)}px`;
+      const splashFrames = samples.map((t) => ({
+        translate: splashAt,
+        scale: (0.5 + Math.max(0, t - 0.88) * 5).toFixed(3),
+        opacity: bell(t, 0.88, 0.95, 1),
+      }));
+
+      leaps.forEach((animation) => animation.cancel());
+      const timing = { duration: 1700, easing: "linear", fill: "both" } as const;
+      leaps = [fish.animate(fishFrames, timing), spray.animate(sprayFrames, timing), splash.animate(splashFrames, timing)];
+      leaps.forEach((animation) => {
+        animation.pause();
+        // Already leapt: it's back in the river.
+        if (leapt) animation.finish();
+      });
+    };
+
+    // It leaps as the lip comes well up into view, and back the other way if you
+    // scroll back up until it's nearly gone: the whole leap either way, played
+    // through, so it's never left hanging in the air.
+    const send = (forward: boolean) => {
+      if (leapt === forward) return;
+      leapt = forward;
+      leaps.forEach((animation) => {
+        if (!forward && Number(animation.currentTime ?? 0) < 50) {
+          animation.pause();
+          animation.currentTime = 0;
+          return;
+        }
+        animation.updatePlaybackRate(forward ? 1 : -1);
+        animation.play();
+      });
+    };
+
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      const lip = falls.getBoundingClientRect().top;
+      if (lip < innerHeight * 0.8) send(true);
+      else if (lip > innerHeight * 0.95) send(false);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    const onResize = () => {
+      build();
+      onScroll();
+    };
+    // Loading the page at its foot: it's already leapt.
+    leapt = falls.getBoundingClientRect().top < innerHeight * 0.8;
+    build();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(frame);
+      leaps.forEach((animation) => animation.cancel());
+    };
+  }, []);
+
+  return (
+    // Hidden until it's set going, and with reduced motion it stays that way.
+    <div ref={leap} aria-hidden="true" className="pointer-events-none absolute left-0 top-[var(--footer-dusk)] z-[var(--z-media)] h-0 w-0">
+      <div data-splash className="absolute opacity-0">
+        <SplashShape />
+      </div>
+      <div data-fish className="absolute opacity-0">
+        <SalmonShape />
+      </div>
+      <div data-splash className="absolute opacity-0">
+        <SplashShape />
+      </div>
+    </div>
   );
 }
 
@@ -757,6 +1333,9 @@ function CliffFace({ side }: { side: Side }) {
  * like a photo, so the clouds and things in the sky pass behind the water rather
  * than between it and the copy. Its streaks only run while it's on screen.
  */
+const fallsBox =
+  "pointer-events-none absolute left-[var(--forest-foot)] top-[var(--footer-dusk)] z-[var(--z-media)] h-[calc(100%-var(--footer-dusk))] w-[calc(100%-2*var(--forest-foot))] overflow-visible";
+
 export function Falls() {
   const falls = useRef<SVGSVGElement>(null);
 
@@ -770,48 +1349,63 @@ export function Falls() {
 
   return (
     <>
-      <CliffFace side="left" />
-      <CliffFace side="right" />
+      <CliffRock />
+      {/* The falls are three drawings in the same box, so that only the middle one,
+          the moving streaks, is redrawn as they run, on a layer of its own: the
+          water under them and the foam over them (with its blur) are drawn once. */}
       <svg
         ref={falls}
         data-falls
         aria-hidden="true"
         viewBox={`0 0 ${FALLS.width} ${FALLS.height}`}
         preserveAspectRatio="none"
-        className="pointer-events-none absolute left-[var(--forest-foot)] top-[var(--footer-dusk)] z-[var(--z-media)] h-[calc(100%-var(--footer-dusk))] w-[calc(100%-2*var(--forest-foot))] overflow-visible"
+        className={fallsBox}
       >
         <defs>
           <linearGradient id="falls-water" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={FALLS.height}>
             {/* Lit where it comes over the edge, and quickly into the dark, so the
                 footer's copy reads against it. */}
             <stop offset="0" stopColor="#5a93a8" />
-            <stop offset="0.03" stopColor="#3f7590" stopOpacity="0.95" />
-            <stop offset="0.12" stopColor="#2c506f" stopOpacity="0.92" />
-            <stop offset="0.5" stopColor="#263d60" stopOpacity="0.8" />
-            <stop offset="1" stopColor="#22325a" stopOpacity="0.45" />
+            <stop offset="0.03" stopColor="#3f7590" stopOpacity="0.9" />
+            <stop offset="0.12" stopColor="#2c506f" stopOpacity="0.82" />
+            <stop offset="0.5" stopColor="#263d60" stopOpacity="0.72" />
+            <stop offset="1" stopColor="#22325a" stopOpacity="0.4" />
           </linearGradient>
+          {/* The water's thinner at its sides, where it spills over the rock, so the
+              cliffs' ragged edges show through it. */}
+          <linearGradient id="falls-thin">
+            <stop offset="0" stopColor="#fff" stopOpacity="0.35" />
+            <stop offset="0.07" stopColor="#fff" />
+            <stop offset="0.93" stopColor="#fff" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0.35" />
+          </linearGradient>
+          <mask id="falls-sides" maskUnits="userSpaceOnUse" x={MOUTH[0] - 10} y={-40} width={MOUTH[1] - MOUTH[0] + 20} height={FALLS.height + 50}>
+            <rect x={MOUTH[0] - 4} y={-40} width={MOUTH[1] - MOUTH[0] + 8} height={FALLS.height + 50} fill="url(#falls-thin)" />
+          </mask>
+        </defs>
+        <g mask="url(#falls-sides)">
+          <path d={CURTAIN} fill="url(#falls-water)" />
+          {STREAMS.map(({ d, light }, i) => (
+            <path key={i} d={d} fill={light ? "#fff" : "#16243f"} fillOpacity={light ? 0.07 : 0.22} />
+          ))}
+        </g>
+      </svg>
+      <svg
+        data-streaks
+        aria-hidden="true"
+        viewBox={`0 0 ${FALLS.width} ${FALLS.height}`}
+        preserveAspectRatio="none"
+        // Thinner at its sides like the water (falls-thin), as a mask on the layer.
+        className={`${fallsBox} will-change-transform [mask-image:linear-gradient(90deg,rgba(0,0,0,0.35),#000_7%,#000_93%,rgba(0,0,0,0.35))]`}
+      >
+        <defs>
           <linearGradient id="falls-streak" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={FALLS.height}>
-            <stop offset="0" stopColor="#fff" stopOpacity="0.45" />
+            <stop offset="0" stopColor="#fff" stopOpacity="0.35" />
             <stop offset="0.12" stopColor="#fff" stopOpacity="0.14" />
             <stop offset="0.5" stopColor="#fff" stopOpacity="0.08" />
             <stop offset="1" stopColor="#fff" stopOpacity="0.03" />
           </linearGradient>
-          <radialGradient id="falls-mist">
-            <stop offset="0" stopColor="#fff" stopOpacity="0.16" />
-            <stop offset="1" stopColor="#fff" stopOpacity="0" />
-          </radialGradient>
-          {/* The lip's foam and light keep to the curtain's own wavering edges (and
-              the little way above it the foam crests), and the moss to its ledge,
-              so nothing ends in a square corner. */}
-          <clipPath id="falls-lip">
-            <rect x={MOUTH[0]} y={-40} width={MOUTH[1] - MOUTH[0]} height={40} />
-            <path d={CURTAIN} />
-          </clipPath>
         </defs>
-        <path d={CURTAIN} fill="url(#falls-water)" />
-        {STREAMS.map(({ d, light }, i) => (
-          <path key={i} d={d} fill={light ? "#fff" : "#16243f"} fillOpacity={light ? 0.07 : 0.22} />
-        ))}
         {STREAKS.map((streak, i) => (
           <path
             key={i}
@@ -823,8 +1417,61 @@ export function Falls() {
             strokeDasharray={streak.dash}
           />
         ))}
-        <g clipPath="url(#falls-lip)">
-          <path d={BRINK} fill="url(#falls-brink)" />
+      </svg>
+      <svg aria-hidden="true" viewBox={`0 0 ${FALLS.width} ${FALLS.height}`} preserveAspectRatio="none" className={fallsBox}>
+        <defs>
+          {/* From the river's own blue at the edge, brightening where it bends over,
+              and back into the curtain's. */}
+          <linearGradient id="falls-brink" gradientUnits="userSpaceOnUse" x1="0" y1="-2" x2="0" y2="24">
+            <stop offset="0" stopColor={paint.skyInWater} />
+            <stop offset="0.35" stopColor="#8fc1cf" />
+            <stop offset="1" stopColor="#5a93a8" />
+          </linearGradient>
+          {/* The foam gathers gradually over the last stretch of the river, is
+              thickest just over the edge, and thins out below, clear of the footer's copy. */}
+          <linearGradient id="falls-foam" gradientUnits="userSpaceOnUse" x1="0" y1="-26" x2="0" y2="30">
+            <stop offset="0" stopColor="#fff" stopOpacity="0" />
+            <stop offset="0.22" stopColor="#fff" stopOpacity="0.35" />
+            <stop offset="0.4" stopColor="#fff" stopOpacity="0.82" />
+            <stop offset="0.6" stopColor="#f2f8fa" stopOpacity="0.6" />
+            <stop offset="1" stopColor="#e6f2f6" stopOpacity="0" />
+          </linearGradient>
+          {/* Softer across than down, so the foam's ends dissolve rather than stop. */}
+          <filter id="falls-soft" filterUnits="userSpaceOnUse" x={MOUTH[0] - 60} y={-60} width={MOUTH[1] - MOUTH[0] + 120} height={150}>
+            <feGaussianBlur stdDeviation="7 3" />
+          </filter>
+          <linearGradient id="falls-trail" gradientUnits="userSpaceOnUse" x1="0" y1="4" x2="0" y2="46">
+            <stop offset="0" stopColor="#fff" stopOpacity="0.5" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0" />
+          </linearGradient>
+          <radialGradient id="falls-mist">
+            <stop offset="0" stopColor="#fff" stopOpacity="0.16" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0" />
+          </radialGradient>
+          {/* The light at the lip keeps to the curtain's own wavering edges (and the
+              little way above it the foam crests). */}
+          <clipPath id="falls-lip">
+            <rect x={MOUTH[0]} y={-40} width={MOUTH[1] - MOUTH[0]} height={40} />
+            <path d={CURTAIN} />
+          </clipPath>
+          {/* The foam thins away to nothing over the last of each side, into the mist
+              (the glows over the lip, outside this), so it has no edge at any width. */}
+          <linearGradient id="falls-foam-fade">
+            <stop offset="0" stopColor="#fff" stopOpacity="0" />
+            <stop offset="0.15" stopColor="#fff" />
+            <stop offset="0.85" stopColor="#fff" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0" />
+          </linearGradient>
+          <mask id="falls-foam-sides" maskUnits="userSpaceOnUse" x={MOUTH[0] - 60} y={-60} width={MOUTH[1] - MOUTH[0] + 120} height={150}>
+            <rect x={MOUTH[0] - 20} y={-60} width={MOUTH[1] - MOUTH[0] + 40} height={150} fill="url(#falls-foam-fade)" />
+          </mask>
+        </defs>
+        {/* The light where the water bends over keeps to the water, and like the
+            foam, thins away at its sides into the mist. */}
+        <g mask="url(#falls-foam-sides)">
+          <path d={BRINK} fill="url(#falls-brink)" clipPath="url(#falls-lip)" />
+        </g>
+        <g mask="url(#falls-foam-sides)">
           <g filter="url(#falls-soft)">
             {FOAM_TRAILS.map((d, i) => (
               <path key={i} d={d} fill="url(#falls-trail)" />
@@ -836,12 +1483,22 @@ export function Falls() {
           <ellipse key={x} cx={x} cy={FALLS.height - 20} rx={200} ry={50} fill="url(#falls-mist)" />
         ))}
       </svg>
+      <CliffTop side="left" />
+      <CliffTop side="right" />
+      {/* Mist off the lip, drifting out over the cliffs' mossy tops either side, and
+          thickest at the ends where the water breaks on the rock: soft glows in
+          screen units, not the falls' stretched ones, so they're round at any width. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-[calc(var(--forest-foot)-5rem)] top-[calc(var(--footer-dusk)-2.6rem)] z-[var(--z-media)] h-[6rem] [background:radial-gradient(closest-side,rgba(236,246,249,0.72),transparent)_0_50%/10rem_100%_no-repeat,radial-gradient(closest-side,rgba(236,246,249,0.72),transparent)_100%_50%/10rem_100%_no-repeat,radial-gradient(closest-side,rgba(236,246,249,0.22),transparent)_50%_50%/100%_80%_no-repeat]"
+      />
+      <Salmon />
     </>
   );
 }
 
 export function Scenery() {
-  const firs = (back: boolean) => FIRS.flatMap((tree, i) => (tree.back === back ? [<FirShape key={i} index={i} />] : []));
+  const firs = (back: boolean) => FIRS.flatMap((tree, i) => (tree.back === back ? [<FirShape key={i} tree={tree} />] : []));
 
   return (
     // Holds the scenery's place at the end of the page: the footer is pulled up over
@@ -849,6 +1506,19 @@ export function Scenery() {
     // falls take over.
     <div aria-hidden="true" className="pointer-events-none sticky bottom-0 z-[var(--z-scenery)] h-[var(--footer-dusk)]">
       <div className="absolute inset-x-0 bottom-0 h-[50vh] overflow-hidden">
+        <svg viewBox={`0 0 ${HILLS.width} ${HILLS.height}`} preserveAspectRatio="xMidYMax slice" className={hillsBox}>
+          {RANGES.map((range, i) => (
+            <g key={i}>
+              <path d={range.land} fill={range.fill} />
+              <path d={range.ridge} {...line} strokeWidth={1} strokeOpacity={range.line} />
+              {/* So small far off that a line would swamp them, so the farthest have none. */}
+              <path d={range.trees} fill={range.treeColor} {...ink} strokeWidth={0.8} strokeOpacity={i ? range.line * 0.6 : 0} />
+            </g>
+          ))}
+        </svg>
+        <svg viewBox={`0 0 ${VALLEY.width} ${HILLS.height}`} preserveAspectRatio="none" className={streamBox}>
+          <path d={STREAM} fill="#86b7c6" {...ink} strokeWidth={1} strokeOpacity={0.35} />
+        </svg>
         <svg viewBox={`0 0 ${HORIZON.width} ${HORIZON.height}`} preserveAspectRatio="xMidYMax slice" className={valleyBox}>
           <path d={FAR_GROUND} fill={paint.farGround} />
           {FAR_FIRS.map((row) =>
@@ -857,6 +1527,9 @@ export function Scenery() {
             )),
           )}
         </svg>
+        {WOODS.map((tree, i) => (
+          <FirShape key={i} tree={tree} />
+        ))}
         {firs(true)}
         <svg viewBox={`0 0 ${VALLEY.width} ${VALLEY.height}`} preserveAspectRatio="none" className={valleyBox}>
           <path d={BANK} fill={paint.bank} />
@@ -868,25 +1541,33 @@ export function Scenery() {
           {TREES_IN_WATER.map((d, i) => (
             <path key={i} d={d} fill={paint.treesInWater} />
           ))}
+          {RIVER_BANKS.map((d, i) => (
+            <path key={i} d={d} {...line} />
+          ))}
+        </svg>
+        {/* The ripples are a drawing of their own on a layer of its own, so that as
+            they run, they're all that's redrawn, not the valley round them. */}
+        <svg viewBox={`0 0 ${VALLEY.width} ${VALLEY.height}`} preserveAspectRatio="none" className={`${riverBox} will-change-transform`}>
           {RIPPLES.map((ripple, i) => (
             <path
               key={i}
               className="scenery-flow"
-              style={flowing(ripple.dash, ripple.speed)}
+              // A few pixels a second: thirty steps a second are each a fraction of one.
+              style={flowing(ripple.dash, ripple.speed, 30)}
               d={ripple.d}
               {...line}
               stroke={paint.foam}
               strokeDasharray={ripple.dash}
             />
           ))}
-          {RIVER_BANKS.map((d, i) => (
-            <path key={i} d={d} {...line} />
-          ))}
         </svg>
         {ROCKS.map((rock, i) => (
           <RockShape key={i} rock={rock} />
         ))}
         {FERNS.map((fern, i) => (fern.centered ? <FernShape key={i} index={i} /> : null))}
+        {MID_WOODS.map((tree, i) => (
+          <FirShape key={i} tree={tree} />
+        ))}
         {firs(false)}
         {FERNS.map((fern, i) => (fern.centered ? null : <FernShape key={i} index={i} />))}
       </div>

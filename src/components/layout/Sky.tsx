@@ -16,16 +16,23 @@ import { SunRays } from "./Sun";
  * front layer (the --z-* tokens in globals.css): the far-off things fly between
  * them, and both are behind the forest and the sections' fog.
  *
- * The things are the only part of the sky (or the scenery) that answer to the
- * scroll. They're seeded from the page's path, so each page has its own that stay
- * the same between visits and match on server and client, spaced down the page in
- * pixels, so a short page shows fewer. The things all fly behind
- * the panels, so they never cross the copy, and the far-off ones (planes,
- * balloons, birds, kites) behind the forest at the bottom of the screen too.
+ * The things are the only part of the sky that answer to the scroll (with the
+ * salmon at the falls, in Scenery), and only to set them off: as you come to
+ * each, it crosses the whole screen at its own pace, and if you scroll back up
+ * past it, crosses back the other way, so none is ever left stopped partway.
+ * They're seeded from the page's path, so each
+ * page has its own that stay the same between visits and match on server and
+ * client: two to four of them, by the page's length, spread evenly down it, so
+ * with the salmon there are three to five on a page. The things all fly behind
+ * the panels, so they never cross the copy. The far-off ones (planes, balloons,
+ * birds, kites) are behind the forest at the bottom of the screen, and the near
+ * ones go behind the far shore too, rather than over the river.
  */
 const VIEW_BOX = { width: 240, height: 120 };
-const THING_SPACING_PX = 760;
-const THING_COUNT = 14;
+/** How many things a page gets: one more for each `every` px of it, within these. */
+const THINGS = { fewest: 2, most: 4, every: 1300, closest: 500, first: 420 };
+/** The far shore's foot, as a fraction of the screen's height from the top (Scenery's valley). */
+const HORIZON = 0.865;
 
 const ALL_THINGS = Object.keys(skyThings) as SkyThingName[];
 
@@ -115,7 +122,7 @@ function buildSky(pathname: string) {
   const deck: SkyThingName[] = [];
   const first = FIRST_THING[pathname];
   if (first) deck.push(first);
-  while (deck.length < THING_COUNT) {
+  while (deck.length < THINGS.most) {
     const shuffled = ALL_THINGS.map((name) => ({ name, order: random() }))
       .sort((a, b) => a.order - b.order)
       .map(({ name }) => name)
@@ -125,12 +132,15 @@ function buildSky(pathname: string) {
 
   // They take turns coming in from the left and from the right.
   const firstDirection = random() > 0.5 ? 1 : -1;
-  const things = deck.slice(0, THING_COUNT).map((name, i) => {
+  const things = deck.slice(0, THINGS.most).map((name, i) => {
     const direction = i % 2 === 0 ? firstDirection : -firstDirection;
     const far = skyThings[name].far;
     return {
       name,
-      top: 420 + i * THING_SPACING_PX + random() * (THING_SPACING_PX * 0.5),
+      // Where it sits in its share of the page, once the page's length is known
+      // (Sky's layout), and until then, roughly.
+      jitter: random(),
+      top: THINGS.first + i * 1200,
       // Start on the side it's heading away from, so it crosses the screen.
       left: direction > 0 ? 8 + random() * 30 : 58 + random() * 30,
       direction,
@@ -201,7 +211,7 @@ function ThingShape({ thing, index }: { thing: Thing; index: number }) {
       data-thing={index}
       data-sky={thing.name}
       // Further away reads smaller and fainter.
-      className={`absolute ${thing.far ? "opacity-70" : "opacity-95"}`}
+      className={`invisible absolute ${thing.far ? "opacity-70" : "opacity-95"}`}
       style={{ top: thing.top, left: `${thing.left}%`, width: thing.far ? art.width * 0.7 : art.width }}
     >
       <svg
@@ -250,48 +260,150 @@ export function Sky() {
   }, []);
 
   useEffect(() => {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const thingElements = Array.from(sky.current?.querySelectorAll<HTMLElement>("[data-thing]") ?? []);
-    let frame = 0;
-    let then = 0;
-    // Where the things think the page is. It eases after the real scroll position,
-    // so they glide instead of jumping with each notch of a wheel, and come to rest
-    // gently when the page stops.
-    let y = window.scrollY;
-    const drift = (now: number) => {
-      const target = window.scrollY;
-      const elapsed = then ? Math.min(now - then, 64) : 16;
-      then = now;
-      y += (target - y) * (1 - Math.exp(-elapsed / 140));
-      if (Math.abs(target - y) < 0.5) y = target;
-      if (y === target) {
-        frame = 0;
-        then = 0;
-      } else {
-        frame = requestAnimationFrame(drift);
+    const root = sky.current;
+    if (!root) return;
+    const elements = Array.from(root.querySelectorAll<HTMLElement>("[data-thing]"));
+    const falls = document.querySelector("[data-falls]");
+    const moving = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Where each is down the page, once it's laid out (null if the page is too
+    // short for it), and how tall it is.
+    const tops: (number | null)[] = things.map(() => null);
+    const heights: number[] = things.map(() => 0);
+    const clips: string[] = things.map(() => "");
+    // Each one's crossing, and whether it's been sent across (and not back).
+    const crossings: (Animation | null)[] = things.map(() => null);
+    const across: boolean[] = things.map(() => false);
+    let pageTop = 0;
+
+    // The whole way across the screen, from just off the side it comes in from to
+    // just off the other, bobbing and swinging as it goes, at its own pace.
+    const crossing = (element: HTMLElement, i: number) => {
+      const thing = things[i];
+      const width = element.offsetWidth;
+      const screen = window.innerWidth;
+      const [from, to] = thing.direction > 0 ? [-width - 24, screen + 24] : [screen + 24, -width - 24];
+      const wobble = skyThings[thing.name].wobble;
+      const steps = 24;
+      const frames = Array.from({ length: steps + 1 }, (_, k) => {
+        const t = k / steps;
+        const swing = Math.sin(t * Math.PI * 4 + thing.phase) * wobble;
+        return {
+          translate: `${(from + (to - from) * t).toFixed(1)}px ${(t * thing.sink * 300 + swing).toFixed(1)}px`,
+          rotate: `${(swing * 0.6).toFixed(2)}deg`,
+        };
+      });
+      crossings[i]?.cancel();
+      const animation = element.animate(frames, {
+        duration: ((screen + width + 48) / (thing.speed * 320)) * 1000,
+        easing: "linear",
+        fill: "both",
+      });
+      animation.pause();
+      // Already across: it stays gone.
+      if (across[i]) animation.finish();
+      crossings[i] = animation;
+    };
+
+    // Spread them evenly from near the top to a little before the falls.
+    const layout = () => {
+      pageTop = root.getBoundingClientRect().top + window.scrollY;
+      const end = falls ? falls.getBoundingClientRect().top + window.scrollY - pageTop : root.offsetHeight;
+      const room = Math.max(0, end - window.innerHeight * 0.55 - THINGS.first);
+      const count = Math.min(THINGS.most, Math.max(THINGS.fewest, 1 + Math.round(room / THINGS.every)));
+      const gap = Math.max(THINGS.closest, room / (count - 1));
+      elements.forEach((element) => {
+        const i = Number(element.dataset.thing);
+        if (i >= count) {
+          tops[i] = null;
+          element.style.visibility = "hidden";
+          return;
+        }
+        const top = THINGS.first + gap * i + (things[i].jitter - 0.5) * gap * (i ? 0.3 : 0.1);
+        tops[i] = top;
+        heights[i] = element.offsetHeight;
+        element.style.top = `${top.toFixed(0)}px`;
+        element.style.visibility = "visible";
+        if (moving) {
+          // Its crossing places it; held still, it sits where it was put.
+          element.style.left = "0";
+          crossing(element, i);
+        }
+      });
+    };
+
+    // Each is sent across as its place on the page comes up past the middle of
+    // the screen, and back the other way if you scroll back up past it: the whole
+    // crossing either way, played through, never stopped partway.
+    const send = (i: number, forward: boolean) => {
+      const animation = crossings[i];
+      if (!animation || across[i] === forward) return;
+      across[i] = forward;
+      if (!forward && Number(animation.currentTime ?? 0) < 50) {
+        // Only just set off: it hasn't come into view yet.
+        animation.pause();
+        animation.currentTime = 0;
+        return;
       }
+      animation.updatePlaybackRate(forward ? 1 : -1);
+      animation.play();
+    };
+
+    let frame = 0;
+    const check = (now: boolean) => {
+      frame = 0;
+      const line = window.scrollY + window.innerHeight * 0.45;
       const screen = window.innerHeight;
-      thingElements.forEach((element) => {
-        const thing = things[Number(element.dataset.thing)];
-        // Measured from when it's mid-screen, so it crosses as you pass it.
-        const passed = y + screen / 2 - thing.top;
-        if (Math.abs(passed) > screen * 1.5) return;
-        const wobble = skyThings[thing.name].wobble;
-        const swing = Math.sin(passed / 90 + thing.phase) * wobble;
-        element.style.translate = `${passed * thing.speed * thing.direction}px ${passed * thing.sink + swing}px`;
-        element.style.rotate = `${swing * 0.6}deg`;
+      // The far shore's foot, which rides up with the scenery at the end of the page.
+      const shore = Math.min(screen, falls ? falls.getBoundingClientRect().top : screen) - screen * (1 - HORIZON);
+      elements.forEach((element) => {
+        const i = Number(element.dataset.thing);
+        const top = tops[i];
+        if (top === null) return;
+        const at = pageTop + top;
+        if (moving) {
+          if (now) {
+            // Loading the page part way down: the ones above are long gone.
+            if (at < line) {
+              across[i] = true;
+              crossings[i]?.finish();
+            }
+          } else if (at < line) send(i, true);
+          else if (at > line + 160) send(i, false);
+        }
+        // The near ones go down behind the far shore, not into the river: cut off
+        // at the shore, allowing for the lowest it gets in its crossing (it sinks
+        // and bobs as it goes), so it can't dip below between one scroll and the next.
+        if (!things[i].far) {
+          const reach = moving ? things[i].sink * 300 + skyThings[things[i].name].wobble : 0;
+          const below = at - window.scrollY + reach + heights[i] - shore;
+          const clip = below > 0 ? `inset(0 0 ${Math.min(below, heights[i]).toFixed(0)}px 0)` : "";
+          if (clip !== clips[i]) {
+            clips[i] = clip;
+            element.style.clipPath = clip;
+          }
+        }
       });
     };
     const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(drift);
+      if (!frame) frame = requestAnimationFrame(() => check(false));
     };
-    drift(performance.now());
+    const onResize = () => {
+      layout();
+      onScroll();
+    };
+    layout();
+    check(true);
+    // The page's length changes as its fonts and pictures come in.
+    const watcher = new ResizeObserver(onResize);
+    watcher.observe(root);
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
     return () => {
+      watcher.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
       cancelAnimationFrame(frame);
+      crossings.forEach((animation) => animation?.cancel());
     };
   }, [things]);
 

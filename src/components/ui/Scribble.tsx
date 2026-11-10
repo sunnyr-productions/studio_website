@@ -17,14 +17,17 @@ export function Scribble({ children, color = "var(--color-marigold-500)", classN
         viewBox="0 0 220 90"
         preserveAspectRatio="none"
         aria-hidden="true"
-        className="pointer-events-none absolute -inset-x-[10%] -inset-y-[22%] z-0"
+        // Sized outright: an svg isn't stretched by insets alone, and at its own
+        // shape it hung down over the line below the word on wider screens.
+        className="pointer-events-none absolute -left-[10%] -top-[18%] z-0 h-[136%] w-[120%]"
       >
         <path
           d="M 22,48 C 14,20 44,6 90,5 C 150,3 208,14 213,42 C 217,65 178,84 108,85 C 48,86 10,72 16,50"
           fill="none"
           stroke={color}
-          strokeWidth={5}
+          strokeWidth={3.5}
           strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
         />
       </svg>
     </span>
