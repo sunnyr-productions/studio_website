@@ -1,14 +1,13 @@
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "ghost";
+type Variant = "primary" | "secondary";
 
 // Drawn like the scenery: ink outline and cartoon shading, a sunlit marigold and
 // a cloud-white second choice (.btn-primary and .btn-secondary in globals.css).
 const variantClasses: Record<Variant, string> = {
   primary: "btn-primary focus-visible:outline-marigold-700",
   secondary: "btn-secondary focus-visible:outline-periwinkle-600",
-  ghost: "bg-transparent text-ink-700 hover:bg-cream-200 focus-visible:outline-ink-700",
 };
 
 const baseClasses =

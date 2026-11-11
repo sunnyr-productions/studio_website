@@ -137,10 +137,8 @@ export default function Home() {
           </p>
         </div>
         <div className="mt-8 flex flex-wrap gap-4">
-          <Button href="/about" variant="secondary">
-            The whole story
-          </Button>
-          <Button href="/music" variant="ghost">
+          <Button href="/about">The whole story</Button>
+          <Button href="/music" variant="secondary">
             Hear some music
           </Button>
         </div>

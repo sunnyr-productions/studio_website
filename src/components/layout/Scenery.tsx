@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties } from "react";
+import { go, place } from "./journey";
 import { seeded } from "./Sky";
 
 /**
@@ -1151,8 +1152,8 @@ function CliffTop({ side }: { side: Side }) {
  * end of the page and over the lip into the river, nose up as it rises and down
  * as it dives, with spray where it leaves the water and a splash where it goes
  * back in. Like the things in the sky, the scroll only sets it off: it makes the
- * whole leap in one go, and leaps back the other way if you scroll back up.
- * Drawn facing right.
+ * whole leap in one go, and if you scroll back up, leaps back down out of the
+ * river into the falls, facing that way. Drawn facing right.
  */
 const SALMON_ACROSS = 0.6;
 /** Its arc, as a curve through three points in units of about 1vh from where it leaves the falls. */
@@ -1206,14 +1207,18 @@ function Salmon() {
     if (!box || !footer || !falls || !fish || !spray || !splash) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    let leaps: Animation[] = [];
-    let leapt = false;
+    // Its two leaps, up out of the falls into the river and back down out of the
+    // river over the lip, each three animations played together (the fish, the
+    // spray where it leaves the water and the splash where it goes in), and which
+    // it's done last: it's always in the river or the falls, never in the air.
+    let leaps: Record<"up" | "down", { fish: Keyframe[]; spray: Keyframe[]; splash: Keyframe[] }> | null = null;
+    let playing: Animation[] = [];
+    let upstream = false;
+    let wanted = false;
 
     const bell = (t: number, a: number, peak: number, b: number) =>
       t <= a || t >= b ? 0 : t < peak ? (t - a) / (peak - a) : (b - t) / (b - peak);
 
-    // The whole leap, as three animations played together: the fish along its arc,
-    // the spray where it leaves the falls and the splash where it goes back in.
     const build = () => {
       const unit = Math.min(innerHeight, innerWidth * 1.8) / 100;
       const mouth = falls.getBoundingClientRect();
@@ -1231,63 +1236,58 @@ function Salmon() {
       const [a, b, c] = LEAP;
       const steps = 30;
       const samples = Array.from({ length: steps + 1 }, (_, k) => k / steps);
-      // Along a parabola at an even pace across, as a thrown thing goes.
-      const fishFrames = samples.map((t) => {
+      // Along a parabola at an even pace across, as a thrown thing goes. Coming
+      // back down it's the same arc the other way, the fish mirrored to face it,
+      // nose first: mirrored, the same turn points it back along its path.
+      const fishAt = (t: number, mirrored: boolean, time: number) => {
         const u = 1 - t;
         const x = (u * u * a[0] + 2 * u * t * b[0] + t * t * c[0]) * unit;
         const y = (u * u * a[1] + 2 * u * t * b[1] + t * t * c[1]) * unit;
         const dx = 2 * u * (b[0] - a[0]) + 2 * t * (c[0] - b[0]);
         const dy = 2 * u * (b[1] - a[1]) + 2 * t * (c[1] - b[1]);
+        // Smaller as it goes, upstream and away.
+        const scale = 1 - 0.22 * t;
         return {
           translate: `${(from + x).toFixed(1)}px ${y.toFixed(1)}px`,
           rotate: `${((Math.atan2(dy, dx) * 180) / Math.PI).toFixed(1)}deg`,
-          // Smaller as it goes, upstream and away.
-          scale: (1 - 0.22 * t).toFixed(3),
-          opacity: Math.min(1, Math.max(0, (t - 0.015) / 0.04), Math.max(0, (0.97 - t) / 0.06)),
+          scale: `${(mirrored ? -scale : scale).toFixed(3)} ${scale.toFixed(3)}`,
+          // In view only between leaving the water and going back in.
+          opacity: Math.min(1, Math.max(0, (time - 0.015) / 0.04), Math.max(0, (0.97 - time) / 0.06)),
         };
-      });
+      };
       const sprayAt = `${(from + a[0] * unit).toFixed(1)}px ${((a[1] - 3) * unit).toFixed(1)}px`;
-      const sprayFrames = samples.map((t) => ({ translate: sprayAt, scale: (0.6 + t * 2.4).toFixed(3), opacity: bell(t, 0.02, 0.1, 0.32) }));
       const splashAt = `${(from + c[0] * unit).toFixed(1)}px ${((c[1] + 1) * unit).toFixed(1)}px`;
-      const splashFrames = samples.map((t) => ({
-        translate: splashAt,
-        scale: (0.5 + Math.max(0, t - 0.88) * 5).toFixed(3),
-        opacity: bell(t, 0.88, 0.95, 1),
-      }));
-
-      leaps.forEach((animation) => animation.cancel());
-      const timing = { duration: 1700, easing: "linear", fill: "both" } as const;
-      leaps = [fish.animate(fishFrames, timing), spray.animate(sprayFrames, timing), splash.animate(splashFrames, timing)];
-      leaps.forEach((animation) => {
-        animation.pause();
-        // Already leapt: it's back in the river.
-        if (leapt) animation.finish();
-      });
+      // The spray at the falls as it leaves them, the splash in the river as it
+      // goes in; coming back, the other way about.
+      const sprays = samples.map((t) => ({ translate: sprayAt, scale: (0.6 + t * 2.4).toFixed(3), opacity: bell(t, 0.02, 0.1, 0.32) }));
+      const splashes = samples.map((t) => ({ translate: splashAt, scale: (0.5 + Math.max(0, t - 0.88) * 5).toFixed(3), opacity: bell(t, 0.88, 0.95, 1) }));
+      leaps = {
+        up: { fish: samples.map((t) => fishAt(t, false, t)), spray: sprays, splash: splashes },
+        down: { fish: samples.map((t) => fishAt(1 - t, true, t)), spray: [...sprays].reverse(), splash: [...splashes].reverse() },
+      };
     };
 
-    // It leaps as the lip comes well up into view, and back the other way if you
-    // scroll back up until it's nearly gone: the whole leap either way, played
-    // through, so it's never left hanging in the air.
-    const send = (forward: boolean) => {
-      if (leapt === forward) return;
-      leapt = forward;
-      leaps.forEach((animation) => {
-        if (!forward && Number(animation.currentTime ?? 0) < 50) {
-          animation.pause();
-          animation.currentTime = 0;
-          return;
-        }
-        animation.updatePlaybackRate(forward ? 1 : -1);
-        animation.play();
-      });
+    const timing = { duration: 1700, easing: "linear", fill: "forwards" } as const;
+    // Once a leap's done, if it's been called the other way since, it goes again.
+    const leapTo = (up: boolean) => {
+      wanted = up;
+      if (playing.length || up === upstream || !leaps) return;
+      upstream = up;
+      const { fish: f, spray: s, splash: p } = leaps[up ? "up" : "down"];
+      playing = [fish.animate(f, timing), spray.animate(s, timing), splash.animate(p, timing)];
+      playing[0].onfinish = () => {
+        playing.forEach((animation) => animation.cancel());
+        playing = [];
+        leapTo(wanted);
+      };
     };
 
     let frame = 0;
     const check = () => {
       frame = 0;
       const lip = falls.getBoundingClientRect().top;
-      if (lip < innerHeight * 0.8) send(true);
-      else if (lip > innerHeight * 0.95) send(false);
+      if (lip < innerHeight * 0.8) leapTo(true);
+      else if (lip > innerHeight * 0.95) leapTo(false);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(check);
@@ -1297,7 +1297,7 @@ function Salmon() {
       onScroll();
     };
     // Loading the page at its foot: it's already leapt.
-    leapt = falls.getBoundingClientRect().top < innerHeight * 0.8;
+    upstream = wanted = falls.getBoundingClientRect().top < innerHeight * 0.8;
     build();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
@@ -1305,7 +1305,7 @@ function Salmon() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(frame);
-      leaps.forEach((animation) => animation.cancel());
+      playing.forEach((animation) => animation.cancel());
     };
   }, []);
 
@@ -1321,6 +1321,193 @@ function Salmon() {
       <div data-splash className="absolute opacity-0">
         <SplashShape />
       </div>
+    </div>
+  );
+}
+
+/**
+ * Swimmers crossing the river, a nod to Oregon's two big universities: a pair of
+ * mallards with their ducklings paddling along behind, and a beaver with its head
+ * and back out of the water and a wake fanning out behind it. Like the things in
+ * the sky, the scroll sets them off: each swims the whole way across as you come
+ * to its part of the page, and if you scroll back up past it, turns round where
+ * it is and swims back. They fade in and out at the banks, where they come out
+ * from under the trees. Drawn facing right, at their waterline.
+ */
+const SWIMMERS = [
+  // `at` is how far down the page (0 to 1) it sets off; `speed` is in the river's
+  // units a second; `y` how far down the valley, so how near; `size` in vh.
+  // `box` is its drawing's, and `waterline` how far down it the water is.
+  { kind: "ducks", y: 138, from: 95, to: 905, speed: 40, at: 0.3, size: 11, box: [220, 44], waterline: 34.5 },
+  { kind: "beaver", y: 162, from: 70, to: 930, speed: 70, at: 0.62, size: 7, box: [150, 40], waterline: 31.5 },
+] as const;
+
+const waterline = { ...line, stroke: "rgba(255,255,255,0.75)", strokeWidth: 1.2 } as const;
+const fine = { ...ink, strokeWidth: 1.1 } as const;
+
+/** A duck sitting in the water at `x`, facing right; drake or hen. */
+function Duck({ x, drake }: { x: number; drake: boolean }) {
+  return (
+    // Placed by the outer group, bobbing in the inner: a CSS transform on the
+    // outer would replace its place.
+    <g transform={`translate(${x} 0)`}>
+     <g className="scenery-bob" style={{ "--bob-delay": `${(-x / 90).toFixed(2)}s` } as CSSProperties}>
+      {/* Its wake, fanning out behind. */}
+      <path d="M2 34L-16 30M2 35L-16 40" {...waterline} strokeOpacity={0.5} />
+      <path d="M0 34Q2 24 14 23L28 23Q33 18 35 12Q33 4 40 3Q47 3 47 9L54 11L47 13Q46 18 41 21Q46 25 44 34Z" fill={drake ? "#b8b4ab" : "#9a7552"} {...fine} />
+      {drake ? (
+        <>
+          {/* Chestnut breast, white collar, green head, and the drake's curl. */}
+          <path d="M33 22Q42 22 44 34L32 34Q35 28 33 22Z" fill="#7b3f2a" />
+          <path d="M35 13Q33 4 40 3Q47 3 47 9L47 13Q46 18 41 20Q36 19 35 13Z" fill="#2f6b4a" {...fine} />
+          <path d="M36 19Q40 21 42 19" {...line} stroke="#fff" strokeWidth={1.4} />
+          <path d="M2 24Q0 19 4 18" {...fine} fill="none" />
+        </>
+      ) : (
+        <>
+          {/* The hen's mottled brown, and the dark line through her eye. */}
+          <path d="M10 28q4 -3 8 0M20 27q4 -3 8 0M14 31q4 -3 8 0" {...line} stroke="#6e5034" strokeWidth={1} />
+          <path d="M37 8L46 8" {...line} stroke="#5a412a" strokeWidth={1.2} />
+        </>
+      )}
+      <path d="M47 9L54 11L47 13Z" fill={drake ? "#e2c24a" : "#d98c3a"} {...fine} />
+      <circle cx="42" cy="8" r="1.2" fill="var(--color-ink-fixed)" />
+      <path d="M6 30q10 -4 22 -1" {...line} strokeWidth={1} strokeOpacity={0.35} />
+      <path d="M-2 34.5Q22 37 46 34.5" {...waterline} />
+     </g>
+    </g>
+  );
+}
+
+/** A duckling, a little ball of fluff, at `x`. */
+function Duckling({ x }: { x: number }) {
+  return (
+    <g transform={`translate(${x} 0)`}>
+      <g className="scenery-bob" style={{ "--bob-delay": `${(-x / 70).toFixed(2)}s` } as CSSProperties}>
+        <path d="M0 34Q1 27 8 26Q11 22 15 22Q20 22 20 26L23 27L20 28Q19 31 16 34Z" fill="#cfa84c" {...fine} />
+        <path d="M9 27Q12 30 16 29" {...line} stroke="#7a5a26" strokeWidth={1} />
+        <path d="M14 25L19 25" {...line} stroke="#5a412a" strokeWidth={1} />
+        <path d="M-1 34.5Q10 36 18 34.5" {...waterline} />
+      </g>
+    </g>
+  );
+}
+
+function DucksShape() {
+  return (
+    <svg viewBox="-20 0 220 44" className="h-full w-full overflow-visible">
+      {/* Ducklings strung out behind, then the hen, then the drake out front. */}
+      {[4, 26, 46, 68].map((x) => (
+        <Duckling key={x} x={x} />
+      ))}
+      <Duck x={96} drake={false} />
+      <Duck x={146} drake />
+    </svg>
+  );
+}
+
+function BeaverShape() {
+  return (
+    <svg viewBox="-30 0 150 40" className="h-full w-full overflow-visible">
+      {/* Its wake: a V opening out behind from its nose, and rings off its back. */}
+      <path d="M100 30L-24 20M100 31L-24 40" {...waterline} strokeOpacity={0.55} />
+      <path d="M40 31q-14 -2 -26 0" {...waterline} strokeOpacity={0.4} />
+      <g className="scenery-bob" style={{ "--bob-delay": "-0.4s" } as CSSProperties}>
+        {/* The flat tail, just under the water behind it. */}
+        <path d="M4 31Q8 27 22 28Q30 29 32 31Q24 34 10 33Q4 33 4 31Z" fill="#4a3a30" fillOpacity={0.55} />
+        {/* A low hump of back, then the head held up: round, with a small ear, a
+            blunt dark nose and a beady eye. */}
+        <path d="M30 31.5Q38 22 56 21Q68 21 76 25L76 31.5Z" fill="#7a4f2e" {...fine} />
+        <path d="M36 31.5Q46 27 60 27Q70 27 76 31.5Z" fill="#5f3b22" />
+        <circle cx="83" cy="15.5" r="2.6" fill="#5f3b22" {...fine} />
+        <path d="M74 31.5Q71 15 89 13Q103 12 108 22Q110 27 107 31.5Z" fill="#865733" {...fine} />
+        <path d="M76 31.5Q78 24 90 24Q102 24 107 31.5Z" fill="#6b4428" />
+        <circle cx="108" cy="21.5" r="2.4" fill="#2b1d16" />
+        <circle cx="96" cy="18" r="1.4" fill="var(--color-ink-fixed)" />
+        <circle cx="96.4" cy="17.5" r="0.4" fill="#fff" />
+        <path d="M101 25q4 1 7 0" {...line} strokeWidth={1} strokeOpacity={0.5} />
+        <path d="M26 31.5Q66 35 110 31.5" {...waterline} />
+      </g>
+    </svg>
+  );
+}
+
+/** One of SWIMMERS, by its place in the list. */
+function Swimmer({ index }: { index: number }) {
+  const swimmer = SWIMMERS[index];
+  const self = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = self.current;
+    const river = document.querySelector<SVGSVGElement>("[data-river]");
+    if (!element || !river) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const { from, to, speed, at } = SWIMMERS[index];
+    const face = element.firstElementChild as Element;
+    let out = false;
+    // The river's units in px, and how far it swims, from its start.
+    let unit = 1;
+    const leg = () => (to - from) * unit;
+    const trip = () => ({
+      speed: speed * unit,
+      // Out from under the trees, and back under them at the far bank.
+      shown: (x: number) => Math.min(1, Math.max(0, Math.min(x, leg() - x) / (60 * unit))),
+    });
+    const rest = () => place(element, face, out ? leg() : 0, out ? 1 : -1, trip());
+    const measure = () => {
+      unit = river.getBoundingClientRect().width / VALLEY.width;
+      if (!element.getAnimations().length) rest();
+    };
+    const progress = () => {
+      const room = document.documentElement.scrollHeight - innerHeight;
+      return room > 0 ? scrollY / room : 0;
+    };
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      const p = progress();
+      const going = p >= at ? true : p < at - 0.05 ? false : out;
+      if (going === out) return;
+      out = going;
+      go(element, face, { to: going ? leg() : 0, ...trip() });
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    // Loading the page part way down: it's already across.
+    out = progress() >= at;
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", measure, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measure);
+      cancelAnimationFrame(frame);
+      element.getAnimations().forEach((animation) => animation.cancel());
+    };
+  }, [index]);
+
+  const { left, bottom } = riverAt(swimmer.from, swimmer.y);
+  const width = `min(${swimmer.size}vh, ${swimmer.size * 2}vw)`;
+  // Its waterline on the water at its place in the valley.
+  const below = (swimmer.box[1] - swimmer.waterline) / swimmer.box[0];
+  return (
+    // Hidden until it's set going, and with reduced motion it stays that way.
+    // Centred on its place by its left, not a translate class: its journeys are
+    // its translate.
+    <div
+      ref={self}
+      data-swimmer={swimmer.kind}
+      aria-hidden="true"
+      className="absolute opacity-0"
+      style={{
+        left: `calc(${left} - ${width} / 2)`,
+        bottom: `calc(${bottom} - ${width} * ${below.toFixed(3)})`,
+        width,
+        aspectRatio: `${swimmer.box[0]} / ${swimmer.box[1]}`,
+      }}
+    >
+      {swimmer.kind === "ducks" ? <DucksShape /> : <BeaverShape />}
     </div>
   );
 }
@@ -1535,7 +1722,7 @@ export function Scenery() {
           <path d={BANK} fill={paint.bank} />
           <path d={BANK_EDGE} {...line} />
         </svg>
-        <svg viewBox={`0 0 ${VALLEY.width} ${VALLEY.height}`} preserveAspectRatio="none" className={riverBox}>
+        <svg data-river viewBox={`0 0 ${VALLEY.width} ${VALLEY.height}`} preserveAspectRatio="none" className={riverBox}>
           <path d={RIVER} fill={paint.water} />
           <path d={SKY_IN_WATER} fill={paint.skyInWater} />
           {TREES_IN_WATER.map((d, i) => (
@@ -1561,9 +1748,13 @@ export function Scenery() {
             />
           ))}
         </svg>
-        {ROCKS.map((rock, i) => (
-          <RockShape key={i} rock={rock} />
-        ))}
+        {/* Further up the valley is further off: the rocks beyond each swimmer go
+            behind it, the nearer ones in front. */}
+        {ROCKS.map((rock, i) => (rock.y <= SWIMMERS[0].y ? <RockShape key={i} rock={rock} /> : null))}
+        <Swimmer index={0} />
+        {ROCKS.map((rock, i) => (rock.y > SWIMMERS[0].y && rock.y <= SWIMMERS[1].y ? <RockShape key={i} rock={rock} /> : null))}
+        <Swimmer index={1} />
+        {ROCKS.map((rock, i) => (rock.y > SWIMMERS[1].y ? <RockShape key={i} rock={rock} /> : null))}
         {FERNS.map((fern, i) => (fern.centered ? <FernShape key={i} index={i} /> : null))}
         {MID_WOODS.map((tree, i) => (
           <FirShape key={i} tree={tree} />

@@ -7,6 +7,9 @@ import { Sun } from "./Sun";
 export function Header() {
   return (
     <header className="panel-glass column-inset sticky top-2 z-50 mt-2 sm:top-3 sm:mt-3">
+      {/* The sun's light in the cloud: scattered through it, and at its edges. */}
+      <span aria-hidden="true" className="header-sunlight header-sunlight-glow" />
+      <span aria-hidden="true" className="header-sunlight header-sunlight-rim" />
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 sm:px-6">
         <Link
           href="/"

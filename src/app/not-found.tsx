@@ -31,7 +31,7 @@ export default function NotFound() {
         <Button href="/studio" variant="secondary">
           Studio
         </Button>
-        <Button href="/contact" variant="ghost">
+        <Button href="/contact" variant="secondary">
           Contact
         </Button>
       </div>

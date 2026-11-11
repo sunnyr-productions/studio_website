@@ -14,10 +14,8 @@
   /* Tokens that must NOT invert between themes.
      --color-ink-fixed: text/outline/shadow on the marigold CTA and the
      avatar — marigold is light in both themes, so its foreground stays dark.
-     --logo-ink: the wordmark's color, deep marigold by day and full marigold at
-     night. Its white outline (.logo-outline) keeps it clear of any background. */
+     (The wordmark's own colour is in its art: .logo-art.) */
   --color-ink-fixed: #1f2430;
-  --logo-ink: #c97404;
 
   /* The site is one day. The page runs from sunrise at the top, through full
      daylight, toward sunset, and the footer carries that sunset down into night.
@@ -111,7 +109,16 @@
   /* Error text (forms, checkout) — Tailwind's red-700 is too dim on night */
   --color-red-700: #f2918a;
 
-  --logo-ink: #f5a623;
+}
+
+/* The sun's light in the header's cloud (Header.tsx), placed like the glass, and
+   only where the glass is a cloud (below). */
+.header-sunlight {
+  display: none;
+  position: absolute;
+  inset: -0.9rem -0.4rem;
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* The orange of the On the Rocks stage backdrop, sampled from the top of the photo
@@ -479,8 +486,7 @@ body::before {
 }
 
 /* The ambigram pays off here: the wordmark reads identically upside down, so
-   hovering the header logo spins it a full 180° to show that off. The mark and
-   its outline spin together. */
+   hovering the header logo spins it a full 180° to show that off. */
 .logo {
   position: relative;
   display: block;
@@ -488,50 +494,43 @@ body::before {
   /* Symmetric ease-in-out (accelerate then settle) so the spin never reads as
      choppy. Duration is generous enough to enjoy the half-turn. */
   transition: transform 800ms cubic-bezier(0.65, 0, 0.35, 1);
+  /* Kept on a layer of its own, turning or not: the browser would otherwise
+     move it onto one as the turn starts and back off as it ends, redrawing it
+     each time, and its fine outline jumped and blurred at both. */
+  will-change: transform;
+  /* In front of the lockup's rules, which run in under it to meet its curves.
+     On the mark alone, not round the sun beside it, which stays behind the
+     header's cloud. */
+  z-index: 1;
 }
 
-.logo-mark {
-  position: absolute;
-  inset: 0;
-  /* The art is a mask so the footer's night tokens can recolor it. Forced-colors
-     mode and printing both drop backgrounds, which would erase it entirely. */
-  background-color: var(--logo-ink);
-  -webkit-mask: url("/images/sunnyr-logo-small.svg") center / contain no-repeat;
-  mask: url("/images/sunnyr-logo-small.svg") center / contain no-repeat;
-  forced-color-adjust: none;
-  print-color-adjust: exact;
-}
-
-/* A white hairline hugging the edge of every line, drawn round the mark as one
-   shape (none where strokes overlap), with a soft shadow all round it, so the
-   logo stands out on any background. The shadow isn't offset, so it looks right
-   after the logo's half turn too. It's its own picture behind the mark rather
-   than a filter on it, which the mark's mask would clip. The art is drawn with
-   110 units of room each side of the 1566 × 842 mark, hence the insets. */
-.logo-outline {
+/* The wordmark in its outline, as one picture (docs/logo/build_logo.py, the
+   "outlined" cut): the theme's marigold (500), with a periwinkle 800 line hugging
+   the edge of every stroke, a little see-through, at about the weight of the scenery's ink lines, so it
+   reads on the pale header cloud as well as the night, and holds steady as it
+   turns. One picture, so the mark and its line are drawn and turned as one and
+   can't slip apart. The art has 110 units of room each side of the 1566 x 842
+   mark, hence the insets. */
+.logo-art {
   position: absolute;
   inset: calc(-110 / 842 * 100%) calc(-110 / 1566 * 100%);
-  background: url("/images/sunnyr-logo-outline-small.svg") center / 100% 100% no-repeat;
+  background: url("/images/sunnyr-logo-outlined-small.svg") center / 100% 100% no-repeat;
   pointer-events: none;
+  /* Forced-colors mode and printing drop backgrounds, which would erase it. */
   forced-color-adjust: none;
   print-color-adjust: exact;
 }
 
 /* From the sm breakpoint the mark is tall enough to carry the regular weight. */
 @media (min-width: 40rem) {
-  .logo-mark {
-    -webkit-mask-image: url("/images/sunnyr-logo.svg");
-    mask-image: url("/images/sunnyr-logo.svg");
-  }
-
-  .logo-outline {
-    background-image: url("/images/sunnyr-logo-outline.svg");
+  .logo-art {
+    background-image: url("/images/sunnyr-logo-outlined.svg");
   }
 }
 
 /* The band around the words, ruled top and foot, with a heavier foot for it to
    stand on, centred on the mark. The mark is bigger than the band (--logo-height
-   against --band-height, about 1.4 to 1): its hairline outline needs the size to
+   against --band-height, about 1.4 to 1): its outline needs the size to
    stay crisp as it turns, and the words and rules keep their own size. With the
    band at 0.71 of the mark's height, its rules cross the mark at 29.5% and 70.5%
    of its height. The mark is point symmetric, so its curves reach further out at the
@@ -585,13 +584,8 @@ body::before {
     --logo-foot: 2px;
   }
 
-  .logo-mark {
-    -webkit-mask-image: url("/images/sunnyr-logo-small.svg");
-    mask-image: url("/images/sunnyr-logo-small.svg");
-  }
-
-  .logo-outline {
-    background-image: url("/images/sunnyr-logo-outline-small.svg");
+  .logo-art {
+    background-image: url("/images/sunnyr-logo-outlined-small.svg");
   }
 
   /* The words at their phone size too, to go with the mark. */
@@ -696,6 +690,42 @@ body::before {
        little at top and bottom and feathers off at the sides, so the logo and
        links sit in its thick middle. The mask is on this pseudo-element, never
        the header, for the same reason the glass is. */
+    /* The sun behind the header's cloud lights it as it would a real one: brightest
+       where it's behind it, the light scattering out through the cloud and fading
+       with distance, and catching its edges nearest it (its silver lining). In the
+       sun's own colours through the day (Sun.tsx sets them on the header), kept
+       to the cloud's shape (FogBanks.tsx draws it, and its rim), and shown once
+       it's drawn. Over the glass, under the logo and links. */
+    header[data-cloud] > .header-sunlight {
+      display: block;
+    }
+
+    .header-sunlight-glow {
+      background: radial-gradient(
+        circle at var(--sun-x, 14rem) var(--sun-y, 50%),
+        #fffaf0 0,
+        color-mix(in srgb, var(--sun-core, #fff1e6) 85%, transparent) 1.4rem,
+        color-mix(in srgb, var(--sun-glow, #ffe0cc) 58%, transparent) 3.6rem,
+        color-mix(in srgb, var(--sun-glow, #ffe0cc) 26%, transparent) 7rem,
+        color-mix(in srgb, var(--sun-haze, #f8b490) 10%, transparent) 12rem,
+        transparent 18rem
+      );
+      -webkit-mask: var(--cloud);
+      mask: var(--cloud);
+    }
+
+    .header-sunlight-rim {
+      background: radial-gradient(
+        circle at var(--sun-x, 14rem) var(--sun-y, 50%),
+        color-mix(in srgb, var(--sun-core, #fff1e6) 90%, transparent) 0,
+        color-mix(in srgb, var(--sun-core, #fff1e6) 70%, transparent) 4rem,
+        color-mix(in srgb, var(--sun-glow, #ffe0cc) 30%, transparent) 8rem,
+        transparent 12rem
+      );
+      -webkit-mask: var(--cloud-rim);
+      mask: var(--cloud-rim);
+    }
+
     header.panel-glass::before {
       --billow: radial-gradient(closest-side, #000 55%, transparent);
       content: "";
@@ -803,6 +833,23 @@ body::before {
 
   .scenery-sway {
     animation: scenery-sway var(--sway-time) ease-in-out var(--sway-delay) infinite alternate;
+  }
+
+  /* A swimmer bobbing on the water (the ducks and the beaver in Scenery.tsx),
+     each on its own beat (--bob-delay). */
+  @keyframes scenery-bob {
+    from {
+      transform: translateY(0.6px) rotate(-1.5deg);
+    }
+    to {
+      transform: translateY(-0.6px) rotate(1.5deg);
+    }
+  }
+
+  .scenery-bob {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: scenery-bob 0.9s ease-in-out var(--bob-delay, 0s) infinite alternate;
   }
 
   /* Running water moves its dashes one whole pattern along (--flow-to) and starts

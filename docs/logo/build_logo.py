@@ -254,24 +254,30 @@ def build(fill="#db8a12"):
     )
 
 
-# The outline behind the mark: a hairline hugging the edge of every line, drawn
-# round the mark as one shape (so none where strokes overlap or join), and a soft
-# shadow all round it, for a little more contrast on any background. The shadow
-# isn't offset, so like the mark it looks the same either way up. The mark
-# is blurred and cut off a little outside its edge (about 1.4 x LINE out), and the
-# line is what that adds. Units are the drawing's; the mark is 842 tall and shown
-# about 68px tall on phones (the small cut) and 107-119px above that, so a pixel is
-# 12 units on phones and 7-8 above. Thinner than a pixel and the line shimmers as
-# the logo turns.
-LINE = 6
+# The outline round the mark: a line hugging the edge of every stroke, drawn round
+# the mark as one shape (so none where strokes overlap or join). On the site it's
+# periwinkle 800, the lockup's rules' family, at about the weight of the scenery's
+# ink lines and a little see-through, so the marigold reads on the pale header
+# cloud as well as the night. The mark is blurred and cut off a little outside its
+# edge (about 1.37 x LINE out), and the line is what that adds. Units are the
+# drawing's; the mark is 842 tall and shown about 68px tall on phones (the small
+# cut) and 107-119px above that, so a pixel is 12 units on phones and 7-8 above:
+# the line is about 1.2px on phones and 1.3-1.45px above. Any thinner and it
+# breaks up into dots on an ordinary screen, worst as the logo turns.
+LINE = 7.5
+LINE_COLOR = "#374176"
+LINE_OPACITY = 0.7
 MARGIN = 110  # room round the drawing for the line and shadow; the site's CSS insets by this
 
 
-def outline(fill="#db8a12"):
+def _framed(fill, color="#fff", shadow=True, opacity=1):
+    """The mark's body, and the box and filter for its outline, with MARGIN room.
+    The shadow is a soft one all round, under a light line, not offset, so like
+    the mark it looks the same either way up."""
     mark = build(fill)
     body = mark[mark.index("<g id=\"half\">"):mark.rindex("</svg>")]
     x, y, w, h = 10 - MARGIN, 105 - MARGIN, 1566 + 2 * MARGIN, 842 + 2 * MARGIN
-    return (
+    head = (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{x} {y} {w} {h}" '
         f'width="{w}" height="{h}">'
         f'<filter id="o" filterUnits="userSpaceOnUse" x="{x}" y="{y}" width="{w}" height="{h}" '
@@ -279,28 +285,49 @@ def outline(fill="#db8a12"):
         f'<feGaussianBlur in="SourceAlpha" stdDeviation="{LINE}"/>'
         '<feComponentTransfer result="outer"><feFuncA type="linear" slope="14" intercept="-1.2"/></feComponentTransfer>'
         '<feComposite in="outer" in2="SourceAlpha" operator="out" result="ring"/>'
-        '<feFlood flood-color="#fff"/>'
+        f'<feFlood flood-color="{color}" flood-opacity="{opacity}"/>'
         '<feComposite in2="ring" operator="in" result="line"/>'
-        '<feGaussianBlur in="outer" stdDeviation="12"/>'
-        '<feComposite in2="outer" operator="out" result="shade"/>'
-        '<feFlood flood-color="#1f2430" flood-opacity="0.5"/>'
-        '<feComposite in2="shade" operator="in" result="shadow"/>'
-        '<feMerge><feMergeNode in="shadow"/><feMergeNode in="line"/></feMerge>'
-        "</filter>"
-        f'<g filter="url(#o)">{body}</g></svg>'
+        + (
+            '<feGaussianBlur in="outer" stdDeviation="12"/>'
+            '<feComposite in2="outer" operator="out" result="shade"/>'
+            '<feFlood flood-color="#1f2430" flood-opacity="0.5"/>'
+            '<feComposite in2="shade" operator="in" result="shadow"/>'
+            '<feMerge><feMergeNode in="shadow"/><feMergeNode in="line"/></feMerge>'
+            if shadow
+            else ""
+        )
+        + "</filter>"
     )
+    return head, body
+
+
+def outline(fill="#db8a12"):
+    """The outline alone, white with its shadow, to go behind the mark."""
+    head, body = _framed(fill)
+    return f'{head}<g filter="url(#o)">{body}</g></svg>'
+
+
+# The site's wordmark: the mark and its outline as one picture, so the two are
+# drawn, scaled and turned as one, with nothing between them to come apart. The
+# dark line does the shadow's work, so there's none.
+def outlined(fill="#f5a623"):
+    head, body = _framed(fill, LINE_COLOR, shadow=False, opacity=LINE_OPACITY)
+    return f'{head}<defs><g id="m">{body}</g></defs><use href="#m" filter="url(#o)"/><use href="#m" fill="{fill}"/></svg>'
 
 
 if __name__ == "__main__":
     out = sys.argv[1]
     fill = sys.argv[2] if len(sys.argv) > 2 else "#db8a12"
     # A third argument draws the heavier cut for small sizes, and a fourth (or a
-    # third, for the regular cut) "outline" draws the outline that goes behind it.
+    # third, for the regular cut) "outline" draws the outline that goes behind it,
+    # or "outlined" the mark in its outline, as the site shows it.
     if len(sys.argv) > 3 and sys.argv[3] == "small":
         STEM, THIN, SWELL, TIP, DOT = 31, 23, 41, 19, 15
-        LINE = 9
+        LINE = 11
     with open(out, "w", encoding="utf8") as f:
-        if "outline" in sys.argv[3:]:
+        if "outlined" in sys.argv[3:]:
+            f.write(outlined(fill))
+        elif "outline" in sys.argv[3:]:
             f.write(outline(fill))
         elif len(sys.argv) > 3 and sys.argv[3] == "sun":
             paths = "".join(f'<path d="{d}"/>' for d in sun(0, 0))

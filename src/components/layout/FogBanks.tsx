@@ -146,9 +146,21 @@ function shapeHeader(header: HTMLElement) {
   const random = seeded(Math.round(box.width));
   const puff: [number, number] = [ey * 0.75, ey * 1.1];
   const clouds = cloud(ex + 10, ey + 4, box.width - 20, box.height - 8, random, [0, 0], puff, { top: true, bottom: false, sides: false });
-  header.style.setProperty("--cloud", maskOf(box.width + 2 * ex, box.height + 2 * ey, [{ blocks: [clouds], density: 1, soften: 4 }]));
+  const [width, height] = [box.width + 2 * ex, box.height + 2 * ey];
+  header.style.setProperty("--cloud", maskOf(width, height, [{ blocks: [clouds], density: 1, soften: 4 }]));
   // One layer, so none of the stand-in's compositing.
   header.style.setProperty("--cloud-composite", "add");
+  // Its rim, for the light at its edges where the sun's behind it (its silver
+  // lining): the soft cloud less the cloud worn back from its edge, softened.
+  const rim = 0.45 * rem;
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width.toFixed(0)}" height="${height.toFixed(0)}" fill="#000">` +
+    `<filter id="r" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur in="SourceAlpha" stdDeviation="4" result="soft"/>` +
+    `<feMorphology in="soft" operator="erode" radius="${rim.toFixed(1)}" result="inner"/>` +
+    `<feComposite in="soft" in2="inner" operator="out" result="ring"/><feGaussianBlur in="ring" stdDeviation="2.5"/></filter>` +
+    `<g filter="url(#r)">${clouds}</g></svg>`;
+  header.style.setProperty("--cloud-rim", `url("data:image/svg+xml,${encodeURIComponent(svg)}") 0 0 / 100% 100% no-repeat`);
+  header.toggleAttribute("data-cloud", true);
 }
 
 export function FogBanks() {

@@ -59,11 +59,14 @@ export function Sun() {
     // which would have the browser restyle everything on every frame of a scroll;
     // and only when they've changed.
     const rays = document.querySelector<HTMLElement>(".sun-rays");
+    const header = svg.closest("header");
     // In steps too small to see, so a scroll doesn't repaint them on every frame.
-    // The rays are big and faint, so theirs are coarser: a few dozen down the page.
+    // The rays and the light in the header's cloud are big and soft, so theirs are
+    // coarser: a few dozen down the page.
     const lit: [HTMLElement | SVGSVGElement | null, number, string][] = [
       [svg, 240, ""],
       [rays, 40, ""],
+      [header, 40, ""],
     ];
     const paint = (day: number) => {
       lit.forEach((light) => {
@@ -75,12 +78,21 @@ export function Sun() {
         colors.forEach((color, i) => element.style.setProperty(NAMES[i], color));
       });
     };
-    // Where the rays start. The header holds still, so this only changes with the window.
+    // Where the rays start, and where the sun is in the header's cloud (its glass
+    // reaches 0.4rem past the bar's sides and 0.9rem past its top). The header
+    // holds still, so this only changes with the window.
     const place = () => {
-      if (!rays) return;
       const box = svg.getBoundingClientRect();
-      rays.style.left = `${(box.left + box.width / 2).toFixed(0)}px`;
-      rays.style.top = `${(box.top + box.height / 2).toFixed(0)}px`;
+      const [x, y] = [box.left + box.width / 2, box.top + box.height / 2];
+      if (rays) {
+        rays.style.left = `${x.toFixed(0)}px`;
+        rays.style.top = `${y.toFixed(0)}px`;
+      }
+      if (header) {
+        const bar = header.getBoundingClientRect();
+        header.style.setProperty("--sun-x", `calc(${(x - bar.left).toFixed(0)}px + 0.4rem)`);
+        header.style.setProperty("--sun-y", `calc(${(y - bar.top).toFixed(0)}px + 0.9rem)`);
+      }
     };
     let shown = dayNow();
     paint(shown);
