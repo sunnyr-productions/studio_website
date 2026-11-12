@@ -58,3 +58,14 @@ ds-bundle/
 
 # private interview transcripts
 /docs/interview-answers.md
+
+# Screenshots, previews and audit images stay on this machine, not on GitHub.
+# The site's own images (public/, and the icons in src/app) aren't covered.
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
+/docs/**/*.png
+/docs/**/*.jpg
+/docs/**/*.jpeg
+/docs/**/*.webp
