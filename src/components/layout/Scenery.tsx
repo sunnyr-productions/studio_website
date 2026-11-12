@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, type CSSProperties } from "react";
+import { Fragment, useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { go, place, placeOf } from "./journey";
 import { seeded } from "./Sky";
 import { useVisitSeed } from "./visit";
@@ -737,12 +737,14 @@ function FirShape({ tree }: { tree: Tree }) {
         <path d={tree.trunk} {...line} />
         {tree.moss && <path d={tree.moss} fill={tree.mossColor} {...ink} strokeOpacity={0.6 * tree.line} />}
         {tree.bark && <path d={tree.bark} {...line} strokeWidth={1.2} />}
+        {/* Each tier straight in the drawing, in order, no group round it: a group
+            is one more thing in the page and draws nothing. */}
         {tree.boughs.map(({ body, shade }, i) => (
-          <g key={i}>
+          <Fragment key={i}>
             <path d={body} fill={needles[0]} />
             <path d={shade} fill={needles[1]} />
             <path d={body} {...line} />
-          </g>
+          </Fragment>
         ))}
       </svg>
     </div>
@@ -761,10 +763,10 @@ function FernShape({ index }: { index: number }) {
             screen would otherwise blur into a dark band behind the copy. */}
         <svg viewBox={`0 0 ${FERN_BOX.width} ${FERN_BOX.height}`} className="h-full w-full overflow-visible">
           {fern.fronds.map((frond, i) => (
-            <g key={i}>
+            <Fragment key={i}>
               <path d={frond.leaf} fill={fern.green} {...ink} strokeOpacity={0.4} />
               <path d={frond.rib} {...line} stroke={paint.fernRib} strokeWidth={1.2} />
-            </g>
+            </Fragment>
           ))}
         </svg>
       </div>
