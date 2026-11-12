@@ -22,29 +22,28 @@ export const metadata: Metadata = {
   alternates: { canonical: "/studio" },
 };
 
-const link =
-  "font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600";
+const link = "link-drawn";
 
 const faqs = [
   {
     q: "How long will it take?",
-    a: "I’ll get you a first mix within two weeks, sooner if you have a deadline. Bigger projects get their own schedule.",
+    a: `A first version within ${studioTerms.firstVersionWeeks} weeks, or sooner if you have a deadline. Bigger projects get their own schedule.`,
   },
   {
     q: "What’s a round of revisions?",
-    a: `Everything you want changed, sent together in one list. Two rounds come with every mix, and more are $${extraRevisionFee} each.`,
+    a: `One list of all the changes you want. Every mix includes ${studioTerms.revisionRounds}, and extra rounds are $${extraRevisionFee} each.`,
   },
   {
     q: "How does payment work?",
-    a: `You get a quote first. A ${depositPercent}% deposit books your spot, and you pay the rest before I send final files.`,
+    a: `You get a quote first. A ${depositPercent}% deposit holds your spot, and the rest is due before final files.`,
   },
   {
     q: "What files do I get?",
-    a: "A WAV and an MP3 of the finished song, plus any other format you need. Stems or multitracks cost extra. If you recorded here, the multitracks and a rough bounce reach you that same week.",
+    a: "A WAV and an MP3, or any format you need. Stems and multitracks are an add-on.",
   },
   {
-    q: "Should one person mix and master?",
-    a: `A different person is better, since new ears catch what mine have stopped hearing. I’m happy to do both from $${studioPrices.mixAndMaster} a song when budget or simplicity wins.`,
+    q: "Should the same person mix and master?",
+    a: `Ideally not, since fresh ears catch more. I’m happy to do both, from $${studioPrices.mixAndMaster} a song, if budget or simplicity matters more.`,
   },
 ];
 
@@ -54,7 +53,7 @@ export default function StudioPage() {
       <JsonLd data={faqPageSchema(faqs)} />
 
       <Section space="hero">
-        <HeroWithPhoto photo={getHeroPhotos().studio} accent="periwinkle">
+        <HeroWithPhoto photo={getHeroPhotos().studio}>
           <p className="font-semibold tracking-[0.04em] text-periwinkle-700">
             Corvallis, Oregon, and remote
           </p>
@@ -62,12 +61,10 @@ export default function StudioPage() {
             Mixing, mastering and recording for independent musicians
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-ink-700">
-            The first thing I’ll ask about your song is what you want it to do to people. The first
-            thing you should ask me is who I’ve worked for, and the honest answer is mostly myself and
-            my friends. I’ve been recording and mixing since my teens, and audio is part of my job at
-            a podcast studio, but I haven’t run this as a business before. So I’m charging my first
-            five mixing clients ${introMix.price} a song, down from ${studioPrices.mixing}, and asking
-            each of them for a testimonial and the OK to share the result.
+            I mix and master remotely and record at my home studio in Corvallis. I’ve been recording
+            and mixing for about ten years and work as an audio engineer at a podcast studio, but
+            client work is new for me. So my first five mixing clients pay
+            ${introMix.price} a song instead of ${studioPrices.mixing}, in exchange for a testimonial.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Button href="/contact?service=mixing">Send me a song</Button>
@@ -112,26 +109,15 @@ export default function StudioPage() {
         <SectionHeading title="How I work on a song" />
         <div className="mt-6 space-y-4 text-lg leading-relaxed text-ink-700">
           <p>
-            For the first while, I don’t touch a single plugin. I get the session organized, listen
-            all the way through to exactly what you sent, and play any reference tracks you included,
-            because I want to know whether it’s the tone of that record you love or the way its
-            guitars sit. Then I work from the big picture inward, with small moves on whole groups of
-            tracks. I think of it like a block of marble: your song’s already in there, and too much
-            chiseling is how you lose it.
+            Before I change anything, I listen to your song and any references you send, and ask what
+            you like about them. Then I make small, broad moves to bring out what’s already there. I
+            trust my ears over formulas: if it sounds good, it sounds good.
           </p>
           <p>
-            If you hear something I don’t, we try it. Ideas are cheap to test, and I’m wrong often
-            enough to want to find out. When I truly disagree with a note, you’ll get the version you
-            asked for along with the one I’d pick, and you decide.
-          </p>
-          <p>
-            You can read about what I’ve learned the hard way in{" "}
-            <Link href="/blog/the-song-i-mixed-twice" className={link}>
-              the song I released twice
-            </Link>{" "}
-            and my complaint about{" "}
+            If you want to try an idea, we try it. If I disagree with a note, I’ll send your version
+            and mine, and you choose.{" "}
             <Link href="/blog/mix-with-your-ears" className={link}>
-              mixing by eye
+              More on how I mix
             </Link>
             .
           </p>
@@ -141,13 +127,10 @@ export default function StudioPage() {
       <StageSection id="a-cappella" photo={media.stageGroup}>
         <SectionHeading title="If you sing a cappella" />
         <p className="mt-4 text-lg leading-relaxed text-ink-700">
-          We should talk. I was music director of On the Rocks at the University of Oregon, where I
-          taught every part, ran rehearsals, arranged “Move Me” and helped produce the vocals on our
-          album <em>In the Groove</em>. Singers who sounded great in our rehearsal garage tended to
-          tighten up once they had headphones on, so much of my job was getting them back to that
-          garage in their heads. I can write you an arrangement, make part tapes that put your line in
-          one ear and the group in the other, or run your vocal session. OSU groups, I’m right here in
-          town.
+          I was music director of On the Rocks at the University of Oregon, where I arranged, taught
+          parts and helped produce the vocals on our album <em>In the Groove</em>. I can arrange for
+          your group, make part tapes for learning, or run your vocal sessions. OSU groups, I’m
+          local.
         </p>
       </StageSection>
 
@@ -162,7 +145,7 @@ export default function StudioPage() {
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <Button href="/contact?service=mixing">Send me a song</Button>
           <p className="text-sm text-ink-500">
-            Expect a quote within {siteConfig.responseTime.studio}. Want to learn instead?{" "}
+            You’ll have a quote within {siteConfig.responseTime.studio}. Want to learn instead?{" "}
             <Link href="/lessons" className={link}>
               See lessons
             </Link>

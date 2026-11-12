@@ -12,7 +12,7 @@ const typeLabels: Record<Product["fileType"], string> = {
 export function ProductCard({ product, accent }: { product: Product; accent: "marigold" | "periwinkle" }) {
   return (
     <Link href={`/store/${product.slug}`}>
-      <Card accent={accent} className="h-full">
+      <Card accent={accent} interactive className="h-full">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-periwinkle-700">
           {typeLabels[product.fileType]}
         </p>

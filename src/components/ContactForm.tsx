@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { Button } from "@/components/ui/Button";
+import { PlusMinus } from "@/components/ui/PlusMinus";
 import { siteConfig } from "@/lib/site-config";
 import { trackEvent } from "@/lib/analytics";
 import {
@@ -33,8 +34,8 @@ type Status = "idle" | "submitting" | "success" | "error";
  */
 const SUBMIT_TIMEOUT_MS = 20_000;
 
-const inputClass =
-  "mt-1 w-full border border-ink-900/20 bg-cream-50 px-4 py-3 text-ink-900 transition-all duration-200 focus:border-marigold-500 focus:outline-none focus:ring-2 focus:ring-marigold-200";
+// Drawn fields with the sitewide focus ring (.field in globals.css).
+const inputClass = "field";
 const inputStyle = { borderRadius: "var(--radius-sketch-sm)" };
 
 function Field({
@@ -202,9 +203,9 @@ export function ContactForm({ initialService }: { initialService?: string | null
       <p
         role="status"
         style={{ borderRadius: "var(--radius-sketch)" }}
-        className="animate-fade-up border-[1.5px] border-periwinkle-300 bg-periwinkle-50 p-6 text-periwinkle-800"
+        className="animate-fade-up card card-periwinkle p-6 text-periwinkle-800"
       >
-        Got it, thanks. You’ll hear from me within{" "}
+        Thanks! You’ll hear back within{" "}
         {isStudio ? siteConfig.responseTime.studio : siteConfig.responseTime.lessons}.
       </p>
     );
@@ -265,14 +266,14 @@ export function ContactForm({ initialService }: { initialService?: string | null
       {isLesson && (
         <p
           style={inputStyle}
-          className="animate-fade-up border-[1.5px] border-marigold-300 bg-marigold-50 px-4 py-3 text-sm text-ink-700"
+          className="animate-fade-up card card-marigold px-4 py-3 text-sm text-ink-700"
         >
-          You can also skip this and{" "}
+          Or skip this and{" "}
           <Link
             href="/lessons#book"
-            className="font-semibold text-marigold-800 underline underline-offset-2 hover:text-marigold-600"
+            className="link-drawn"
           >
-            grab a time on the calendar
+            book a trial on the calendar
           </Link>
           .
         </p>
@@ -299,7 +300,7 @@ export function ContactForm({ initialService }: { initialService?: string | null
           <Field
             id="filesUrl"
             label="Link to your song or project"
-            hint="A Dropbox, Google Drive, WeTransfer, or streaming link to your rough mix, stems, or the finished track."
+            hint="A Dropbox, Google Drive, WeTransfer or streaming link to your tracks or rough mix."
             optional={!needsFiles}
           >
             <input
@@ -322,7 +323,7 @@ export function ContactForm({ initialService }: { initialService?: string | null
           isLesson
             ? "What do you want to learn?"
             : isStudio
-              ? "What do you want this song to do?"
+              ? "Tell me about the song"
               : "What’s on your mind?"
         }
       >
@@ -338,21 +339,14 @@ export function ContactForm({ initialService }: { initialService?: string | null
       </Field>
 
       {isStudio && (
-        <details className="group border-[1.5px] border-ink-900/15 px-5 py-4" style={inputStyle}>
+        <details className="unfold card px-5 py-4" style={inputStyle}>
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-ink-900 [&::-webkit-details-marker]:hidden">
             <span>
               Add details <span className="font-normal text-ink-500">(optional, but it helps me quote)</span>
             </span>
-            <span
-              aria-hidden="true"
-              className="shrink-0 text-marigold-600 transition-transform duration-300 group-open:rotate-45"
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M9 3v12M3 9h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            </span>
+            <PlusMinus />
           </summary>
-          <div className="mt-5 space-y-5">
+          <div className="unfold-body mt-5 space-y-5">
             <div className="grid gap-5 sm:grid-cols-3">
               <Field id="songCount" label="Songs" optional>
                 <input
@@ -384,7 +378,7 @@ export function ContactForm({ initialService }: { initialService?: string | null
             <Field
               id="referenceUrl"
               label="Reference track"
-              hint="A Spotify, YouTube, or SoundCloud link to the sound you're chasing."
+              hint="A Spotify, YouTube or SoundCloud link to a song with the sound you want."
               optional
             >
               <input
@@ -404,7 +398,7 @@ export function ContactForm({ initialService }: { initialService?: string | null
       {status === "error" && (
         <p role="alert" className="text-sm text-red-700">
           That didn’t go through. Please try again, or email me at{" "}
-          <a href={`mailto:${siteConfig.email}`} className="font-semibold underline underline-offset-2">
+          <a href={`mailto:${siteConfig.email}`} className="link-drawn">
             {siteConfig.email}
           </a>
           .
@@ -416,8 +410,8 @@ export function ContactForm({ initialService }: { initialService?: string | null
           {status === "submitting" ? "Sending…" : "Send message"}
         </Button>
         <p className="text-xs text-ink-500">
-          I’ll only use this to write back.{" "}
-          <Link href="/privacy" className="underline underline-offset-2 hover:text-marigold-600">
+          I’ll only use this to reply.{" "}
+          <Link href="/privacy" className="link-drawn font-normal">
             Privacy policy
           </Link>
           .

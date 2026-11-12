@@ -14,12 +14,12 @@ export default function NotFound() {
       <h1
         className="mt-3 font-display text-4xl font-semibold tracking-tight text-ink-900"
       >
-        Nothing here
+        Wrong note
       </h1>
       <p
         className="mt-3 max-w-xl leading-relaxed text-ink-700"
       >
-        That link is out of date, or it never worked in the first place. Try one of these.
+        This page doesn’t exist. Try one of these instead.
       </p>
       <div
         className="mt-8 flex flex-wrap gap-4"

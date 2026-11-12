@@ -9,25 +9,25 @@ export const lessonTypes: LessonType[] = [
   {
     slug: "guitar",
     name: "Guitar",
-    blurb: "Acoustic or electric, using songs you already love, simplified as far as your hands need.",
+    blurb: "Acoustic or electric, any level, using songs you want to play.",
     accent: "periwinkle",
   },
   {
     slug: "vocal",
     name: "Voice",
-    blurb: "Whether you want to sing on a stage or just stop mouthing the words in the car.",
+    blurb: "Contemporary and pop singing, nervous beginners included.",
     accent: "marigold",
   },
   {
     slug: "production",
     name: "Music production",
-    blurb: "Making tracks from nothing in Logic: grooves, sounds, synths and how a song gets put together.",
+    blurb: "Making tracks from scratch: grooves, sounds, synths and arrangement.",
     accent: "coral",
   },
   {
     slug: "audio-engineering",
     name: "Audio engineering",
-    blurb: "For people who already make music and want it to sound more like what they hear in their heads.",
+    blurb: "Recording and mixing your own songs so they sound the way you hear them.",
     accent: "periwinkle",
   },
 ];
@@ -67,19 +67,19 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Trial",
     price: `$${trial.price} for ${trial.minutes} minutes`,
-    forWho: "A low-stakes way to find out if we click.",
+    forWho: "A half hour to see if we’re a good fit.",
     accent: "marigold",
   },
   {
     name: "Single lesson",
     price: `$${hourlyRate} an hour`,
-    forWho: "Book them one at a time for as long as you like.",
+    forWho: "Pay as you go.",
     accent: "periwinkle",
   },
   {
     name: "Four lessons",
     price: `$${pack.price}`,
-    forWho: `That’s $${packPerLesson} each, or $${packSavings} less than paying one at a time, and it makes sense once you’re sure.`,
+    forWho: `$${packPerLesson} a lesson, which saves you $${packSavings}.`,
     accent: "coral",
   },
 ];

@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 
 /**
- * The closing call to action: one accented panel sitting on the page, not a
- * full-width band, so it reads as the thing to do next. One per page, last.
+ * The closing call to action: one drawn panel sitting on the page, its face
+ * lit marigold by the sun, not a full-width band, so it reads as the thing to
+ * do next. One per page, last.
  */
 export function CtaPanel({
   title,
@@ -17,7 +18,7 @@ export function CtaPanel({
   return (
     <div
       style={{ borderRadius: "var(--radius-sketch)" }}
-      className="card card-marigold bg-gradient-to-br from-periwinkle-100 via-coral-100 to-marigold-100 px-6 py-12 text-center sm:px-12 sm:py-16"
+      className="card card-sunlit px-6 py-12 text-center sm:px-12 sm:py-16"
     >
       <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">{title}</h2>
       <p className="mx-auto mt-3 max-w-xl text-lg leading-relaxed text-ink-700">{body}</p>

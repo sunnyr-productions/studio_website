@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { PortfolioTrackList } from "@/components/audio/PortfolioTrackList";
 import { Button } from "@/components/ui/Button";
+import { Frame } from "@/components/ui/Frame";
 import { PhotoBanner } from "@/components/ui/Photo";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -22,7 +23,7 @@ const onTheRocks: { id: string; title: string; note: ReactNode }[] = [
     title: "Move Me",
     note: (
       <>
-        My arrangement, from <em>In the Groove</em>. I also sang on it and helped produce the vocals.
+        From <em>In the Groove</em>. My arrangement.
       </>
     ),
   },
@@ -31,7 +32,7 @@ const onTheRocks: { id: string; title: string; note: ReactNode }[] = [
     title: "Skate",
     note: (
       <>
-        Also from <em>In the Groove</em>, where I sang and helped produce the vocals.
+        From <em>In the Groove</em>.
       </>
     ),
   },
@@ -40,7 +41,7 @@ const onTheRocks: { id: string; title: string; note: ReactNode }[] = [
     title: "Say My Name",
     note: (
       <>
-        From <em>Evergreen</em>. I’m one of the featured soloists.
+        From <em>Evergreen</em>. I’m one of the soloists.
       </>
     ),
   },
@@ -49,7 +50,7 @@ const onTheRocks: { id: string; title: string; note: ReactNode }[] = [
     title: "Cruise (Wagon Wheel Remix)",
     note: (
       <>
-        From <em>Evergreen</em>. Listen for the “Wagon Wheel” section, because that’s me.
+        From <em>Evergreen</em>. I sing the “Wagon Wheel” section.
       </>
     ),
   },
@@ -63,10 +64,8 @@ export default function MusicPage() {
           Music
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-ink-700">
-          Here’s what I can play you right now. Most of it is a cappella from college, plus the first
-          song I ever released as sunny*r, flaws included. Client mixes will show up here as they
-          happen. My own music mostly lives in guitar-based indie pop, with some funk, R&amp;B and
-          blues mixed in.
+          A cappella recordings from college and my first single as sunny*r. Client mixes will be
+          added here as they’re released.
         </p>
       </Section>
 
@@ -84,24 +83,23 @@ export default function MusicPage() {
       <Section width="narrow" space="tight">
         <SectionHeading title="On the Rocks" />
         <p className="mt-3 leading-relaxed text-ink-700">
-          I led this University of Oregon a cappella group as its music director. Someone else
-          recorded and mixed these, so what you’re hearing from me is singing, arranging and vocal
-          production.
+          I was music director of this University of Oregon a cappella group. I sang, arranged and
+          helped produce the vocals. Someone else recorded and mixed these.
         </p>
         <div className="mt-8 space-y-8">
           {onTheRocks.map((track) => (
             <div key={track.id}>
               <h3 className="font-display text-xl font-semibold text-ink-900">{track.title}</h3>
               <p className="mt-1 mb-3 text-ink-700">{track.note}</p>
-              <iframe
-                title={`${track.title} by On the Rocks on Spotify`}
-                src={`https://open.spotify.com/embed/track/${track.id}`}
-                width="100%"
-                height="152"
-                loading="lazy"
-                allow="encrypted-media"
-                style={{ border: 0, borderRadius: 12 }}
-              />
+              <Frame variant="embed">
+                <iframe
+                  title={`${track.title} by On the Rocks on Spotify`}
+                  src={`https://open.spotify.com/embed/track/${track.id}`}
+                  height="152"
+                  loading="lazy"
+                  allow="encrypted-media"
+                />
+              </Frame>
             </div>
           ))}
         </div>
@@ -110,14 +108,12 @@ export default function MusicPage() {
       <Section width="narrow" space="tight">
         <SectionHeading title="“Changed,” before and after" />
         <p className="mt-3 leading-relaxed text-ink-700">
-          This was my first single as sunny*r, and I released it twice, because on the first try you
-          could barely make out the lyrics. Version two is cleaner and easier to understand. Version
-          one has a mood I’ve never managed to get back.{" "}
+          My first single, released twice. The first mix was muddy, so I redid it.{" "}
           <Link
             href="/blog/the-song-i-mixed-twice"
-            className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
+            className="link-drawn"
           >
-            The full story is on the blog
+            What I learned
           </Link>
           .
         </p>
@@ -128,14 +124,15 @@ export default function MusicPage() {
           ].map((video) => (
             <div key={video.id}>
               <h3 className="mb-2 font-semibold text-ink-900">{video.label}</h3>
-              <iframe
-                title={`Changed by sunny*r, ${video.label.toLowerCase()}, on YouTube`}
-                src={`https://www.youtube-nocookie.com/embed/${video.id}`}
-                loading="lazy"
-                allowFullScreen
-                className="aspect-video w-full"
-                style={{ border: 0, borderRadius: 12 }}
-              />
+              <Frame variant="embed">
+                <iframe
+                  title={`Changed by sunny*r, ${video.label.toLowerCase()}, on YouTube`}
+                  src={`https://www.youtube-nocookie.com/embed/${video.id}`}
+                  loading="lazy"
+                  allowFullScreen
+                  className="aspect-video"
+                />
+              </Frame>
             </div>
           ))}
         </div>

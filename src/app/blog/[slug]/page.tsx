@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { compileMDX } from "next-mdx-remote/rsc";
+import { BackLink } from "@/components/ui/BackLink";
 import { Section } from "@/components/ui/Section";
 import { Prose } from "@/components/ui/Prose";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -61,18 +61,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           date: frontmatter.date,
         })}
       />
-      <Link
-        href="/blog"
-        className="group inline-flex items-center gap-1.5 text-sm font-semibold text-periwinkle-700 transition-colors hover:text-periwinkle-900"
-      >
-        <span
-          aria-hidden="true"
-          className="transition-transform duration-300 group-hover:-translate-x-1"
-        >
-          &larr;
-        </span>
+      <BackLink href="/blog" className="text-periwinkle-700">
         All posts
-      </Link>
+      </BackLink>
 
       <article className="mt-6 max-w-2xl">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-500">

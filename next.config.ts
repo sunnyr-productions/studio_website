@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 import { withBotId } from "botid/next/config";
 
 const nextConfig: NextConfig = {
+  // React's view transitions on navigation: the fog passing between pages
+  // (PageWeather.tsx). Experimental in Next 16.
+  experimental: {
+    viewTransition: true,
+  },
   // The old /services pages moved to /studio when the site split into two doors.
   async redirects() {
     return [

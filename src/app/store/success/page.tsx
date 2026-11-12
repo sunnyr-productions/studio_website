@@ -52,7 +52,7 @@ export default async function StoreSuccessPage({
               A download link is on its way to{" "}
               <span className="font-semibold">{email ?? "your email"}</span>. If it doesn’t
               arrive in a few minutes, check spam or{" "}
-              <Link href="/contact" className="text-marigold-800 underline">
+              <Link href="/contact" className="link-drawn">
                 get in touch
               </Link>
               .
@@ -67,7 +67,7 @@ export default async function StoreSuccessPage({
           <p className="mx-auto mt-3 max-w-md text-ink-700">
             We couldn’t confirm this order right now. If you were just charged, check your
             email for a receipt, or{" "}
-            <Link href="/contact" className="text-marigold-800 underline">
+            <Link href="/contact" className="link-drawn">
               reach out
             </Link>{" "}
             and we’ll sort it out.

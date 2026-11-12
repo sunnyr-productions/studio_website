@@ -2,8 +2,7 @@ import { studioPrices, studioTerms } from "@/content/services";
 
 /**
  * Copy for each /studio/[slug] page, keyed by the slug in services.ts (which
- * owns the name and price). Written from Raul's interview answers
- * (docs/interview-answers.md, gitignored).
+ * owns the name and price). See docs/VOICE.md: short, focused, no side stories.
  */
 export type ServicePage = {
   h1: string;
@@ -26,60 +25,50 @@ export type ServicePage = {
   ctaLabel: string;
 };
 
-const { depositPercent, introMix } = studioTerms;
+const { depositPercent, introMix, revisionRounds, firstVersionWeeks } = studioTerms;
 
-const payment = `A ${depositPercent}% deposit holds your spot, and you pay the rest before I send final files.`;
+const payment = `A ${depositPercent}% deposit holds your spot, and the rest is due before I send the final files.`;
 
 export const servicePages: Record<string, ServicePage> = {
   mixing: {
     h1: "Song mixing in Corvallis and remotely",
     metaTitle: "Song Mixing in Corvallis, OR and Remote",
-    metaDescription: `Mixing from $${studioPrices.mixing} a song, with a first version within two weeks and two rounds of revisions.`,
-    intro:
-      "You send me the tracks and tell me what you’re going for, and I turn them into a finished mix. I want to bring out whatever you were feeling when you wrote the song, which means I need to hear from you before I hear from my plugins.",
+    metaDescription: `Mixing from $${studioPrices.mixing} a song, with a first version within ${firstVersionWeeks} weeks and ${revisionRounds} rounds of revisions included.`,
+    intro: "Send me your tracks and a sense of what you’re going for, and I’ll send back a finished mix.",
     minPrice: studioPrices.mixing,
     sections: [
       {
-        title: "What happens to your song",
-        body: "I set the tempo, key and sample rate, then group everything by role: drums, bass, guitars, keys, pads, texture. It’s tedious, and it pays off for the rest of the mix. Nearly every song gets parallel saturation on the drums and parallel compression on everything else. Beyond that, it depends entirely on the song.",
-      },
-      {
-        title: "When I break the rules",
-        body: "On one dreamy song, I kept pushing the saturation until the whole mix was straining at the seams. A textbook would object, and it sounded like a daydream. I’ve also gotten this wrong in the other direction, as you can hear in the song I released twice.",
-        link: { text: "the song I released twice", href: "/blog/the-song-i-mixed-twice" },
-      },
-      {
-        title: "How I check it",
-        body: "Last, I take it out into the world: my car, my phone, a laptop, the TV soundbar, a Bluetooth pill speaker, earbuds and headphones.",
+        title: "How I mix",
+        body: "I start by organizing the session and listening, including to any reference tracks you send. I work from the top down, on groups of tracks before individual ones, and check the mix on everything from earbuds to a car stereo before you hear it.",
       },
     ],
     needTitle: "Send me",
     need: [
-      "WAV files that all start from the same point",
-      "Track names that say what’s on them (please, I’m begging you)",
+      "WAV files that all start at the same point",
+      "Tracks named for what’s on them",
       "A rough mix and references, if you have them",
       "Notes on what’s working and what isn’t",
     ],
     getTitle: "You’ll get",
-    get: ["The finished mix as a WAV and an MP3, or any other format you need", "Two rounds of revisions"],
-    howItRuns: `You’ll get a quote first, and a ${depositPercent}% deposit holds your spot. The first version arrives within two weeks, and you pay the rest before I send final files.`,
+    get: ["The finished mix as a WAV and an MP3, or any format you need", `${revisionRounds} rounds of revisions`],
+    howItRuns: `You’ll get a quote first. A ${depositPercent}% deposit holds your spot, the first version arrives within ${firstVersionWeeks} weeks, and the rest is due before final files.`,
     faqs: [
       {
         q: "Who have you mixed for?",
-        a: `Mostly myself and friends, so far. That’s why my first five clients pay $${introMix.price} a song, and why I ask them for a testimonial and the OK to share the result. Mastering, if you want it, stays at the regular price.`,
+        a: `Mostly myself and friends so far, which is why my first five clients pay $${introMix.price} a song in exchange for a testimonial.`,
       },
-      { q: "What if I have a lot of tracks?", a: "The price covers up to 48, and I’m flexible if we talk about it first." },
+      { q: "What if I have a lot of tracks?", a: "The price covers up to 48. If you have more, let’s talk first." },
       {
         q: "Can I have the session file?",
-        a: "It isn’t included, though stems and multitracks are available as an add-on. If you’re curious what I did, we can open it up in a lesson at a discount.",
+        a: "It isn’t included, but stems and multitracks are available as an add-on. We can also go through the session together in a discounted lesson.",
       },
       {
         q: "What counts as new work?",
-        a: "Re-recording a vocal or changing the arrangement falls outside your revisions, so I’ll quote it first.",
+        a: "Re-recording a part or changing the arrangement isn’t a revision, so I’ll quote it separately.",
       },
     ],
-    closingTitle: "Ready when you are.",
-    closingBody: "Send a link and a few words about the song, and you’ll have a quote within 2 business days.",
+    closingTitle: "Got a song?",
+    closingBody: "Send a link and a few words about it. You’ll have a quote within 2 business days.",
     ctaLabel: "Get a mixing quote",
   },
   mastering: {
@@ -87,73 +76,68 @@ export const servicePages: Record<string, ServicePage> = {
     metaTitle: "Audio Mastering in Corvallis, OR and Remote",
     metaDescription: `Mastering from $${studioPrices.mastering} a track for singles, EPs and albums.`,
     intro:
-      "Mastering should be hard to notice. It’s one last look from someone who wasn’t in the room for the mix, catching whatever slipped through before a song goes out. Ideally that’s a different person from your mix engineer.",
+      "Mastering is the final polish on a finished mix. Done well, it’s subtle. Ideally, it’s done by someone other than your mix engineer.",
     minPrice: studioPrices.mastering,
     sections: [
       {
         title: "Is your mix ready?",
-        body: "Ask yourself whether you’d release it as it stands. If not, it needs more work before it gets to me, because big changes belong in the arrangement, the production or the mix. I’ll tell you if I think that’s where you are.",
+        body: "If you wouldn’t release it as it is, it isn’t ready for mastering yet. Big changes belong in the mix.",
       },
     ],
     needTitle: "Send me",
-    need: ["Your finished mix as a WAV, with no clipping", "A reference track, if you have a sound in mind"],
+    need: ["Your finished mix as a WAV, with no clipping", "A reference track, if you have one"],
     getTitle: "You’ll get",
-    get: ["The master as a WAV and an MP3, or any other format you need"],
+    get: ["The master as a WAV and an MP3, or any format you need"],
     faqs: [
       {
-        q: "Can you do a whole EP?",
-        a: `Yes. A single track starts at $${studioPrices.mastering}, and a full EP or album gets one quote for the whole project.`,
+        q: "Can you master a whole EP?",
+        a: `Yes. Single tracks start at $${studioPrices.mastering}, and an EP or album gets one quote for the whole project.`,
       },
-      { q: "How loud will it be?", a: "Competitive with other releases, without flattening it to get there." },
+      { q: "How loud will it be?", a: "Loud enough to sit alongside other releases, without crushing the dynamics." },
       { q: "How do I pay?", a: payment },
     ],
-    closingTitle: "Finished mixing?",
-    closingBody: "Send a link and tell me how many tracks you have, and you’ll have a quote within 2 business days.",
+    closingTitle: "Mix finished?",
+    closingBody: "Send a link and tell me how many tracks. You’ll have a quote within 2 business days.",
     ctaLabel: "Get a mastering quote",
   },
   recording: {
     h1: "Recording sessions in Corvallis",
     metaTitle: "Recording Sessions in Corvallis, OR",
-    metaDescription: `Record vocals or instruments in a home studio from $${studioPrices.recording} an hour, or get vocal coaching over video.`,
+    metaDescription: `Record vocals or instruments in a home studio from $${studioPrices.recording} an hour, or get coached through your own vocal takes over video.`,
     intro:
-      "Recording here means a converted bedroom upstairs in my house, with acoustic panels on the walls, a futon to sit on and LED lights in whatever color helps. It’s small, so it suits singers and individual instruments. There’s a garage below it and nobody above, so you can actually let go, which I couldn’t do when I recorded my first single in a college apartment.",
+      "Recording at my home studio in Corvallis’s Southtown neighborhood: a small, acoustically treated room that works best for vocals and single instruments.",
     minPrice: studioPrices.recording,
     sections: [
       {
         title: "How a session goes",
-        body: "The session will be set up before you arrive. We start by going over what we’re tracking, what you’d like to hear in your headphones, and click or no click. I like getting a rough version of every part down first, so the whole song is there to react to, and then we go back through and improve them one at a time.",
+        body: "Everything’s set up before you arrive. We agree on what we’re recording and what you want in your headphones, put down a rough version of each part, then refine them. The goal is a relaxed session where you sound like yourself.",
       },
       {
-        title: "Red light syndrome",
-        body: "Most people sing differently the moment they know it counts. I saw it producing vocals with my a cappella group, and I deal with it at work, where my job is partly making guests forget about the microphones. So we’ll take our time, and I’ll keep it relaxed until you’re sounding like yourself again.",
-      },
-      {
-        title: "What won’t fit",
-        body: "A full band won’t fit, and a drum kit probably wouldn’t sound great. We can rent a bigger room for those, and I’ll record or produce you there.",
+        title: "Bands and drums",
+        body: "The room is too small for a full band or a drum kit. For those, we can rent a bigger space and I’ll record you there.",
       },
       {
         title: "Recording from home",
-        body: "If you’re not local, I can coach you through your own vocal takes over video, from setting levels to working through the song.",
+        body: "If you’re not local, I can coach you through recording your own vocals over video.",
       },
     ],
     needTitle: "Tell me",
     need: ["What you’re recording and roughly how many parts", "Any demo you have", "When you’d like to come in"],
     getTitle: "You’ll get",
-    get: ["The multitracks and a rough bounce, that same week"],
+    get: ["The multitracks and a rough mix, the same week"],
     faqs: [
       {
         q: "Where are you?",
-        a: "Southtown, with free parking on the street. You’ll get the address when you book.",
+        a: "Southtown Corvallis, with free street parking. You’ll get the address when you book.",
       },
       {
         q: "Anything I should know before coming over?",
-        a: "Walk in rather than knocking or ringing, because of my dog, who also sheds a lot. The studio is upstairs and we ask for shoes off up there unless that’s a problem.",
+        a: "Please don’t knock or ring, since that sets off my dog. Come right in. He sheds, so let me know about allergies. The studio is upstairs, and we ask for shoes off.",
       },
-      { q: "Can you mix what we record?", a: "Yes, and I’ll quote that separately." },
+      { q: "Can you mix what we record?", a: "Yes. I’ll quote the mix separately." },
     ],
-    closingTitle: "Want to book some time?",
-    closingBody:
-      "Let me know what you’d like to track and what times suit you. We’ll talk before anything’s booked, and you’ll hear it from me if I’m not the right person for it.",
+    closingTitle: "Want to book a session?",
+    closingBody: "Tell me what you’d like to record and when works for you. We’ll talk it through before anything’s booked.",
     ctaLabel: "Ask about a session",
   },
 };

@@ -20,12 +20,12 @@ export function Footer() {
           <Link
             href="/"
             aria-label={siteConfig.name}
-            className="group inline-block rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marigold-600"
+            className="group inline-block rounded-sm"
           >
             <LogoLockup />
           </Link>
           <p className="mt-4 font-display text-base italic text-marigold-800">
-            Say it “sunnier.” If you said “sunny R,” you found the other half of the pun.
+            Pronounced “sunnier.”
           </p>
           <p className="mt-2 max-w-sm text-sm text-ink-700">{siteConfig.tagline}</p>
         </div>
@@ -47,7 +47,7 @@ export function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="transition-colors hover:text-marigold-600"
+                    className="nav-link"
                   >
                     {item.label}
                   </Link>
@@ -60,11 +60,11 @@ export function Footer() {
       <div className="border-t border-white/15 px-6 py-4 text-center text-xs text-ink-500">
         &copy; {year} {siteConfig.name}. All rights reserved.
         <span className="mx-2" aria-hidden="true">·</span>
-        <Link href="/terms" className="transition-colors hover:text-marigold-600">
+        <Link href="/terms" className="nav-link">
           Terms &amp; policies
         </Link>
         <span className="mx-2" aria-hidden="true">·</span>
-        <Link href="/privacy" className="transition-colors hover:text-marigold-600">
+        <Link href="/privacy" className="nav-link">
           Privacy
         </Link>
       </div>

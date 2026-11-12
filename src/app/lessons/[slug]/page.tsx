@@ -1,25 +1,30 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { Photo } from "@/components/ui/Photo";
 import { Section } from "@/components/ui/Section";
 import { lessonPages } from "@/content/lesson-pages";
 import { lessonPricing, lessonTypes } from "@/content/lessons";
+import type { Mat } from "@/components/ui/Frame";
 import { media, type Photo as PhotoData } from "@/content/media";
 import { breadcrumbSchema, serviceSchema } from "@/lib/structured-data";
 
 type Params = { slug: string };
 
-/** Keyed by page slug. Wide photos run under the intro, tall ones sit beside it. */
-const pagePhotos: Record<string, { photo: PhotoData; shape: "wide" | "tall"; caption?: string }> = {
+/**
+ * Keyed by page slug. Wide photos run under the intro, tall ones sit beside it.
+ * An instrument gets a tag, which makes it a field-guide print (Frame.tsx).
+ */
+const pagePhotos: Record<string, { photo: PhotoData; shape: "wide" | "tall"; label?: string; mat?: Mat }> = {
   guitar: {
     photo: media.stratCase,
     shape: "wide",
-    caption: "My Strat, before I got impatient with the sandpaper.",
+    label: "My Strat",
   },
-  voice: { photo: media.voiceMic, shape: "tall" },
+  // Its purple light reads as dusk, so a periwinkle mat.
+  voice: { photo: media.voiceMic, shape: "tall", mat: "periwinkle" },
 };
 
 const entries = lessonTypes
@@ -70,9 +75,9 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
 
       <Section space="page" width="narrow">
         <nav aria-label="Breadcrumb" className="text-sm text-ink-500">
-          <Link href="/lessons" className="inline-block py-2 font-semibold text-marigold-800 hover:underline">
-            ← Lessons
-          </Link>
+          <BackLink href="/lessons" className="text-marigold-800">
+            Lessons
+          </BackLink>
         </nav>
         <div className={pagePhoto?.shape === "tall" ? "grid gap-8 sm:grid-cols-[minmax(0,1fr)_16rem]" : ""}>
           <div>
@@ -84,13 +89,15 @@ export default async function LessonPage({ params }: { params: Promise<Params> }
           {pagePhoto && (
             <Photo
               photo={pagePhoto.photo}
+              frame={pagePhoto.label ? "guide" : "print"}
+              label={pagePhoto.label}
+              mat={pagePhoto.mat}
               aspect={pagePhoto.shape === "tall" ? "aspect-[4/3] sm:aspect-[3/4]" : "aspect-[3/2]"}
               sizes={pagePhoto.shape === "tall" ? "(min-width: 640px) 272px, 100vw" : "(min-width: 816px) 768px, 100vw"}
               preload
               className={pagePhoto.shape === "wide" ? "mt-8" : "sm:mt-4"}
             />
           )}
-          {pagePhoto?.caption && <p className="mt-4 text-sm text-ink-500">{pagePhoto.caption}</p>}
         </div>
       </Section>
 

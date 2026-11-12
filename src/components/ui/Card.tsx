@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 type Accent = "marigold" | "periwinkle" | "coral" | "none";
 
-// The accent tints the card's soft glow (.card in globals.css).
+// A drawn card; the accent tints its lit and shaded faces (.card in globals.css).
 const accentClasses: Record<Accent, string> = {
   marigold: "card-marigold",
   periwinkle: "card-periwinkle",
@@ -18,7 +18,7 @@ export function Card({
 }: {
   children: ReactNode;
   accent?: Accent;
-  /** The card is a link: it lifts on hover. Plain cards stay still. */
+  /** The card is a link: it lifts and sways on hover. Plain cards stay still. */
   interactive?: boolean;
   className?: string;
 }) {

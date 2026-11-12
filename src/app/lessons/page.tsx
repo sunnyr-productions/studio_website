@@ -20,41 +20,44 @@ const { cancellationNoticeHours, lateCancelPercent, paymentMethods, trial } = le
 
 export const metadata: Metadata = {
   title: "Guitar, Voice & Production Lessons in Corvallis, OR",
-  description: `One-on-one lessons built around songs you love, from an autistic, ADHD teacher. In Southtown or online, with a $${trial.price} trial.`,
+  description: `One-on-one lessons built around the music you love, from an autistic, ADHD teacher. In Southtown Corvallis or online, with a $${trial.price} trial.`,
   alternates: { canonical: "/lessons" },
 };
 
-const link =
-  "font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600";
+const link = "link-drawn";
 
 const faqs = [
   {
     q: "Do you teach kids?",
-    a: "Yes, from around potty-training age, and younger if we’ve talked first and a parent stays. Parents can always sit in. You know your kid best, so tell me what would help, early enough that I can get ready.",
+    a: "Yes, from about potty-training age. For younger kids, let’s talk first, and a parent should stay. Parents are always welcome to sit in.",
   },
   {
-    q: "My kid has quit lessons twice. Will this be different?",
-    a: "I can’t promise they’ll love it, because nobody can make that happen. I can promise lessons built around what they actually care about and a teacher who won’t shame them for skipping practice. If what you want for them and what they want don’t line up, we’ll talk about it and look for something in between.",
+    q: "My kid has quit lessons before. Will this be different?",
+    a: "I can’t make anyone love music. I can build lessons around what your kid is into and never shame them for missed practice.",
+  },
+  {
+    q: "Am I too old to start?",
+    a: "No. We’ll set the pace around your goals and your schedule.",
   },
   {
     q: "Do I need an instrument?",
-    a: "Not at first. I have guitars, a bass and a keyboard you can use here. I have microphones too, though singing lessons rarely need one.",
+    a: "Not to start. I have guitars, a bass, a keyboard and microphones you can use here.",
   },
   {
     q: "Can we do this online?",
-    a: "Voice, production and engineering work fine over video, and I’ll record the lesson if you ask. Guitar is better in person, where I can see what your hands are doing.",
+    a: "Yes for voice, production and audio engineering. Guitar works best in person, where I can see your hands. I can record online lessons if you’d like.",
   },
   {
     q: "When are you available?",
-    a: "Weekday evenings, with more openings on weekends, around my day job.",
+    a: "Weekday evenings, with more openings on weekends.",
   },
   {
     q: "Do you teach piano?",
-    a: "No. I know my way around a keyboard well enough to build chords and use it in my productions, but you deserve someone who really plays.",
+    a: "No. I play enough keyboard for my own productions, but you deserve a teacher who really plays.",
   },
   {
     q: "Do you teach bass?",
-    a: "If you’re already taking lessons with me and want to add it, sure. I play, but I’m not a bass specialist, so if it’s your main instrument, you’d be better off with someone who is.",
+    a: "Only as an add-on for current students. If bass is your main instrument, a specialist will serve you better.",
   },
 ];
 
@@ -66,23 +69,21 @@ export default function LessonsPage() {
       <Section space="hero">
         <div className="max-w-3xl">
           <h1 className="font-display text-[clamp(2.5rem,3vw+1.75rem,4.25rem)] font-semibold leading-[1.08] tracking-tight text-ink-900">
-            Guitar, voice and production lessons in Corvallis that start with your favorite songs
+            Guitar, voice and music production lessons in Corvallis
           </h1>
           <div className="mt-5 space-y-4 text-lg leading-relaxed text-ink-700">
             <p>
-              Bring me a song you can’t stop playing, and we’ll work backward from it to whatever you
-              need to learn. I teach one person at a time, in my home studio in Southtown or over
-              video, and it doesn’t matter whether you’ve never touched an instrument or you’ve been
-              at it for years.
+              One-on-one lessons for any level, at my home studio in Corvallis’s Southtown
+              neighborhood or over video. We start
+              with music you love and build the skills from there.
             </p>
             <p>
-              You should know two things up front. I’m autistic and ADHD, so I know how it feels when
-              a lesson wasn’t designed with you in mind.{" "}
+              I’m autistic and ADHD, and I teach with that in mind.{" "}
               <Link href="/lessons/neurodivergent-learners" className={link}>
-                How that shapes my teaching
+                How that shapes my lessons
               </Link>
-              . And I’m new to teaching music one-on-one. I’ve taught rooms full of a cappella singers
-              and I tutor computer science, but you’d be among my first one-on-one music students.
+              . I’m also new to private music lessons. I’ve directed an a cappella group and tutored
+              computer science, but you’d be one of my first one-on-one music students.
             </p>
           </div>
           <div className="mt-8 flex flex-wrap gap-4">
@@ -116,32 +117,15 @@ export default function LessonsPage() {
       </Section>
 
       <Section width="narrow">
-        <SectionHeading title="What a lesson is actually like" />
+        <SectionHeading title="What lessons are like" />
         <div className="mt-6 space-y-4 text-lg leading-relaxed text-ink-700">
           <p>
-            I come in with an outline and often end up somewhere else, since what you need that day
-            tends to be more interesting than what I planned. We’ll spend the time on real music,
-            played at whatever level you’re at. I explain most things by comparing them to something
-            else, because that’s how my own brain holds on to anything, and if my comparisons don’t
-            land, we’ll try another angle.
+            Each lesson follows a loose plan that adapts to what you need that day. I explain things
+            with analogies, and if one doesn’t click, I’ll find another.
           </p>
           <p>
-            You won’t get in trouble here. If a week goes by and you never touched your instrument,
-            I’m going to be curious about why. Maybe life got in the way, which is fine, or maybe the
-            thing I assigned bored you, which is useful for me to know because I can fix it. There’s
-            no required number of practice minutes. My own practice runs from scales one day to
-            guessing chords along with a shuffled playlist the next, and it has worked out okay.
-          </p>
-          <p>
-            When too much is coming at you at once, I can usually tell from your body language, and
-            we’ll take some off the pile. Picture an overfull washing machine, banging around and
-            complaining. You stop it, pull out a few towels, let it finish, and put them through
-            afterward. I’m hard to rattle, so nothing that happens in a lesson is going to get a big
-            reaction out of me.
-          </p>
-          <p>
-            I’ll also tell you when I don’t know something, and I hope you’ll do the same. Looking
-            things up together is a perfectly good use of a lesson.
+            There’s no minimum practice time, and you won’t get in trouble for a missed week. If
+            practice isn’t happening, that tells me the material needs to change.
           </p>
         </div>
       </Section>
@@ -149,16 +133,14 @@ export default function LessonsPage() {
       <Section width="narrow" space="tight">
         <SectionHeading title="Your first half hour" />
         <p className="mt-4 text-lg leading-relaxed text-ink-700">
-          The trial costs ${trial.price}, lasts thirty minutes, and is mostly talking. I’ll want to
-          know what brought you here, what you’re hoping for and what you listen to, and if you
-          already play or sing, I’ll ask you to show me something. You’ll leave knowing how I teach,
-          and I’ll leave with an idea of where we’d go next. If it seems like I’m the wrong teacher
-          for you, I’ll say so, since taking your money anyway wouldn’t help either of us.
+          The ${trial.price} trial is mostly a conversation about what you want to learn and what you
+          listen to. If you already play or sing, bring something to show me. If I don’t think I’m
+          the right teacher for you, I’ll say so.
         </p>
       </Section>
 
       <Section id="pricing">
-        <SectionHeading title="Prices" lede="Every subject costs the same." />
+        <SectionHeading title="Prices" lede="Same price for every subject." />
         <div className="mt-10 grid gap-6 sm:grid-cols-3">
           {pricingTiers.map((tier) => (
             <Card key={tier.name} accent={tier.accent} className="h-full">
@@ -170,9 +152,9 @@ export default function LessonsPage() {
         </div>
         <PhotoStrip photos={getStudioPhotos()} className="mt-10" />
         <p className="mt-8 max-w-3xl leading-relaxed text-ink-700">
-          Pay at the lesson with {paymentMethods}. You can cancel or reschedule for free with{" "}
-          {cancellationNoticeHours} hours’ notice. After that it’s {lateCancelPercent}%, and a missed
-          lesson is the full price. The rest is in the{" "}
+          Pay at the lesson with {paymentMethods}. Cancelling or rescheduling is free with{" "}
+          {cancellationNoticeHours} hours’ notice. After that it’s {lateCancelPercent}%, and a no-show
+          is the full price. Details are in the{" "}
           <Link href="/terms#lessons" className={link}>
             policies
           </Link>
@@ -185,7 +167,7 @@ export default function LessonsPage() {
         {siteConfig.calLink ? (
           <>
             <p className="mt-2 max-w-xl leading-relaxed text-ink-700">
-              Choose any open slot and the details will land in your inbox.
+              Pick any open slot, and you’ll get the details by email.
             </p>
             <div
               style={{ borderRadius: "var(--radius-sketch-sm)" }}
@@ -197,7 +179,7 @@ export default function LessonsPage() {
         ) : (
           <Card accent="marigold" className="mt-8 max-w-2xl">
             <p className="leading-relaxed text-ink-700">
-              Tell me what you’d like to learn and when you’re free, and I’ll find us a time.
+              Tell me what you’d like to learn and when you’re free, and I’ll find a time.
             </p>
             <Button href="/contact?service=lessons" className="mt-5">
               Request a time
@@ -209,12 +191,11 @@ export default function LessonsPage() {
       <Section width="narrow" space="tight">
         <SectionHeading title="Coming over" />
         <p className="mt-4 text-lg leading-relaxed text-ink-700">
-          Southtown is a quiet residential part of town, away from the student apartments, and there’s
-          free parking on the street. You’ll get the address when you book. Please walk in rather than
-          knocking or ringing, since my dog is lovely until he hears either one. I’ll leave the door
-          unlocked, and I’ll likely be outside to meet you the first time anyway. He also sheds a lot,
-          which matters if you have allergies. The studio is upstairs, where it’s carpeted, and we ask
-          for shoes off up there unless that’s a problem for you.
+          The studio is in Southtown Corvallis, within biking distance of campus, with free street
+          parking.
+          You’ll get the address when you book. Please don’t knock or ring, since that sets off my
+          dog. The door will be unlocked. He sheds, so let me know about allergies. The studio is
+          upstairs, and we ask for shoes off.
         </p>
       </Section>
 
@@ -227,9 +208,9 @@ export default function LessonsPage() {
       <Section id="faq">
         <Faq faqs={faqs} />
         <p className="mt-10 text-sm text-ink-500">
-          Here about a song instead?{" "}
+          Working on a song?{" "}
           <Link href="/studio" className={link}>
-            The studio’s this way
+            See the studio
           </Link>
           .
         </p>

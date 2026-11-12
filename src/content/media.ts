@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { StaticImageData } from "next/image";
+import type { Tone } from "@/components/ui/Frame";
 import arenaImage from "../../public/images/arena.jpg";
 import bandImage from "../../public/images/band.jpg";
 import overlookImage from "../../public/images/overlook.jpg";
 import polaroidImage from "../../public/images/polaroid-otr.jpg";
+import headshotImage from "../../public/images/raul-headshot.jpg";
 import portraitImage from "../../public/images/raul-portrait.jpg";
 import stageGroupImage from "../../public/images/stage-group.jpg";
 import stageSoloistsImage from "../../public/images/stage-soloists.jpg";
@@ -18,6 +20,8 @@ export type Photo = {
   alt: string;
   /** CSS object-position, for keeping the subject in frame when cropped. */
   position?: string;
+  /** Tones the photo to the palette wherever it's shown (Frame.tsx). */
+  tone?: Tone;
 };
 
 /** The photo library, placed by hand on each page. Web copies, with metadata removed. */
@@ -36,6 +40,10 @@ export const media = {
     src: stageGroupImage,
     alt: "The full On the Rocks group singing on stage against a glowing orange backdrop",
   },
+  headshot: {
+    src: headshotImage,
+    alt: "Raul",
+  },
   portrait: {
     src: portraitImage,
     alt: "Raul, the teacher and engineer behind The sunny*r Studio, in a marigold sweater",
@@ -47,7 +55,9 @@ export const media = {
   },
   stratBridge: {
     src: stratBridgeImage,
-    alt: "Black-and-white close-up of the bridge and strings of an electric guitar",
+    alt: "Close-up of the bridge and strings of an electric guitar",
+    // Black and white and cool, so it's warmed into the sunset's plum and gold.
+    tone: "dusk",
   },
   taylor: {
     src: taylorImage,

@@ -72,6 +72,44 @@
   /* How far in from each side of the screen the forest's feet reach. The river's
      mouth, and the falls below it, run between them, so the two always match. */
   --forest-foot: min(13vh, 20vw);
+
+  /* Drawn things (docs/VISUAL-PLAN.md): everything the page draws, from buttons
+     to photo frames, is outlined like the scenery, shaded flat like its river
+     stones, and stands on a soft shadow. The light line is for text-heavy
+     things that shouldn't shout. */
+  --ink: var(--color-ink-fixed);
+  --ink-line: 1.6px;
+  --ink-line-light: 1.1px;
+  /* A glint of light along the top edge, and the shadow on the ground beneath,
+     which spreads as the thing lifts. */
+  --glint: inset 0 2px 0 rgba(255, 255, 255, 0.55);
+  --ground: 0 7px 12px -7px rgba(60, 40, 30, 0.45);
+  --ground-lifted: 0 11px 16px -8px rgba(60, 40, 30, 0.4);
+  /* The focus ring: drawn in ink, so it shows on every colour of the sky. */
+  --focus-ring: var(--color-ink-fixed);
+  /* The drawn underline under links: one ripple of water, repeated. */
+  --squiggle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 5'%3E%3Cpath d='M0 2.5Q3 0.4 6 2.5T12 2.5' fill='none' stroke='%23f5a623' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  /* A drawn caret for the selects, slightly uneven like the rest of the ink. */
+  --caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 9'%3E%3Cpath d='M1.6 1.9Q4.4 4.9 7 7.3Q9.7 4.7 12.4 1.6' fill='none' stroke='%231f2430' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  /* The logo's asterisk (Asterisk in NavLinks.tsx), as a list bullet. */
+  --asterisk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-72 -72 144 144'%3E%3Cdefs%3E%3Cg id='a'%3E%3Ccircle r='30'/%3E%3Cpath id='r' d='M-16-18L-9-56A9 9 0 0 1 9-56L16-18Z'/%3E%3Cuse href='%23r' transform='rotate(45)'/%3E%3Cuse href='%23r' transform='rotate(90)'/%3E%3Cuse href='%23r' transform='rotate(135)'/%3E%3Cuse href='%23r' transform='rotate(180)'/%3E%3Cuse href='%23r' transform='rotate(225)'/%3E%3Cuse href='%23r' transform='rotate(270)'/%3E%3Cuse href='%23r' transform='rotate(315)'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23a' fill='%23374176' stroke='%23374176' stroke-width='18' stroke-linejoin='round'/%3E%3Cuse href='%23a' fill='%23f5a623'/%3E%3C/svg%3E");
+  /* The same ripple in ink, drawn under a header link as you point at it. */
+  --squiggle-ink: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 5'%3E%3Cpath d='M0 2.5Q3 0.4 6 2.5T12 2.5' fill='none' stroke='%231f2430' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+
+  /* Motion, taken from the scene. Settle is how a thing comes to rest; sway is
+     a branch's ease either way. Rise is content coming up out of the fog,
+     develop a photo doing the same a little slower. */
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-sway: cubic-bezier(0.37, 0, 0.63, 1);
+  /* A cloud puffing out: a touch past its size, then back. */
+  --ease-puff: cubic-bezier(0.3, 1.35, 0.6, 1);
+  --dur-tap: 160ms;
+  --dur-lift: 400ms;
+  --dur-rise: 700ms;
+  --dur-develop: 950ms;
+  --rise-distance: 12px;
+  --rise-blur: 3px;
+  --rise-stagger: 70ms;
 }
 
 /* Night: the footer redefines the colour tokens, so everything inside it (text,
@@ -109,6 +147,8 @@
   /* Error text (forms, checkout) — Tailwind's red-700 is too dim on night */
   --color-red-700: #f2918a;
 
+  /* Ink would vanish into the dark, so focus is drawn in moonlight. */
+  --focus-ring: #fbe3b0;
 }
 
 /* The sun's light in the header's cloud (Header.tsx), placed like the glass, and
@@ -243,8 +283,6 @@ body {
    page. Inset top and bottom so neighbouring banks show a strip of sky between
    them. The side feather is narrow on a phone, where the copy comes close. */
 .section-panel {
-  --feather: clamp(0.75rem, 3vw, 2rem);
-  --billow: radial-gradient(closest-side, #000 55%, transparent);
   position: absolute;
   inset: 0.375rem 0;
   z-index: var(--z-panel);
@@ -253,6 +291,15 @@ body {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.22));
   -webkit-backdrop-filter: blur(5px) contrast(0.55) brightness(1.25) saturate(1.45);
   backdrop-filter: blur(5px) contrast(0.55) brightness(1.25) saturate(1.45);
+}
+
+/* The fog's edges, shared by the section banks and the vistas (PhotoBanner in
+   Photo.tsx): a vista is a view through a break in the clouds, so its top and
+   bottom billow away in the same lobes and its sides feather off the same way. */
+.section-panel,
+.frame-vista {
+  --feather: clamp(0.75rem, 3vw, 2rem);
+  --billow: radial-gradient(closest-side, #000 55%, transparent);
   -webkit-mask:
     linear-gradient(90deg, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
     var(--billow) 0 0 / 7rem 4.5rem repeat-x,
@@ -269,6 +316,38 @@ body {
     var(--billow) 4.4rem calc(100% - 0.8rem) / 5rem 3.4rem repeat-x,
     linear-gradient(#000, #000) center / 100% calc(100% - 4rem) no-repeat;
   mask-composite: intersect, add, add, add, add, add;
+}
+
+/* Fog hanging in the vista's edges, so the photo melts into it rather than
+   just stopping. */
+.frame-vista::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5),
+    transparent 4.5rem,
+    transparent calc(100% - 4.5rem),
+    rgba(255, 255, 255, 0.5)
+  );
+}
+
+/* Focus is drawn in ink, everywhere, the way the scenery is outlined, a little
+   way out from the thing so it reads as a ring round it rather than a border.
+   Ink shows against every colour of the sky; the night footer swaps it for
+   moonlight (--focus-ring). In the base layer, so a component can still set
+   its own (the form fields do, for now). */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  a:focus-visible {
+    border-radius: 0.3rem;
+  }
 }
 
 /* Inside a section (.depth), photos sit on the media layer and everything else
@@ -299,118 +378,615 @@ body {
   }
 }
 
-.surface-card {
-  background: var(--surface-card);
+/* In the base layer, so a card's own drawn faces (.card) win over it. */
+@layer base {
+  .surface-card {
+    background: var(--surface-card);
+  }
 }
 
-/* Cards, panels and framed photos sit on the page like sunlit paper: a fine
-   light edge, a highlight along the top, and a soft shadow, warmed or tinted by
-   the card's accent (--card-glow), in place of an outline and a hard offset. */
+/* Cards and panels are drawn like the buttons and the river stones: an ink
+   outline, at the lighter weight so cards full of words stay calm, and flat
+   two-tone shading, a lit face curving over a shaded one (.stone, below). The
+   accent tints both faces. A glint of light runs along the top, and each
+   stands on its shadow. */
 @layer components {
   .card {
-    --card-glow: rgba(120, 72, 60, 0.32);
-    border: 1px solid rgba(255, 255, 255, 0.85);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.9),
-      0 1px 2px rgba(80, 50, 40, 0.08),
-      0 6px 14px -8px rgba(80, 50, 40, 0.18),
-      0 22px 40px -20px var(--card-glow);
+    --stone-lit: #fffaf3;
+    --stone-shade: #fbecdf;
+    border: var(--ink-line-light) solid var(--ink);
+    box-shadow: var(--glint), var(--ground);
   }
 
   .card-marigold {
-    --card-glow: rgba(219, 138, 18, 0.6);
+    --stone-lit: #fff9ec;
+    --stone-shade: #feeccb;
   }
 
   .card-periwinkle {
-    --card-glow: rgba(94, 111, 194, 0.55);
+    --stone-lit: #fbfbff;
+    --stone-shade: #eaedfb;
   }
 
   .card-coral {
-    --card-glow: rgba(201, 85, 74, 0.5);
+    --stone-lit: #fff8f5;
+    --stone-shade: #fde6df;
   }
 
-  /* A card that's a link lifts toward you, its shadow lengthening. */
+  /* The closing panel's face is lit by the sun. */
+  .card-sunlit {
+    --stone-lit: #ffeecb;
+    --stone-shade: #fddc9f;
+  }
+
+  /* A card you can click lifts toward you as you point at it, swaying a
+     little as if caught by a breeze, its shadow spreading and the light
+     reaching further across it. */
   .card-lift {
     transition:
-      translate 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      translate var(--dur-lift) var(--ease-settle),
+      rotate var(--dur-lift) var(--ease-settle),
+      box-shadow var(--dur-lift) var(--ease-settle);
+  }
+
+  .card-lift:hover {
+    --stone-split: 58%;
+    box-shadow: var(--glint), var(--ground-lifted);
   }
 
   @media (prefers-reduced-motion: no-preference) {
     .card-lift:hover {
       translate: 0 -3px;
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.9),
-        0 1px 2px rgba(80, 50, 40, 0.08),
-        0 10px 20px -10px rgba(80, 50, 40, 0.2),
-        0 30px 50px -22px var(--card-glow);
+      rotate: -0.35deg;
     }
   }
 
   .surface-night .card {
-    border-color: rgba(255, 255, 255, 0.14);
+    --stone-lit: #322c5c;
+    --stone-shade: #262146;
+    border-color: rgba(251, 227, 176, 0.45);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      0 22px 40px -20px rgba(0, 0, 0, 0.6);
+      inset 0 2px 0 rgba(255, 255, 255, 0.1),
+      0 7px 12px -7px rgba(0, 0, 0, 0.6);
   }
 
-  /* A photo in a thin white mount, like a print. */
-  .photo-frame {
-    --card-glow: rgba(120, 72, 60, 0.32);
-    border: 3px solid #fffaf3;
-    box-shadow:
-      0 1px 2px rgba(80, 50, 40, 0.12),
-      0 6px 14px -8px rgba(80, 50, 40, 0.2),
-      0 22px 40px -20px var(--card-glow);
+  /* A drawn thing, like everything in the scenery: an ink outline, a glint of
+     light along the top, and a soft shadow on the ground beneath it. */
+  .drawn {
+    border: var(--ink-line) solid var(--ink);
+    box-shadow: var(--glint), var(--ground);
   }
 
-  /* Buttons are drawn like the scenery: an ink outline, flat cartoon shading (a
-     lit face curving over a shaded one, the way the river stones are shaded), a
-     glint of light up top, and a soft shadow on the ground beneath. A sunlit
-     marigold for the main choice, cloud white for the second. Both lift a little
-     on hover, their shadow spreading, and settle when pressed. */
-  .btn-primary,
-  .btn-secondary {
-    border: 1.6px solid var(--color-ink-fixed);
-    box-shadow:
-      inset 0 2px 0 rgba(255, 255, 255, 0.55),
-      0 7px 12px -7px rgba(60, 40, 30, 0.45);
+  /* Flat cartoon shading, the way the river stones are shaded: a lit face
+     curving over a shaded one. Set --stone-lit and --stone-shade; --stone-split
+     is where the light ends, and it reaches further as a thing lifts toward you. */
+  .stone,
+  .card {
+    --stone-split: 56%;
+    background: radial-gradient(
+      130% 115% at 32% 12%,
+      var(--stone-lit) 0 var(--stone-split),
+      var(--stone-shade) calc(var(--stone-split) + 1%) 100%
+    );
   }
 
+  /* Buttons are drawn stones: a sunlit marigold for the main choice, cloud white
+     for the second. Both lift a little on hover, their shadow spreading and the
+     light reaching further across them, and settle when pressed. */
   .btn-primary:hover,
   .btn-secondary:hover {
-    box-shadow:
-      inset 0 2px 0 rgba(255, 255, 255, 0.6),
-      0 11px 16px -8px rgba(60, 40, 30, 0.4);
+    --stone-split: 58%;
+    box-shadow: var(--glint), var(--ground-lifted);
   }
 
   .btn-primary {
-    color: var(--color-ink-fixed);
-    background: radial-gradient(130% 115% at 32% 12%, #ffd06a 0 56%, #f0a11f 57% 100%);
+    --stone-lit: #ffd06a;
+    --stone-shade: #f0a11f;
+    color: var(--ink);
   }
 
   .btn-primary:hover {
-    background: radial-gradient(130% 115% at 32% 12%, #ffd981 0 58%, #f5a826 59% 100%);
+    --stone-lit: #ffd981;
+    --stone-shade: #f5a826;
   }
 
   .btn-secondary {
+    --stone-lit: #ffffff;
+    --stone-shade: #e3e5f7;
     color: var(--color-periwinkle-800);
-    background: radial-gradient(130% 115% at 32% 12%, #ffffff 0 56%, #e3e5f7 57% 100%);
   }
 
   .btn-secondary:hover {
-    background: radial-gradient(130% 115% at 32% 12%, #ffffff 0 58%, #eaecfa 59% 100%);
+    --stone-shade: #eaecfa;
+  }
+
+  /* As you let go of a button, a ripple rings out from it, like a stone
+     dropped in water (the motion is below). */
+  .btn-primary,
+  .btn-secondary {
+    position: relative;
+  }
+
+  .btn-primary::after,
+  .btn-secondary::after {
+    content: "";
+    position: absolute;
+    inset: -10px;
+    border: var(--ink-line-light) solid var(--ink);
+    border-radius: inherit;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .surface-night .btn-primary::after,
+  .surface-night .btn-secondary::after {
+    border-color: var(--focus-ring);
   }
 
   /* At night the second choice is dusk, outlined in starlight, since ink would
      vanish into the dark. */
   .surface-night .btn-secondary {
+    --stone-lit: #423b78;
+    --stone-shade: #2c2754;
     color: var(--color-periwinkle-800);
     border-color: rgba(194, 202, 245, 0.7);
-    background: radial-gradient(130% 115% at 32% 12%, #423b78 0 56%, #2c2754 57% 100%);
     box-shadow:
       inset 0 2px 0 rgba(255, 255, 255, 0.16),
       0 7px 12px -7px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Links are underlined with a drawn ripple of water instead of a ruled line,
+     which flows along while you're on it, like the river's ripples. The colour
+     stays put on hover, so the words stay as readable as the copy round them.
+     A background rather than a decoration, so it carries on across a link that
+     wraps onto a second line. */
+  .link-drawn,
+  .prose-drawn a {
+    color: var(--color-marigold-800);
+    font-weight: 600;
+    text-decoration: none;
+    background: var(--squiggle) repeat-x 0 100% / 0.75em 0.32em;
+    padding-bottom: 0.2em;
+  }
+
+  /* The header's links (NavLinks.tsx, MobileNav.tsx) and the footer's. Pointing
+     at one draws an ink ripple in under it from the left, like a pen; the page
+     you're on keeps its ripple, in marigold, with the logo's asterisk over it.
+     At night the ripple is marigold, since ink would vanish. */
+  .nav-link {
+    position: relative;
+    display: inline-block;
+  }
+
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.32em;
+    height: 0.32em;
+    background: var(--squiggle-ink) repeat-x 0 0 / 0.75em 100%;
+    clip-path: inset(0 100% 0 0);
+    pointer-events: none;
+  }
+
+  .nav-link:hover::after,
+  .nav-link[aria-current="page"]::after {
+    clip-path: inset(0 -1px 0 0);
+  }
+
+  .nav-link[aria-current="page"]::after,
+  .surface-night .nav-link::after {
+    background-image: var(--squiggle);
+  }
+
+  /* The logo's asterisk (Asterisk in NavLinks.tsx), outlined in the logo's
+     periwinkle at the scenery's line weight. Over a link in the header's row,
+     to its left in the menu's column. */
+  .nav-asterisk {
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .nav-asterisk-over {
+    left: 50%;
+    top: -1.25rem;
+    margin-left: -0.5rem;
+  }
+
+  .nav-asterisk-before {
+    left: -1.55rem;
+    top: 50%;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: -0.55rem;
+  }
+
+  /* Twice the line's weight, half of it hidden under the fill. Not inherited,
+     so on each shape. */
+  .nav-asterisk-line {
+    fill: var(--color-periwinkle-800);
+    stroke: var(--color-periwinkle-800);
+    stroke-width: calc(2 * var(--ink-line-light));
+    stroke-linejoin: round;
+  }
+
+  .nav-asterisk-line > * {
+    vector-effect: non-scaling-stroke;
+  }
+
+  .nav-asterisk-fill {
+    fill: var(--color-marigold-500);
+  }
+
+  /* The menu's cloud (MobileNav.tsx): the header cloud's glass, a little
+     thicker so the links read over whatever's behind, hanging from the header
+     under the button. MobileNav draws its billowing edge as a mask; until it
+     has, it's a soft round. Hidden until it's open. */
+  .menu-cloud {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: min(17.5rem, 100%);
+    margin-top: -0.25rem;
+    /* Clear of the billows (BILLOW_ROOM in MobileNav.tsx), and on the left
+       of the asterisk beside the page you're on as well. */
+    padding: 2.1rem 2.2rem 2.2rem 3.7rem;
+    border-radius: 2rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.62));
+    -webkit-backdrop-filter: blur(22px) saturate(1.3);
+    backdrop-filter: blur(22px) saturate(1.3);
+    transform-origin: calc(100% - 2rem) 0;
+    visibility: hidden;
+    opacity: 0;
+    scale: 0.88;
+  }
+
+  .menu-cloud[data-open] {
+    visibility: visible;
+    opacity: 1;
+    scale: 1;
+  }
+
+  /* The menu button's three drawn lines, which fold into a cross. */
+  .menu-line {
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    transform-box: view-box;
+    transform-origin: 12px 12px;
+  }
+
+  .menu-button[data-open] .menu-line-top {
+    transform: rotate(45deg) translateY(5px);
+  }
+
+  .menu-button[data-open] .menu-line-middle {
+    opacity: 0;
+    transform: scaleX(0.2);
+  }
+
+  .menu-button[data-open] .menu-line-bottom {
+    transform: rotate(-45deg) translateY(-5px);
+  }
+
+  /* Form fields (ContactForm.tsx): outlined in ink like the cards, with a
+     cream fill pressed a little into the page and the cards' stone corners.
+     A select gets a drawn caret. Focus is the sitewide ring; a field you've
+     left wrong is outlined in coral. */
+  .field {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.75rem 1rem;
+    border: var(--ink-line-light) solid var(--ink);
+    border-radius: var(--radius-sketch-sm);
+    background: #fffaf3;
+    color: var(--color-ink-900);
+    box-shadow: inset 0 2px 3px rgba(60, 40, 30, 0.1);
+  }
+
+  .field::placeholder {
+    color: var(--color-ink-500);
+    opacity: 0.7;
+  }
+
+  .field:user-invalid {
+    border-color: var(--color-coral-700);
+    box-shadow:
+      inset 0 2px 3px rgba(60, 40, 30, 0.1),
+      0 0 0 1px var(--color-coral-700);
+  }
+
+  select.field {
+    appearance: none;
+    padding-right: 2.75rem;
+    background: #fffaf3 var(--caret) no-repeat right 1rem center / 0.85rem 0.55rem;
+  }
+
+  /* The plus on a question (PlusMinus.tsx): a little marigold stone, drawn
+     like the main buttons, whose upright folds down flat, making a minus,
+     as the answer opens. */
+  .plus-minus {
+    --stone-lit: #ffd06a;
+    --stone-shade: #f0a11f;
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-width: var(--ink-line-light);
+    border-radius: 50%;
+  }
+
+  .plus-minus svg {
+    width: 0.8rem;
+    height: 0.8rem;
+    overflow: visible;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .plus-minus-upright {
+    transform-box: view-box;
+    transform-origin: 8px 8px;
+  }
+
+  details[open] > summary .plus-minus-upright {
+    transform: rotate(90deg);
+  }
+
+  /* Drawn arrows (Arrow.tsx), and the back link that leads with one. Its
+     words get the header links' ripple as you point anywhere on it. */
+  .arrow {
+    flex-shrink: 0;
+    width: 1.15em;
+    height: 0.92em;
+    overflow: visible;
+  }
+
+  .back-link:hover .nav-link::after {
+    clip-path: inset(0 -1px 0 0);
+  }
+
+  /* Bullets are the logo's asterisk, centred on each item's first line. */
+  .list-asterisk,
+  .prose-drawn ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .list-asterisk > li,
+  .prose-drawn ul > li {
+    position: relative;
+    padding-left: 1.55em;
+  }
+
+  .list-asterisk > li::before,
+  .prose-drawn ul > li::before {
+    content: "";
+    position: absolute;
+    left: 0.1em;
+    top: calc(0.5lh - 0.37em);
+    width: 0.74em;
+    height: 0.74em;
+    background: var(--asterisk) center / contain no-repeat;
+  }
+
+  /* Frames (Frame.tsx). A photo or player sits on a mat that's drawn like
+     everything else (.drawn and .stone): outlined in ink, lit across the top
+     and left and shaded in a band at the lower right, standing on its shadow.
+     The mat sets the stone's colours. A fine ink line runs round the picture
+     itself, inside the mat. */
+  .frame {
+    --stone-lit: #fffaf1;
+    --stone-shade: #f3e1cc;
+    --stone-split: 62%;
+    padding: 0.45rem;
+    border-radius: var(--radius-sketch-sm);
+  }
+
+  .frame-mat-periwinkle {
+    --stone-lit: #f2f4fd;
+    --stone-shade: #d7dcf6;
+  }
+
+  .frame-mat-night {
+    --stone-lit: #3d3669;
+    --stone-shade: #2a254d;
+  }
+
+  .frame-photo {
+    position: relative;
+    overflow: hidden;
+    /* The mat's own corners, less the mat. */
+    border-radius: 0.85rem 0.6rem 0.95rem 0.55rem / 0.6rem 0.85rem 0.55rem 0.95rem;
+    box-shadow: 0 0 0 var(--ink-line-light) var(--ink);
+  }
+
+  /* The medallion: a round photo in a ring of sunlit marigold, shaded like the
+     main buttons, with rays round it (.frame-rays). The rays' line weight
+     follows the medallion's size (cqi). */
+  .frame-medallion {
+    --stone-lit: #ffd06a;
+    --stone-shade: #f0a11f;
+    --stone-split: 56%;
+    container-type: inline-size;
+    padding: 0.4rem;
+    border-radius: 50%;
+  }
+
+  .frame-medallion .frame-photo {
+    border-radius: 50%;
+  }
+
+  /* In a box 128% of the medallion's, centred on it, so the rays reach past
+     its edge without taking up room in the layout. */
+  .frame-rays {
+    position: absolute;
+    left: -14%;
+    top: -14%;
+    width: 128%;
+    height: 128%;
+    overflow: visible;
+    pointer-events: none;
+    transition: scale var(--dur-lift) var(--ease-settle);
+  }
+
+  .frame-ray-ink,
+  .frame-ray-sun {
+    --tick: clamp(2px, 1.6cqi, 4.5px);
+    fill: none;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .frame-ray-ink {
+    stroke: var(--ink);
+    stroke-width: 6px;
+    stroke-width: calc(var(--tick) + 2 * var(--ink-line));
+  }
+
+  .frame-ray-sun {
+    stroke: var(--color-marigold-300);
+    stroke-width: 3px;
+    stroke-width: var(--tick);
+  }
+
+  /* A taped print: a little more mat round the photo, a caption in the
+     bottom of the mat like a snapshot's, and a tilt (--tilt) so the prints
+     don't line up too neatly. */
+  .frame-taped {
+    padding: 0.55rem 0.55rem 0;
+    rotate: var(--tilt, 0deg);
+    transition:
+      rotate var(--dur-lift) var(--ease-settle),
+      translate var(--dur-lift) var(--ease-settle),
+      box-shadow var(--dur-lift) var(--ease-settle);
+  }
+
+  .frame-caption {
+    padding: 0.6rem 0.25rem 0.6rem;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-style: italic;
+    font-variation-settings: "SOFT" 100;
+    color: var(--color-ink-700);
+  }
+
+  .frame-mat-night .frame-caption {
+    color: #ece6f6;
+  }
+
+  /* The tape, across the top edge and turned a little against the print. */
+  .frame-tape {
+    position: absolute;
+    z-index: 1;
+    top: -0.8rem;
+    left: 50%;
+    width: 5.5rem;
+    height: 1.6rem;
+    translate: -50% 0;
+    rotate: -2.5deg;
+    overflow: visible;
+  }
+
+  .frame-tape-strip {
+    fill-opacity: 0.85;
+    stroke: var(--ink);
+    stroke-width: var(--ink-line-light);
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .frame-tape-sheen {
+    stroke: #fff;
+    stroke-opacity: 0.45;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* A field-guide print: its tag hangs over the bottom edge, so the print
+     keeps room below it. The tag's eyelet is a little drawn ring. */
+  .frame-guide {
+    margin-bottom: 1rem;
+  }
+
+  .frame-tag {
+    position: absolute;
+    left: 1.1rem;
+    bottom: -1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.15rem 0.8rem 0.25rem 0.55rem;
+    border: var(--ink-line-light) solid var(--ink);
+    border-radius: 0.4rem 0.6rem 0.45rem 0.55rem / 0.55rem 0.4rem 0.6rem 0.45rem;
+    background: #fffaf1;
+    box-shadow: var(--ground);
+    rotate: -2deg;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-style: italic;
+    font-variation-settings: "SOFT" 100;
+    line-height: 1.4;
+    color: var(--color-ink-900);
+  }
+
+  .frame-tag::before {
+    content: "";
+    flex-shrink: 0;
+    width: 0.4rem;
+    height: 0.4rem;
+    border: var(--ink-line-light) solid var(--ink);
+    border-radius: 50%;
+    background: var(--color-marigold-300);
+  }
+
+  /* A player keeps the mat, with corners that match Spotify's own card. */
+  .frame-embed .frame-photo {
+    border-radius: 12px;
+  }
+
+  .frame-embed iframe {
+    display: block;
+    width: 100%;
+    border: 0;
+  }
+
+  /* Dusk: black and white made plum in the shadows and gold in the light,
+     the colours of the sunset at the foot of the page. */
+  .frame-photo[data-tone="dusk"] {
+    isolation: isolate;
+  }
+
+  .frame-photo[data-tone="dusk"] img {
+    filter: grayscale(1) contrast(1.1);
+  }
+
+  .frame-photo[data-tone="dusk"]::before,
+  .frame-photo[data-tone="dusk"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .frame-photo[data-tone="dusk"]::before {
+    background: #4b2d63;
+    mix-blend-mode: lighten;
+  }
+
+  .frame-photo[data-tone="dusk"]::after {
+    background: #ffc88a;
+    mix-blend-mode: multiply;
   }
 }
 
@@ -639,6 +1215,27 @@ body::before {
   left: var(--logo-reach-far);
 }
 
+/* The sun's wide glow (SunGlow in Sun.tsx), at the back of the sky: centred on
+   the sun and sized to it by Sun, in its colours through the day, fading out as
+   the old corona did. Behind the header's cloud it shines through the glass;
+   below it, it warms the sky behind the page, never the page itself. */
+.sun-glow {
+  position: absolute;
+  left: 14rem;
+  top: 3.5rem;
+  width: 0;
+  height: 0;
+  translate: -50% -50%;
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    var(--sun-core, #fff1e6) 20%,
+    color-mix(in srgb, var(--sun-glow, #ffe0cc) 95%, transparent) 36%,
+    color-mix(in srgb, var(--sun-haze, #f8b490) 50%, transparent) 60%,
+    transparent 100%
+  );
+}
+
 /* The sun's rays (SunRays in Sun.tsx): soft shafts of its glow fanning down from
    behind the header's cloud, each a narrow wedge that's brightest just below the
    cloud and gone well before its end. The wedge is a mask, a fan of light from
@@ -800,6 +1397,43 @@ body::before {
   --marker-color: var(--color-periwinkle-200);
 }
 
+/* Weather passing between pages (PageWeather.tsx): the old view fogs over,
+   softening and paling as it goes, while the new one clears out of the same
+   fog. Both run on the same curve, and the browser adds the two pictures
+   together as they cross, so the light never dips in between. With reduced
+   motion, the page simply changes. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes fog-over {
+    to {
+      opacity: 0;
+      filter: blur(4px) brightness(1.12) saturate(0.8);
+    }
+  }
+
+  @keyframes fog-clear {
+    from {
+      opacity: 0;
+      filter: blur(4px) brightness(1.12) saturate(0.8);
+    }
+  }
+
+  ::view-transition-old(root) {
+    animation: fog-over 480ms var(--ease-sway) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: fog-clear 480ms var(--ease-sway) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
 /* ---- Motion primitives -------------------------------------------------
    Everything here is gated on prefers-reduced-motion: no-preference, so a
    reduced-motion visitor just sees the final state with no transition. */
@@ -817,6 +1451,228 @@ body::before {
 
   .animate-fade-up {
     animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Content rising out of the fog as you scroll to it (Rise.tsx): it starts
+     faint, a little soft and a little low, and settles into place as it
+     sharpens, the way things come out of a fog bank. Whatever's on screen when
+     the page arrives is left alone. While it rises it's lifted onto the copy
+     layer as one piece, so its photo and its words stay in front of the fog the
+     whole way, and it rejoins the layers (.depth) once it's done. */
+  [data-rise-state] {
+    position: relative;
+    z-index: var(--z-copy);
+  }
+
+  [data-rise-state="waiting"] {
+    opacity: 0;
+    transform: translateY(var(--rise-distance));
+    filter: blur(var(--rise-blur));
+  }
+
+  [data-rise-state="rising"] {
+    transition:
+      opacity var(--dur-rise) var(--ease-settle) var(--rise-delay, 0ms),
+      transform var(--dur-rise) var(--ease-settle) var(--rise-delay, 0ms),
+      filter var(--dur-rise) var(--ease-settle) var(--rise-delay, 0ms);
+  }
+
+  /* A photo develops like a print: a little slower, its colour warming up as
+     it sharpens. */
+  [data-rise-state="waiting"][data-rise="media"] {
+    filter: blur(var(--rise-blur)) saturate(0.55);
+  }
+
+  [data-rise-state="rising"][data-rise="media"] {
+    transition-duration: var(--dur-develop);
+  }
+
+  /* A link's ripple flows along while you're on it, one ripple a beat. */
+  @keyframes link-flow {
+    to {
+      background-position-x: 0.75em;
+    }
+  }
+
+  .link-drawn:hover,
+  .prose-drawn a:hover {
+    animation: link-flow 0.8s linear infinite;
+  }
+
+  /* Pressed, a button's ring sits close round it; let go, and it spreads out
+     and fades, like a ripple from a dropped stone. */
+  .btn-primary::after,
+  .btn-secondary::after {
+    transition:
+      inset 650ms var(--ease-settle),
+      opacity 650ms ease-out;
+  }
+
+  .btn-primary:active::after,
+  .btn-secondary:active::after {
+    inset: -1px;
+    opacity: 0.5;
+    transition: none;
+  }
+
+  /* A question's answer unfolds rather than jumping open, where the browser
+     can animate a <details> (elsewhere it simply opens), and its words rise
+     into place as it does. The plus folds into a minus. */
+  .unfold {
+    interpolate-size: allow-keywords;
+  }
+
+  .unfold::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size var(--dur-rise) var(--ease-settle),
+      content-visibility var(--dur-rise) allow-discrete;
+  }
+
+  .unfold[open]::details-content {
+    block-size: auto;
+  }
+
+  @keyframes unfold-rise {
+    from {
+      opacity: 0;
+      translate: 0 -6px;
+    }
+  }
+
+  .unfold[open] .unfold-body {
+    animation: unfold-rise var(--dur-rise) var(--ease-settle) 60ms both;
+  }
+
+  .plus-minus-upright {
+    transition: transform var(--dur-lift) var(--ease-settle);
+  }
+
+  summary:hover .plus-minus {
+    rotate: 8deg;
+  }
+
+  .plus-minus {
+    transition: rotate var(--dur-lift) var(--ease-settle);
+  }
+
+  /* A header link's ripple is drawn in from the left as you point at it, and
+     flows while you're on it, like the text links' ripples. */
+  .nav-link::after {
+    transition: clip-path var(--dur-lift) var(--ease-settle);
+  }
+
+  .nav-link:hover::after {
+    animation: link-flow 0.8s linear infinite;
+  }
+
+  /* The asterisk turns in as you arrive on a page, a touch past its size and
+     back, then keeps turning, slowly, like the sun. */
+  @keyframes asterisk-arrive {
+    from {
+      scale: 0;
+      rotate: -120deg;
+    }
+  }
+
+  @keyframes asterisk-turn {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .nav-asterisk {
+    animation:
+      asterisk-arrive 700ms var(--ease-puff) both,
+      asterisk-turn 40s linear 700ms infinite;
+  }
+
+  /* The menu's cloud puffs out from under the button, then its links rise
+     into it one after another, the way content rises out of the fog. Closing,
+     it all fades back quickly, and only then hides. */
+  .menu-cloud {
+    transition:
+      opacity 200ms ease-out,
+      scale 260ms var(--ease-settle),
+      visibility 0s linear 260ms;
+  }
+
+  .menu-cloud[data-open] {
+    transition:
+      opacity 240ms ease-out,
+      scale 520ms var(--ease-puff),
+      visibility 0s;
+  }
+
+  .menu-cloud li {
+    opacity: 0;
+    translate: 0 var(--rise-distance);
+    filter: blur(var(--rise-blur));
+    transition:
+      opacity 150ms ease-out,
+      translate 150ms ease-out,
+      filter 150ms ease-out;
+  }
+
+  .menu-cloud[data-open] li {
+    opacity: 1;
+    translate: 0 0;
+    filter: blur(0);
+    transition:
+      opacity var(--dur-rise) var(--ease-settle) calc(110ms + var(--i) * var(--rise-stagger)),
+      translate var(--dur-rise) var(--ease-settle) calc(110ms + var(--i) * var(--rise-stagger)),
+      filter var(--dur-rise) var(--ease-settle) calc(110ms + var(--i) * var(--rise-stagger));
+  }
+
+  /* The button's lines fold into a cross and back; it settles as it's pressed. */
+  .menu-line {
+    transition:
+      transform var(--dur-lift) var(--ease-settle),
+      opacity var(--dur-tap) ease-out;
+  }
+
+  .menu-button {
+    transition: scale var(--dur-tap) var(--ease-settle);
+  }
+
+  .menu-button:active {
+    scale: 0.9;
+  }
+
+  /* The medallion's rays (Frame.tsx) swing gently as a fan, like the sun's,
+     and each breathes out and back a beat after the one before, so a slow
+     wave runs round. Hovering, they reach a little further, like the sun
+     coming out. */
+  @keyframes ray-breathe {
+    from {
+      transform: translateY(1.5px);
+      opacity: 0.7;
+    }
+    to {
+      transform: translateY(-2.5px);
+      opacity: 1;
+    }
+  }
+
+  .frame-rays {
+    animation: sun-rays-swing 16s ease-in-out infinite alternate;
+  }
+
+  .frame-ray {
+    animation: ray-breathe 3.6s ease-in-out var(--ray-delay) infinite alternate;
+  }
+
+  .frame-medallion:hover .frame-rays {
+    scale: 1.05;
+  }
+
+  /* A taped print straightens and lifts when you hover, its shadow spreading,
+     like a print picked up off the page. */
+  .frame-taped:hover {
+    rotate: 0deg;
+    translate: 0 -3px;
+    box-shadow: var(--glint), var(--ground-lifted);
   }
 
   /* The scenery's own motion (Scenery.tsx). A tree or fern swings to one side and

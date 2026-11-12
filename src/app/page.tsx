@@ -1,34 +1,34 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { DoorLink } from "@/components/home/DoorLink";
+import { Arrow } from "@/components/ui/Arrow";
 import { Button } from "@/components/ui/Button";
 import { Photo } from "@/components/ui/Photo";
 import { Scribble } from "@/components/ui/Scribble";
 import { Section } from "@/components/ui/Section";
 import { Testimonials } from "@/components/ui/Testimonials";
 import { lessonPricing } from "@/content/lessons";
-import { getHeroPhotos } from "@/content/media";
+import { getHeroPhotos, media } from "@/content/media";
 import { studioPrices, studioTerms } from "@/content/services";
 import { testimonials } from "@/content/testimonials";
-import raulHeadshot from "../../public/images/raul-headshot.jpg";
 
 export const metadata: Metadata = {
-  description: "One-on-one music lessons and song mixing from Raul, in Corvallis, Oregon and online.",
+  description:
+    "One-on-one guitar, voice and music production lessons, plus song mixing, from Raul in Corvallis, Oregon and online.",
   alternates: { canonical: "/" },
 };
 
 const doors = [
   {
     id: "lessons",
-    title: "Learn something",
-    body: `Guitar, singing, music production or audio engineering, one-on-one, at my place or over video. You’d start with a $${lessonPricing.trial.price} half hour where I ask what you’ve been listening to and you decide whether you can put up with me.`,
+    title: "Start learning",
+    body: `Guitar, voice, music production and audio engineering, one-on-one at my place or over video. Start with a $${lessonPricing.trial.price} half-hour trial.`,
     cta: "Lessons",
     href: "/lessons",
   },
   {
     id: "studio",
-    title: "Finish a song",
-    body: `Mixing, mastering and recording for independent musicians, here or remotely. Working for clients is new for me, so the first five people who hire me for a mix pay $${studioTerms.introMix.price} a song rather than the usual $${studioPrices.mixing}.`,
+    title: "Finish your song",
+    body: `Mixing, mastering and recording for independent musicians, in person or remote. My first five mixing clients pay $${studioTerms.introMix.price} a song instead of $${studioPrices.mixing}.`,
     cta: "The studio",
     href: "/studio",
   },
@@ -46,27 +46,23 @@ export default function Home() {
               Corvallis, Oregon, and online
             </p>
             <h1 className="mt-3 font-display text-[clamp(2.5rem,3vw+1.75rem,4.25rem)] font-semibold leading-[1.08] tracking-tight text-ink-900">
-              Music lessons and mixing in Corvallis, starting with me{" "}
-              <Scribble color="var(--color-marigold-500)">listening</Scribble> to you
+              Music lessons and mixing in Corvallis, where the right way is{" "}
+              <Scribble color="var(--color-marigold-500)">your</Scribble> way
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-ink-700">
-              I’m Raul. I’ve been singing for as long as anyone can remember and playing guitar since I
-              was ten, and these days I split my time between a day job at a podcast studio and a
-              converted bedroom full of instruments. That bedroom is the sunny*r studio, where I teach
-              and mix other people’s songs.
+              I’m Raul. I teach music lessons and mix songs from my home studio in Corvallis’s
+              Southtown neighborhood and online. I’ve sung all my life, played guitar for more than fifteen years, and work as an
+              audio engineer at a podcast studio.
             </p>
           </div>
-          <div className="depth-media relative row-start-1 h-32 w-32 overflow-hidden photo-frame rounded-full sm:col-start-2 sm:h-56 sm:w-56">
-            <Image
-              src={raulHeadshot}
-              alt="Raul"
-              fill
-              sizes="(min-width: 640px) 14rem, 8rem"
-              placeholder="blur"
-              className="object-cover"
-              priority
-            />
-          </div>
+          <Photo
+            photo={media.headshot}
+            frame="medallion"
+            sizes="(min-width: 640px) 14rem, 8rem"
+            preload
+            // The margins leave room for the rays, which reach past the photo.
+            className="row-start-1 ml-[1.15rem] w-32 sm:col-start-2 sm:mx-8 sm:w-56"
+          />
         </div>
 
         <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-2">
@@ -76,14 +72,13 @@ export default function Home() {
               <div
                 key={door.id}
                 style={{ borderRadius: "var(--radius-sketch)" }}
-                className={`surface-card card card-lift relative flex h-full flex-col gap-5 p-6 sm:flex-row sm:gap-6 sm:p-8 ${
+                className={`surface-card card card-lift group relative flex h-full flex-col gap-5 p-6 sm:flex-row sm:gap-6 sm:p-8 ${
                   door.id === "lessons" ? "card-marigold" : "card-periwinkle"
                 }`}
               >
                 {photo && (
                   <Photo
                     photo={photo}
-                    accent="none"
                     aspect="aspect-[4/3] sm:aspect-[4/5]"
                     sizes="(min-width: 1024px) 200px, (min-width: 640px) 260px, 100vw"
                     className="shrink-0 sm:w-2/5 sm:self-start"
@@ -99,10 +94,10 @@ export default function Home() {
                     <DoorLink
                       door={door.id}
                       href={door.href}
-                      className="inline-flex items-center gap-2 font-semibold text-marigold-800 underline decoration-marigold-300 decoration-2 underline-offset-4 after:absolute after:inset-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-marigold-600"
+                      className="link-drawn inline-flex items-center gap-2 after:absolute after:inset-0 after:content-['']"
                     >
                       {door.cta}
-                      <span aria-hidden="true">→</span>
+                      <Arrow className="transition-transform duration-[var(--dur-lift)] ease-[var(--ease-settle)] motion-safe:group-hover:translate-x-1" />
                     </DoorLink>
                   </div>
                 </div>
@@ -114,30 +109,21 @@ export default function Home() {
 
       <Section width="narrow">
         <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-900">
-          How I ended up working this way
+          How I work
         </h2>
         <div className="mt-5 space-y-4 text-lg leading-relaxed text-ink-700">
           <p>
-            I was the kid who begged for music lessons and then dreaded them. Practice assignments
-            would slip my mind, or I’d get stuck halfway through and quit, and I went in each week
-            knowing I’d let someone down before I played a note. Nobody knew I was autistic and ADHD,
-            including me. That came much later.
+            I’m autistic and ADHD. As a kid I loved music but dreaded lessons, because I could never
+            keep up with practice and always felt behind. So my lessons are flexible, built around
+            music you like, and never run on guilt.
           </p>
           <p>
-            Plenty of my teachers were no help with any of this, but a few paid attention to what was
-            actually happening in front of them, and those are the ones I still think about. One
-            heard me play “Little Wing” perfectly and pointed out that it didn’t sound like music yet.
-            Nobody had ever said anything like that to me, and it changed what I thought I was
-            practicing for.
-          </p>
-          <p>
-            I try to be that kind of teacher, and it turns out to be most of how I mix as well.
-            Whether it’s your fingers on a guitar neck or your voice in a chorus, I’d rather respond
-            to what I’m hearing than to a rulebook.
+            I mix the same way: by listening to what’s in front of me rather than following a
+            formula.
           </p>
         </div>
         <div className="mt-8 flex flex-wrap gap-4">
-          <Button href="/about">The whole story</Button>
+          <Button href="/about">More about me</Button>
           <Button href="/music" variant="secondary">
             Hear some music
           </Button>

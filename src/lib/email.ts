@@ -108,17 +108,17 @@ function safeFirstName(name: string): string | null {
 function nextSteps(service: string): string {
   if (service === LESSON_SERVICE) {
     return [
-      `If you’d rather not wait, you can grab ${trialPhrase} at ${siteConfig.url}/lessons#book.`,
+      `You can also book ${trialPhrase} directly at ${siteConfig.url}/lessons#book.`,
       `Lessons are paid in person with ${lessonPricing.paymentMethods}.`,
     ].join(" ");
   }
   if (isStudioService(service)) {
     return [
-      "I’ll listen to whatever you linked and send you a price and a timeline.",
-      `If you’re happy with those, a ${studioTerms.depositPercent}% deposit holds your spot, and you pay the rest before I send final files.`,
+      "I’ll listen to what you sent and reply with a price and timeline.",
+      `A ${studioTerms.depositPercent}% deposit holds your spot, and the rest is due before final files.`,
     ].join(" ");
   }
-  return "I’ll read it and let you know what I can do.";
+  return "I’ll read it and get back to you.";
 }
 
 /**
@@ -135,7 +135,7 @@ export async function sendInquiryConfirmation(submission: ContactSubmission): Pr
   const text = [
     firstName ? `Hi ${firstName},` : "Hi there,",
     "",
-    `This is an automatic note to say your message about ${serviceLabel?.toLowerCase()} reached me. I’ll write back myself within ${
+    `Thanks for getting in touch. This is an automatic note to say your message about ${serviceLabel?.toLowerCase()} came through. I’ll reply within ${
       isStudioService(submission.service)
         ? siteConfig.responseTime.studio
         : submission.service === LESSON_SERVICE
@@ -145,7 +145,7 @@ export async function sendInquiryConfirmation(submission: ContactSubmission): Pr
     "",
     nextSteps(submission.service),
     "",
-    "Anything to add? Just reply here.",
+    "Anything to add? Reply to this email.",
     "",
     "Raul, sunny*r",
     "",

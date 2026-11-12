@@ -51,7 +51,7 @@ export function WaveformPlayer({
   return (
     <div
       style={{ borderRadius: "var(--radius-sketch)" }}
-      className="card card-lift bg-cream-50 p-5"
+      className="card p-5"
     >
       <div className="flex items-center justify-between gap-4">
         <div>
@@ -62,7 +62,8 @@ export function WaveformPlayer({
           type="button"
           onClick={() => wavesurferRef.current?.playPause()}
           aria-label={isPlaying ? `Pause ${title}` : `Play ${title}`}
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-marigold-500 text-[color:var(--color-ink-fixed)] transition-all duration-300 hover:scale-110 hover:bg-marigold-400 motion-safe:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marigold-700 ${isPlaying ? "motion-safe:animate-pulse" : ""}`}
+          // A drawn marigold stone, like the main buttons.
+          className="drawn stone btn-primary flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-[translate,scale,box-shadow] duration-[var(--dur-lift)] ease-[var(--ease-settle)] motion-safe:hover:-translate-y-0.5 motion-safe:active:scale-95"
         >
           {isPlaying ? (
             <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">

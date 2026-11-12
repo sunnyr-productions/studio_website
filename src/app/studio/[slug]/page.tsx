@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CtaPanel } from "@/components/ui/CtaPanel";
@@ -29,14 +30,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 function Bullets({ items }: { items: string[] }) {
   return (
-    <ul className="mt-4 space-y-2 text-ink-700">
+    <ul className="list-asterisk mt-4 space-y-2 text-ink-700">
       {items.map((item) => (
-        <li key={item} className="flex gap-2">
-          <span aria-hidden="true" className="text-marigold-600">
-            &bull;
-          </span>
-          {item}
-        </li>
+        <li key={item}>{item}</li>
       ))}
     </ul>
   );
@@ -49,10 +45,7 @@ function SectionBody({ body, link }: { body: string; link?: { text: string; href
   return (
     <>
       {before}
-      <Link
-        href={link.href}
-        className="font-semibold text-marigold-800 underline decoration-marigold-300 underline-offset-2 transition-colors hover:text-marigold-600"
-      >
+      <Link href={link.href} className="link-drawn">
         {link.text}
       </Link>
       {after}
@@ -90,9 +83,9 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
 
       <Section space="page">
         <nav aria-label="Breadcrumb" className="text-sm text-ink-500">
-          <Link href="/studio" className="inline-block py-2 font-semibold text-periwinkle-700 hover:underline">
-            ← Studio
-          </Link>
+          <BackLink href="/studio" className="text-periwinkle-700">
+            Studio
+          </BackLink>
         </nav>
         <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
           {page.h1}

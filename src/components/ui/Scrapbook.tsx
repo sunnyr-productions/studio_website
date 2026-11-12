@@ -1,31 +1,36 @@
 import Image from "next/image";
 import type { Photo } from "@/content/media";
+import { Frame } from "@/components/ui/Frame";
 
 export type ScrapbookItem = {
   photo: Photo;
   caption: string;
-  /** "night" is for photos that are mostly dark, which glare on the white print. */
+  /** "night" is for photos that are mostly dark, which glare on a light mat. */
   print?: "paper" | "night";
-  /** Tailwind rotate utility, so the prints don't line up too neatly. */
-  tilt: string;
+  /** Degrees, so the prints don't line up too neatly. */
+  tilt: number;
   /** Tailwind grid placement, for when `className` makes the list `contents`. */
   placement?: string;
 };
 
 /**
- * Prints laid on the page like a scrapbook, in a row on smaller screens. They
- * straighten up when you hover. Pass "lg:contents" and a `placement` on each item
- * to scatter them through the surrounding grid on wide screens.
+ * Prints taped on the page like a scrapbook, in a row on smaller screens. They
+ * straighten up and lift when you hover (Frame.tsx). Pass "lg:contents" and a
+ * `placement` on each item to scatter them through the surrounding grid on
+ * wide screens. The tape alternates marigold and periwinkle; night prints get
+ * periwinkle, which reads better on the dark mat.
  */
 export function Scrapbook({ items, className = "" }: { items: ScrapbookItem[]; className?: string }) {
   return (
-    <ul className={`grid gap-8 sm:grid-cols-3 ${className}`}>
-      {items.map(({ photo, caption, print = "paper", tilt, placement = "" }) => (
-        <li key={caption} className={placement}>
-          <figure
-            className={`depth-media card p-2.5 transition-transform duration-300 motion-safe:hover:rotate-0 ${tilt} ${
-              print === "night" ? "surface-night surface-card" : "bg-[#fffdf7]"
-            }`}
+    <ul className={`grid gap-10 sm:grid-cols-3 sm:gap-8 ${className}`}>
+      {items.map(({ photo, caption, print = "paper", tilt, placement = "" }, i) => (
+        <li key={caption} className={`pt-3 ${placement}`}>
+          <Frame
+            variant="taped"
+            mat={print === "night" ? "night" : "cream"}
+            tape={print === "night" || i % 2 === 1 ? "periwinkle" : "marigold"}
+            tilt={tilt}
+            label={caption}
           >
             <Image
               src={photo.src}
@@ -34,10 +39,7 @@ export function Scrapbook({ items, className = "" }: { items: ScrapbookItem[]; c
               placeholder="blur"
               className="h-auto w-full"
             />
-            <figcaption className="px-1 pb-1 pt-2.5 text-center font-display text-sm italic text-ink-700">
-              {caption}
-            </figcaption>
-          </figure>
+          </Frame>
         </li>
       ))}
     </ul>

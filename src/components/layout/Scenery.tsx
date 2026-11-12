@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
-import { go, place } from "./journey";
+import { useEffect, useMemo, useRef, type CSSProperties } from "react";
+import { go, place, placeOf } from "./journey";
 import { seeded } from "./Sky";
+import { useVisitSeed } from "./visit";
 
 /**
  * The forest along the bottom of the screen: old-growth Douglas firs crowding in
@@ -1153,9 +1154,9 @@ function CliffTop({ side }: { side: Side }) {
  * as it dives, with spray where it leaves the water and a splash where it goes
  * back in. Like the things in the sky, the scroll only sets it off: it makes the
  * whole leap in one go, and if you scroll back up, leaps back down out of the
- * river into the falls, facing that way. Drawn facing right.
+ * river into the falls, facing that way. Drawn facing right. It only comes on
+ * visits it's in the river's cast, which also says where along the falls.
  */
-const SALMON_ACROSS = 0.6;
 /** Its arc, as a curve through three points in units of about 1vh from where it leaves the falls. */
 const LEAP: Point[] = [[0, 6], [6, -25], [12, -9]];
 
@@ -1197,6 +1198,7 @@ function SplashShape() {
 
 function Salmon() {
   const leap = useRef<HTMLDivElement>(null);
+  const across = useRiverCast()?.salmon?.across ?? null;
 
   useEffect(() => {
     const box = leap.current;
@@ -1204,7 +1206,8 @@ function Salmon() {
     const falls = document.querySelector<SVGSVGElement>("[data-falls]");
     const fish = box?.querySelector<HTMLElement>("[data-fish]");
     const [spray, splash] = Array.from(box?.querySelectorAll<HTMLElement>("[data-splash]") ?? []);
-    if (!box || !footer || !falls || !fish || !spray || !splash) return;
+    // Not on this visit: it stays in the falls.
+    if (across === null || !box || !footer || !falls || !fish || !spray || !splash) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     // Its two leaps, up out of the falls into the river and back down out of the
@@ -1222,7 +1225,7 @@ function Salmon() {
     const build = () => {
       const unit = Math.min(innerHeight, innerWidth * 1.8) / 100;
       const mouth = falls.getBoundingClientRect();
-      const from = mouth.left - footer.getBoundingClientRect().left + mouth.width * SALMON_ACROSS - (LEAP[2][0] * unit) / 2;
+      const from = mouth.left - footer.getBoundingClientRect().left + mouth.width * across - (LEAP[2][0] * unit) / 2;
       const size = (element: HTMLElement, width: number, height: number) => {
         element.style.width = `${width * unit}px`;
         element.style.height = `${height * unit}px`;
@@ -1307,7 +1310,7 @@ function Salmon() {
       cancelAnimationFrame(frame);
       playing.forEach((animation) => animation.cancel());
     };
-  }, []);
+  }, [across]);
 
   return (
     // Hidden until it's set going, and with reduced motion it stays that way.
@@ -1332,15 +1335,70 @@ function Salmon() {
  * the sky, the scroll sets them off: each swims the whole way across as you come
  * to its part of the page, and if you scroll back up past it, turns round where
  * it is and swims back. They fade in and out at the banks, where they come out
- * from under the trees. Drawn facing right, at their waterline.
+ * from under the trees. Drawn facing right, at their waterline. Whether each
+ * turns up on a visit, and when and which way, is the river's cast (below).
  */
 const SWIMMERS = [
-  // `at` is how far down the page (0 to 1) it sets off; `speed` is in the river's
-  // units a second; `y` how far down the valley, so how near; `size` in vh.
-  // `box` is its drawing's, and `waterline` how far down it the water is.
-  { kind: "ducks", y: 138, from: 95, to: 905, speed: 40, at: 0.3, size: 11, box: [220, 44], waterline: 34.5 },
-  { kind: "beaver", y: 162, from: 70, to: 930, speed: 70, at: 0.62, size: 7, box: [150, 40], waterline: 31.5 },
+  // `speed` is in the river's units a second; `y` how far down the valley, so
+  // how near; `size` in vh. `box` is its drawing's, and `waterline` how far down
+  // it the water is.
+  { kind: "ducks", y: 138, from: 95, to: 905, speed: 40, size: 11, box: [220, 44], waterline: 34.5 },
+  { kind: "beaver", y: 162, from: 70, to: 930, speed: 70, size: 7, box: [150, 40], waterline: 31.5 },
 ] as const;
+
+/** A swimmer's crossing on a visit: how far down the page (0 to 1) it sets off, from which bank, and how briskly. */
+type Crossing = { at: number; reverse: boolean; pace: number };
+
+type RiverCast = {
+  ducks: Crossing | null;
+  beaver: Crossing | null;
+  /** Where along the falls the salmon leaps, as a fraction of their width. */
+  salmon: { across: number } | null;
+};
+
+/**
+ * Who turns up in the river on this visit (visit.ts), so it isn't the same show
+ * on every page: usually one or two of the ducks, the beaver and the salmon,
+ * now and then none, never all three. The swimmers set off somewhere in the
+ * first two thirds of the page, apart if both come, from either bank.
+ */
+function riverCast(seed: number): RiverCast {
+  const random = seeded(seed ^ 0x51a70);
+  const roll = random();
+  const count = roll < 0.15 ? 0 : roll < 0.65 ? 1 : 2;
+  const order = (["ducks", "beaver", "salmon"] as const)
+    .map((kind) => ({ kind, order: random() }))
+    .sort((a, b) => a.order - b.order)
+    .map(({ kind }) => kind)
+    .slice(0, count);
+  const cast: RiverCast = { ducks: null, beaver: null, salmon: null };
+  const swimmers = order.filter((kind) => kind !== "salmon");
+  let at = 0.15 + random() * (swimmers.length > 1 ? 0.2 : 0.5);
+  swimmers.forEach((kind) => {
+    cast[kind] = { at, reverse: random() < 0.5, pace: 0.85 + random() * 0.35 };
+    at = Math.min(0.88, at + 0.25 + random() * 0.2);
+  });
+  if (order.includes("salmon")) cast.salmon = { across: 0.4 + random() * 0.25 };
+  return cast;
+}
+
+function useRiverCast() {
+  const seed = useVisitSeed();
+  return useMemo(() => (seed === null ? null : riverCast(seed)), [seed]);
+}
+
+/**
+ * Sends a mover off when it isn't in this visit's cast: it fades where it is,
+ * rather than vanishing mid-stroke or jumping back to where its journey began.
+ */
+function fadeAway(element: HTMLElement) {
+  const [x, y] = placeOf(element);
+  const opacity = Number(getComputedStyle(element).opacity);
+  element.getAnimations().forEach((animation) => animation.cancel());
+  element.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
+  element.style.opacity = "0";
+  if (opacity > 0.01) element.animate([{ opacity }, { opacity: 0 }], { duration: 600, easing: "ease-out" });
+}
 
 const waterline = { ...line, stroke: "rgba(255,255,255,0.75)", strokeWidth: 1.2 } as const;
 const fine = { ...ink, strokeWidth: 1.1 } as const;
@@ -1436,24 +1494,31 @@ function BeaverShape() {
 function Swimmer({ index }: { index: number }) {
   const swimmer = SWIMMERS[index];
   const self = useRef<HTMLDivElement>(null);
+  const crossing = useRiverCast()?.[swimmer.kind] ?? null;
 
   useEffect(() => {
     const element = self.current;
     const river = document.querySelector<SVGSVGElement>("[data-river]");
-    if (!element || !river) return;
+    // Not on this visit: it stays out of sight.
+    if (!element || !river || !crossing) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const { from, to, speed, at } = SWIMMERS[index];
+    const { from, to, speed } = SWIMMERS[index];
+    const { at, reverse, pace } = crossing;
     const face = element.firstElementChild as Element;
     let out = false;
-    // The river's units in px, and how far it swims, from its start.
+    // The river's units in px, and how far it swims, from the left bank.
     let unit = 1;
     const leg = () => (to - from) * unit;
+    // From the left bank to the right, or the other way about.
+    const start = () => (reverse ? leg() : 0);
+    const end = () => (reverse ? 0 : leg());
+    const heading = reverse ? -1 : 1;
     const trip = () => ({
-      speed: speed * unit,
+      speed: speed * pace * unit,
       // Out from under the trees, and back under them at the far bank.
       shown: (x: number) => Math.min(1, Math.max(0, Math.min(x, leg() - x) / (60 * unit))),
     });
-    const rest = () => place(element, face, out ? leg() : 0, out ? 1 : -1, trip());
+    const rest = () => place(element, face, out ? end() : start(), out ? heading : -heading, trip());
     const measure = () => {
       unit = river.getBoundingClientRect().width / VALLEY.width;
       if (!element.getAnimations().length) rest();
@@ -1469,7 +1534,7 @@ function Swimmer({ index }: { index: number }) {
       const going = p >= at ? true : p < at - 0.05 ? false : out;
       if (going === out) return;
       out = going;
-      go(element, face, { to: going ? leg() : 0, ...trip() });
+      go(element, face, { to: going ? end() : start(), ...trip() });
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(check);
@@ -1483,9 +1548,10 @@ function Swimmer({ index }: { index: number }) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", measure);
       cancelAnimationFrame(frame);
-      element.getAnimations().forEach((animation) => animation.cancel());
+      // On to another page: whatever comes next starts from its own bank.
+      fadeAway(element);
     };
-  }, [index]);
+  }, [index, crossing]);
 
   const { left, bottom } = riverAt(swimmer.from, swimmer.y);
   const width = `min(${swimmer.size}vh, ${swimmer.size * 2}vw)`;

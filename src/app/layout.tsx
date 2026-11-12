@@ -7,6 +7,8 @@ import { Header } from "@/components/layout/Header";
 import { Sky } from "@/components/layout/Sky";
 import { Scenery } from "@/components/layout/Scenery";
 import { FogBanks } from "@/components/layout/FogBanks";
+import { PageWeather } from "@/components/layout/PageWeather";
+import { Rise } from "@/components/layout/Rise";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessSchema } from "@/lib/structured-data";
@@ -55,6 +57,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${bodyFont.variable} ${fraunces.variable} h-full antialiased`}
+      // Named here, inline, so React lets the whole view take part in the
+      // fog between pages (PageWeather.tsx) rather than cancelling it.
+      style={{ viewTransitionName: "root" }}
     >
       <body className="flex min-h-full flex-col font-sans text-ink-900">
         <a
@@ -66,6 +71,8 @@ export default function RootLayout({
         <JsonLd data={localBusinessSchema()} />
         <Sky />
         <FogBanks />
+        <Rise />
+        <PageWeather />
         <Header />
         {/* The scenery sticks to the bottom of the screen within this box, which ends
             where the river goes over the edge in the footer, so that's where it

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -29,9 +29,9 @@ export default function NeurodivergentLearnersPage() {
 
       <Section space="page" width="narrow">
         <nav aria-label="Breadcrumb" className="text-sm text-ink-500">
-          <Link href="/lessons" className="inline-block py-2 font-semibold text-marigold-800 hover:underline">
-            ← Lessons
-          </Link>
+          <BackLink href="/lessons" className="text-marigold-800">
+            Lessons
+          </BackLink>
         </nav>
         <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-5xl">
           {copy.h1}
@@ -44,12 +44,12 @@ export default function NeurodivergentLearnersPage() {
       </Section>
 
       <Section width="narrow" space="tight">
-        <SectionHeading title={copy.story.title} />
-        <div className="mt-4 space-y-4 text-lg leading-relaxed text-ink-700">
-          {copy.story.paragraphs.map((p) => (
-            <p key={p}>{p}</p>
+        <SectionHeading title={copy.approach.title} />
+        <ul className="list-asterisk mt-4 space-y-3 text-lg leading-relaxed text-ink-700">
+          {copy.approach.items.map((item) => (
+            <li key={item}>{item}</li>
           ))}
-        </div>
+        </ul>
       </Section>
 
       <Section width="narrow">

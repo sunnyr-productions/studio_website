@@ -23,10 +23,9 @@ export default function ContactPage() {
           <p
             className="mt-3 max-w-lg leading-relaxed text-ink-700"
           >
-            Tell me what you’d like to learn or what you’re making. Half-baked is fine. I read these
-            myself and answer around my day job, so expect to hear back within{" "}
-            {siteConfig.responseTime.lessons} about lessons and within{" "}
-            {siteConfig.responseTime.studio} with a studio quote.
+            Tell me what you’d like to learn or what you’re working on. I’ll reply within{" "}
+            {siteConfig.responseTime.lessons} about lessons, or {siteConfig.responseTime.studio} with
+            a studio quote.
           </p>
 
           <div className="mt-8 max-w-2xl">
@@ -40,13 +39,13 @@ export default function ContactPage() {
           <p className="font-semibold text-ink-900">Prefer email?</p>
           <a
             href={`mailto:${siteConfig.email}`}
-            className="mt-1 block transition-colors hover:text-marigold-600"
+            className="link-drawn mt-1 inline-block"
           >
             {siteConfig.email}
           </a>
 
-          <p className="mt-6 font-semibold text-ink-900">Just want to book a lesson?</p>
-          <Link href="/lessons#book" className="mt-1 block transition-colors hover:text-marigold-600">
+          <p className="mt-6 font-semibold text-ink-900">Ready to book a lesson?</p>
+          <Link href="/lessons#book" className="link-drawn mt-1 inline-block">
             Go to the calendar
           </Link>
         </div>

@@ -4,9 +4,12 @@ import { useEffect, useRef, type CSSProperties } from "react";
 
 /**
  * The sun, behind the logo and behind the header's cloud: a radiant golden disc
- * with a wide corona, which the cloud's frosted glass softens into light shining
- * through it, evenly, so the cloud stays one even layer. Centred on the mark, three
- * times its height. Below the cloud its rays reach out across the sky (SunRays).
+ * with a close corona, which the cloud's frosted glass softens into light shining
+ * through it, evenly, so the cloud stays one even layer. Centred on the mark, its
+ * corona kept inside the cloud: the header is in front of the page, so anything
+ * reaching past the cloud would shine over the copy as it scrolls under. Its wide
+ * glow (SunGlow) is in the sky instead, behind everything on the page, and below
+ * the cloud its rays reach out across the sky (SunRays).
  *
  * The page runs through a day from sunrise at the top to sunset at the footer
  * (--sky-day in globals.css), and the sun follows it as you scroll: soft gold at
@@ -59,12 +62,14 @@ export function Sun() {
     // which would have the browser restyle everything on every frame of a scroll;
     // and only when they've changed.
     const rays = document.querySelector<HTMLElement>(".sun-rays");
+    const glow = document.querySelector<HTMLElement>(".sun-glow");
     const header = svg.closest("header");
     // In steps too small to see, so a scroll doesn't repaint them on every frame.
-    // The rays and the light in the header's cloud are big and soft, so theirs are
-    // coarser: a few dozen down the page.
+    // The glow, the rays and the light in the header's cloud are big and soft, so
+    // theirs are coarser: a few dozen down the page.
     const lit: [HTMLElement | SVGSVGElement | null, number, string][] = [
       [svg, 240, ""],
+      [glow, 40, ""],
       [rays, 40, ""],
       [header, 40, ""],
     ];
@@ -87,6 +92,12 @@ export function Sun() {
       if (rays) {
         rays.style.left = `${x.toFixed(0)}px`;
         rays.style.top = `${y.toFixed(0)}px`;
+      }
+      // The glow is as wide as the sun's whole box, three times the mark's height.
+      if (glow) {
+        glow.style.left = `${x.toFixed(0)}px`;
+        glow.style.top = `${y.toFixed(0)}px`;
+        glow.style.width = glow.style.height = `${box.height.toFixed(0)}px`;
       }
       if (header) {
         const bar = header.getBoundingClientRect();
@@ -145,10 +156,11 @@ export function Sun() {
       style={Object.fromEntries(NAMES.map((name, i) => [name, dawn[i]]))}
     >
       <defs>
+        {/* From the disc's edge (26 of 46) out to nothing, inside the cloud. */}
         <radialGradient id="sun-corona">
-          <stop offset="0.2" style={{ stopColor: "var(--sun-core)" }} />
-          <stop offset="0.36" style={{ stopColor: "var(--sun-glow)" }} stopOpacity="0.95" />
-          <stop offset="0.6" style={{ stopColor: "var(--sun-haze)" }} stopOpacity="0.5" />
+          <stop offset="0.5" style={{ stopColor: "var(--sun-core)" }} />
+          <stop offset="0.6" style={{ stopColor: "var(--sun-glow)" }} stopOpacity="0.9" />
+          <stop offset="0.8" style={{ stopColor: "var(--sun-haze)" }} stopOpacity="0.4" />
           <stop offset="1" style={{ stopColor: "var(--sun-rim)" }} stopOpacity="0" />
         </radialGradient>
         <radialGradient id="sun-disc" cx="0.45" cy="0.42" r="0.6">
@@ -157,10 +169,19 @@ export function Sun() {
           <stop offset="1" style={{ stopColor: "var(--sun-rim)" }} />
         </radialGradient>
       </defs>
-      <circle r="100" fill="url(#sun-corona)" />
+      <circle r="46" fill="url(#sun-corona)" />
       <circle r="26" fill="url(#sun-disc)" />
     </svg>
   );
+}
+
+/**
+ * The sun's wide glow, in the sky behind the page: the back layer of clouds and
+ * the things far off pass in front of it, and the page's fog and copy are in
+ * front of all of them. Sun puts it where the sun is and paints it its colours.
+ */
+export function SunGlow() {
+  return <div aria-hidden="true" className="sun-glow" />;
 }
 
 /** The rays: [angle from straight down, how wide, how long], the long ones near the middle. */

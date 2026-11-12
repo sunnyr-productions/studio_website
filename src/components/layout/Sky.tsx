@@ -4,7 +4,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { go, place } from "./journey";
 import { skyThings, type SkyThingName } from "./SkyThings";
-import { SunRays } from "./Sun";
+import { SunGlow, SunRays } from "./Sun";
+import { useVisitSeed } from "./visit";
 
 /**
  * What's up in the sky behind the page: soft, sunlit clouds and the odd thing
@@ -22,11 +23,10 @@ import { SunRays } from "./Sun";
  * each, it crosses the whole screen at its own pace, and if you scroll back up
  * past it, turns round where it is and goes back the way it came, facing back
  * (journey.ts), so none is ever left stopped partway.
- * They're seeded from the page's path, so each
- * page has its own that stay the same between visits and match on server and
- * client: one to three of them, by the page's length, spread evenly down it, so
- * with the salmon at the falls and the ducks and the beaver in the river
- * (Scenery) there are four to six things on the move on a page. The things all fly behind
+ * They're dealt afresh on every visit to a page (visit.ts), so the show is never
+ * quite the same twice: one to three of them, about one for every screen or so
+ * of the page give or take one, spread down it, alongside whichever of the
+ * swimmers and the salmon turn up this time (Scenery). The things all fly behind
  * the panels, so they never cross the copy. The far-off ones (planes, balloons,
  * birds, kites) are behind the forest at the bottom of the screen, and the near
  * ones go behind the far shore too, rather than over the river.
@@ -118,13 +118,14 @@ const CLOUDS = (() => {
   return [...layer(4, false), ...layer(3, true)];
 })();
 
-function buildSky(pathname: string) {
-  const random = seeded(hash(pathname));
+function buildSky(pathname: string, seed: number) {
+  const random = seeded(seed ^ hash(pathname));
 
-  // Deal the things out like a shuffled deck, so repeats stay far apart.
+  // Deal the things out like a shuffled deck, so repeats stay far apart. The
+  // page's own thing leads about half the time.
   const deck: SkyThingName[] = [];
   const first = FIRST_THING[pathname];
-  if (first) deck.push(first);
+  if (first && random() < 0.5) deck.push(first);
   while (deck.length < THINGS.most) {
     const shuffled = ALL_THINGS.map((name) => ({ name, order: random() }))
       .sort((a, b) => a.order - b.order)
@@ -155,11 +156,17 @@ function buildSky(pathname: string) {
     };
   });
 
-  return things;
+  // One fewer or one more than the page's length calls for, now and then.
+  const roll = random();
+  const shift = roll < 0.25 ? -1 : roll > 0.8 ? 1 : 0;
+
+  return { things, shift };
 }
 
 type Cloud = (typeof CLOUDS)[number];
-type Thing = ReturnType<typeof buildSky>[number];
+type Thing = ReturnType<typeof buildSky>["things"][number];
+
+const NO_THINGS = { things: [] as Thing[], shift: 0 };
 
 /**
  * One cloud: its puffs merged into a single soft shape, lit from above and
@@ -230,7 +237,8 @@ function ThingShape({ thing, index }: { thing: Thing; index: number }) {
 
 export function Sky() {
   const pathname = usePathname();
-  const things = useMemo(() => buildSky(pathname), [pathname]);
+  const seed = useVisitSeed();
+  const { things, shift } = useMemo(() => (seed === null ? NO_THINGS : buildSky(pathname, seed)), [pathname, seed]);
   const sky = useRef<HTMLDivElement>(null);
 
   // Nothing in the sky comes into the footer: the clouds' layers (held to the
@@ -239,25 +247,46 @@ export function Sky() {
     const clouds = Array.from(sky.current?.querySelectorAll<HTMLElement>("[data-clouds]") ?? []);
     const flyers = Array.from(sky.current?.querySelectorAll<HTMLElement>("[data-things]") ?? []);
     const falls = document.querySelector("[data-falls]");
+    const root = sky.current;
+    if (!falls || !root) return;
     let frame = 0;
-    const clearFooter = () => {
+    // Where the falls begin, down the page. Measured only when the page's
+    // layout changes, so scrolling never has to measure anything: a
+    // measurement mid-scroll makes the browser lay the page out again then and
+    // there, whenever something has just changed (like content rising in).
+    let fallsTop = 0;
+    let cloudClip = "";
+    // The clouds are held to the screen, so they're cut off where the falls
+    // come up it, which changes as you scroll; only written when it does.
+    const clipClouds = () => {
       frame = 0;
-      if (!falls || !sky.current) return;
+      const belowScreen = Math.max(0, Math.round(window.innerHeight - (fallsTop - window.scrollY)));
+      const clip = belowScreen ? `inset(0 0 ${belowScreen}px 0)` : "";
+      if (clip === cloudClip) return;
+      cloudClip = clip;
+      clouds.forEach((layer) => (layer.style.clipPath = clip));
+    };
+    // The things are down the page with it, so their cut only moves when the
+    // page's layout does.
+    const measure = () => {
       const top = falls.getBoundingClientRect().top;
-      const belowScreen = Math.max(0, window.innerHeight - top);
-      clouds.forEach((layer) => (layer.style.clipPath = belowScreen ? `inset(0 0 ${belowScreen}px 0)` : ""));
-      const belowPage = Math.max(0, sky.current.getBoundingClientRect().bottom - top);
+      fallsTop = top + window.scrollY;
+      const belowPage = Math.max(0, root.getBoundingClientRect().bottom - top);
       flyers.forEach((layer) => (layer.style.clipPath = `inset(0 0 ${belowPage}px 0)`));
+      clipClouds();
     };
     const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(clearFooter);
+      if (!frame) frame = requestAnimationFrame(clipClouds);
     };
-    clearFooter();
+    measure();
+    const watcher = new ResizeObserver(measure);
+    watcher.observe(document.body);
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
+    window.addEventListener("resize", measure, { passive: true });
     return () => {
+      watcher.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", measure);
       cancelAnimationFrame(frame);
     };
   }, []);
@@ -303,7 +332,7 @@ export function Sky() {
       pageTop = root.getBoundingClientRect().top + window.scrollY;
       const end = falls ? falls.getBoundingClientRect().top + window.scrollY - pageTop : root.offsetHeight;
       const room = Math.max(0, end - window.innerHeight * 0.55 - THINGS.first);
-      const count = Math.min(THINGS.most, Math.max(THINGS.fewest, 1 + Math.round(room / THINGS.every)));
+      const count = Math.min(THINGS.most, Math.max(THINGS.fewest, 1 + Math.round(room / THINGS.every) + shift));
       const gap = Math.max(THINGS.closest, room / Math.max(1, count - 1));
       elements.forEach((element) => {
         const i = Number(element.dataset.thing);
@@ -389,13 +418,15 @@ export function Sky() {
       cancelAnimationFrame(frame);
       elements.forEach((element) => element.getAnimations().forEach((animation) => animation.cancel()));
     };
-  }, [things]);
+  }, [things, shift]);
 
   const cloudLayer = (front: boolean) => (
     <div
       data-clouds
       className={`fixed inset-0 overflow-hidden ${front ? "z-[var(--z-cloud-front)]" : "z-[var(--z-cloud-back)]"}`}
     >
+      {/* First, so every cloud and the far-off things pass in front of it. */}
+      {!front && <SunGlow />}
       {CLOUDS.map((cloud, i) => (cloud.front === front ? <CloudShape key={i} cloud={cloud} index={i} /> : null))}
       {/* With the nearer clouds, so they keep out of the footer too. */}
       {front && <SunRays />}
@@ -412,7 +443,7 @@ export function Sky() {
           className={`absolute inset-0 ${far ? "z-[var(--z-thing-far)]" : "z-[var(--z-thing-near)]"}`}
         >
           {things.map((thing, i) =>
-            thing.far === far ? <ThingShape key={`${pathname}-thing-${i}`} thing={thing} index={i} /> : null,
+            thing.far === far ? <ThingShape key={`${seed}-thing-${i}`} thing={thing} index={i} /> : null,
           )}
         </div>
       ))}
