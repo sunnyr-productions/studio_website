@@ -55,6 +55,14 @@ function riseShift(block: Element, content: Element) {
 const around = (x: number, y: number, width: number, height: number, [px, py]: [number, number], round: number) =>
   `<rect x="${(x - px).toFixed(0)}" y="${(y - py).toFixed(0)}" width="${(width + 2 * px).toFixed(0)}" height="${(height + 2 * py).toFixed(0)}" rx="${round}"/>`;
 
+/**
+ * What each bank and the header were last drawn from. A mask handed over again
+ * is drawn again, blurs and all, which is slow on a bank the size of a section,
+ * and most reshapes (a font or a photo arriving, a question opening elsewhere)
+ * leave most clouds exactly as they were.
+ */
+const drawn = new WeakMap<HTMLElement, string>();
+
 function shape(panel: HTMLElement) {
   const content = panel.nextElementSibling;
   if (!content) return;
@@ -78,6 +86,8 @@ function shape(panel: HTMLElement) {
     { blocks: boxes.map(([x, y, w, h]) => cloud(x, y, w, h, random, REACH, [24, 42])), density: 0.5, soften: 13 },
     { blocks: boxes.map(([x, y, w, h]) => around(x, y, w, h, [12, 10], 14)), density: 1, soften: 7 },
   ]);
+  if (drawn.get(panel) === mask) return;
+  drawn.set(panel, mask);
   panel.style.setProperty("-webkit-mask", mask);
   panel.style.setProperty("mask", mask);
 }
@@ -97,6 +107,9 @@ function shapeHeader(header: HTMLElement) {
   const puff: [number, number] = [ey * 0.75, ey * 1.1];
   const clouds = cloud(ex + 10, ey + 4, box.width - 20, box.height - 8, random, [0, 0], puff, { top: true, bottom: false, sides: false });
   const [width, height] = [box.width + 2 * ex, box.height + 2 * ey];
+  const key = `${width.toFixed(0)}x${height.toFixed(0)}:${clouds}`;
+  if (drawn.get(header) === key) return;
+  drawn.set(header, key);
   header.style.setProperty("--cloud", maskOf(width, height, [{ blocks: [clouds], density: 1, soften: 4 }]));
   // One layer, so none of the stand-in's compositing.
   header.style.setProperty("--cloud-composite", "add");

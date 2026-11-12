@@ -825,16 +825,30 @@ body {
   }
 
   /* In a box 128% of the medallion's, centred on it, so the rays reach past
-     its edge without taking up room in the layout. */
+     its edge without taking up room in the layout. The box grows as you
+     point at the medallion, the inner one swings, and each set of rays in it
+     breathes: three boxes, so each moves one way only, which keeps all of it
+     on the compositor. */
   .frame-rays {
     position: absolute;
     left: -14%;
     top: -14%;
     width: 128%;
     height: 128%;
-    overflow: visible;
     pointer-events: none;
     transition: scale var(--dur-lift) var(--ease-settle);
+  }
+
+  .frame-rays-swing,
+  .frame-ray-set {
+    position: absolute;
+    inset: 0;
+  }
+
+  .frame-ray-set svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
   }
 
   .frame-ray-ink,
@@ -1019,7 +1033,9 @@ body {
 
 /* Paper grain — a faint fixed noise layer over the whole site so flat cream
    fields read as warm paper, not a flat CSS color. Cheap: one fixed overlay,
-   not per-element. */
+   not per-element, and laid over plainly rather than multiplied in, since a
+   blend mode on a layer the size of the screen has the whole screen blended
+   again on every frame anything moves; at this strength it looks the same. */
 body::before {
   content: "";
   position: fixed;
@@ -1027,7 +1043,6 @@ body::before {
   z-index: 9999;
   pointer-events: none;
   opacity: 0.035;
-  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -1582,9 +1597,11 @@ body::before {
     }
   }
 
+  /* The arrival doesn't hold its end, so once it's done the slow turn is the
+     only thing moving the asterisk, and the compositor can run it alone. */
   .nav-asterisk {
     animation:
-      asterisk-arrive 700ms var(--ease-puff) both,
+      asterisk-arrive 700ms var(--ease-puff) backwards,
       asterisk-turn 40s linear 700ms infinite;
   }
 
@@ -1641,26 +1658,30 @@ body::before {
   }
 
   /* The medallion's rays (Frame.tsx) swing gently as a fan, like the sun's,
-     and each breathes out and back a beat after the one before, so a slow
-     wave runs round. Hovering, they reach a little further, like the sun
-     coming out. */
+     and the long and short rays breathe out and back in turn, like a sun
+     twinkling. Hovering, they reach a little further, like the sun coming
+     out. Only scale, rotation and opacity, so none of it is redrawn. */
   @keyframes ray-breathe {
     from {
-      transform: translateY(1.5px);
+      scale: 0.97;
       opacity: 0.7;
     }
     to {
-      transform: translateY(-2.5px);
+      scale: 1.03;
       opacity: 1;
     }
   }
 
-  .frame-rays {
+  .frame-rays-swing {
     animation: sun-rays-swing 16s ease-in-out infinite alternate;
   }
 
-  .frame-ray {
-    animation: ray-breathe 3.6s ease-in-out var(--ray-delay) infinite alternate;
+  .frame-ray-set {
+    animation: ray-breathe 3.2s ease-in-out infinite alternate;
+  }
+
+  .frame-ray-set-short {
+    animation-delay: -3.2s;
   }
 
   .frame-medallion:hover .frame-rays {
@@ -1706,6 +1727,12 @@ body::before {
     transform-box: fill-box;
     transform-origin: 50% 100%;
     animation: scenery-bob 0.9s ease-in-out var(--bob-delay, 0s) infinite alternate;
+  }
+
+  /* Moving parts of an SVG are redrawn every frame, so a swimmer that isn't in
+     the river on this visit (Scenery.tsx) keeps still. */
+  [data-swimmer]:not([data-swimming]) .scenery-bob {
+    animation: none;
   }
 
   /* Running water moves its dashes one whole pattern along (--flow-to) and starts

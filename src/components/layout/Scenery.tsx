@@ -37,14 +37,18 @@ const swaying = (degrees: number, seconds: number, start: number) =>
  * again, seamlessly, at `speed` units a millisecond. Moving dashes are redrawn
  * rather than slid along, so a slow run can be given a number of `steps` a second
  * to move in, with none of them big enough to see, and be redrawn only that often.
+ * Its time is rounded to a whole number of steps, so every run given the same
+ * `steps` steps at the same instant: on their own clocks, a handful of runs
+ * between them had something to redraw almost every frame.
  */
 const flowing = (dash: string, speed: number, steps = 0) => {
   const pattern = dash.split(" ").reduce((sum, length) => sum + Number(length), 0);
   const seconds = pattern / speed / 1000;
+  const count = steps ? Math.max(1, Math.round(seconds * steps)) : 0;
   return {
     "--flow-to": -pattern,
-    "--flow-time": `${seconds.toFixed(2)}s`,
-    ...(steps ? { animationTimingFunction: `steps(${Math.round(seconds * steps)})` } : null),
+    "--flow-time": `${(steps ? count / steps : seconds).toFixed(3)}s`,
+    ...(steps ? { animationTimingFunction: `steps(${count})` } : null),
   } as CSSProperties;
 };
 
@@ -102,7 +106,15 @@ const woodsBark = [["#86705f", "#6f5c4e"], ["#8d8073", "#746a5f"], ["#7c6656", "
 type Point = [number, number];
 type Side = "left" | "right";
 
-const pt = (x: number, y: number) => `${x.toFixed(1)} ${y.toFixed(1)}`;
+/**
+ * A coordinate to a tenth, written as short as it can be (50 for 50.0, .5 for
+ * 0.5): the scenery is tens of thousands of them, all sent with every page.
+ */
+const num = (n: number) => {
+  const s = n.toFixed(1);
+  return s.endsWith(".0") ? s.slice(0, -2) : s.replace(/^(-?)0\./, "$1.");
+};
+const pt = (x: number, y: number) => `${num(x)} ${num(y)}`;
 const lerp = ([x0, y0]: Point, [x1, y1]: Point, t: number): Point => [x0 + (x1 - x0) * t, y0 + (y1 - y0) * t];
 
 /** A smooth curve on through the points (Catmull-Rom as cubic Béziers), to follow a move to the first. */
@@ -739,21 +751,23 @@ function FirShape({ tree }: { tree: Tree }) {
 
 function FernShape({ index }: { index: number }) {
   const fern = FERNS[index];
+  // Centred by a box of its own, swaying in another: a translate and the sway's
+  // transform on the one box would have the browser draw every frame of the
+  // sway itself, rather than hand it to the compositor.
   return (
-    <div
-      className={`scenery-sway absolute origin-bottom ${fern.centered ? "-translate-x-1/2" : ""}`}
-      style={{ ...fern.style, ...fern.sway }}
-    >
-      {/* Lighter in the line than the rest: all those teeth along the bottom of the
-          screen would otherwise blur into a dark band behind the copy. */}
-      <svg viewBox={`0 0 ${FERN_BOX.width} ${FERN_BOX.height}`} className="h-full w-full overflow-visible">
-        {fern.fronds.map((frond, i) => (
-          <g key={i}>
-            <path d={frond.leaf} fill={fern.green} {...ink} strokeOpacity={0.4} />
-            <path d={frond.rib} {...line} stroke={paint.fernRib} strokeWidth={1.2} />
-          </g>
-        ))}
-      </svg>
+    <div className={`absolute ${fern.centered ? "-translate-x-1/2" : ""}`} style={fern.style}>
+      <div className="scenery-sway h-full w-full origin-bottom" style={fern.sway}>
+        {/* Lighter in the line than the rest: all those teeth along the bottom of the
+            screen would otherwise blur into a dark band behind the copy. */}
+        <svg viewBox={`0 0 ${FERN_BOX.width} ${FERN_BOX.height}`} className="h-full w-full overflow-visible">
+          {fern.fronds.map((frond, i) => (
+            <g key={i}>
+              <path d={frond.leaf} fill={fern.green} {...ink} strokeOpacity={0.4} />
+              <path d={frond.rib} {...line} stroke={paint.fernRib} strokeWidth={1.2} />
+            </g>
+          ))}
+        </svg>
+      </div>
     </div>
   );
 }
@@ -1564,6 +1578,9 @@ function Swimmer({ index }: { index: number }) {
     <div
       ref={self}
       data-swimmer={swimmer.kind}
+      // Only bobs on visits it's in the river (.scenery-bob): the bob is drawn
+      // afresh every frame, so it shouldn't run for a swimmer nobody sees.
+      data-swimming={crossing ? "" : undefined}
       aria-hidden="true"
       className="absolute opacity-0"
       style={{
@@ -1805,8 +1822,9 @@ export function Scenery() {
             <path
               key={i}
               className="scenery-flow"
-              // A few pixels a second: thirty steps a second are each a fraction of one.
-              style={flowing(ripple.dash, ripple.speed, 30)}
+              // A few pixels a second: fifteen steps a second are each about a
+              // pixel, even on a wide screen, and the river's redrawn only that often.
+              style={flowing(ripple.dash, ripple.speed, 15)}
               d={ripple.d}
               {...line}
               stroke={paint.foam}

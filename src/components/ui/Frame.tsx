@@ -68,27 +68,46 @@ export function Frame({
   );
 }
 
-/** Long and short in turn, like the points of a drawn sun. */
-const TICKS = Array.from({ length: 16 }, (_, i) => ({ angle: i * 22.5, long: i % 2 === 0 }));
+/** The long rays point straight out and to the diagonals; the short ones sit between. */
+const LONG_RAYS = [0, 45, 90, 135, 180, 225, 270, 315];
+const SHORT_RAYS = LONG_RAYS.map((angle) => angle + 22.5);
+
+/**
+ * One set of ticks, each an ink line with the sun's colour drawn down its
+ * middle. It breathes on the wrapper rather than the drawing: the browser runs
+ * an animation on a plain box off the main thread, but not one on an <svg>.
+ */
+function RaySet({ angles, reach, className }: { angles: number[]; reach: number; className: string }) {
+  return (
+    <span className={`frame-ray-set ${className}`}>
+      <svg viewBox="-100 -100 200 200">
+        {angles.map((angle) => (
+          <g key={angle} transform={`rotate(${angle})`}>
+            <line x1="0" y1="-85" x2="0" y2={-reach} className="frame-ray-ink" />
+            <line x1="0" y1="-85" x2="0" y2={-reach} className="frame-ray-sun" />
+          </g>
+        ))}
+      </svg>
+    </span>
+  );
+}
 
 /**
  * The medallion's rays, in a box a little bigger than the medallion (see
  * .frame-rays): its ring reaches 78 units out from the middle, and the rays
- * start just past it. Each breathes in and out a beat after the one before, so
- * a slow wave runs round the sun.
+ * start just past it. The long rays and the short ones each breathe out and
+ * back in turn, like a sun twinkling, as the whole fan swings gently. Each set
+ * is a picture of its own, moved and faded whole, so the browser's compositor
+ * can run it without redrawing anything.
  */
 function Rays() {
   return (
-    <svg aria-hidden="true" viewBox="-100 -100 200 200" className="frame-rays">
-      {TICKS.map(({ angle, long }, i) => (
-        <g key={angle} transform={`rotate(${angle})`}>
-          <g className="frame-ray" style={{ "--ray-delay": `${(-i * 0.45).toFixed(2)}s` } as CSSProperties}>
-            <line x1="0" y1="-85" x2="0" y2={long ? -96 : -91} className="frame-ray-ink" />
-            <line x1="0" y1="-85" x2="0" y2={long ? -96 : -91} className="frame-ray-sun" />
-          </g>
-        </g>
-      ))}
-    </svg>
+    <span aria-hidden="true" className="frame-rays">
+      <span className="frame-rays-swing">
+        <RaySet angles={LONG_RAYS} reach={96} className="frame-ray-set-long" />
+        <RaySet angles={SHORT_RAYS} reach={91} className="frame-ray-set-short" />
+      </span>
+    </span>
   );
 }
 

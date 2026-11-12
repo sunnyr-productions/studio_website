@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { siteConfig } from "@/lib/site-config";
 import { LogoLockup } from "@/components/ui/LogoLockup";
 import { MobileNav } from "./MobileNav";
 import { NavLinks } from "./NavLinks";
@@ -12,11 +11,9 @@ export function Header() {
       <span aria-hidden="true" className="header-sunlight header-sunlight-glow" />
       <span aria-hidden="true" className="header-sunlight header-sunlight-rim" />
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 sm:px-6">
-        <Link
-          href="/"
-          aria-label={siteConfig.name}
-          className="group rounded-sm"
-        >
+        {/* Named by what it shows, "the sunny*r studio" (the mark is labelled
+            sunny*r), so the name matches the words you see. */}
+        <Link href="/" className="group rounded-sm">
           <LogoLockup behindMark={<Sun />} />
         </Link>
 

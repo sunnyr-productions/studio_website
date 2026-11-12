@@ -5,7 +5,9 @@ import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Photo, PhotoStrip } from "@/components/ui/Photo";
 import { Scrapbook, type ScrapbookItem } from "@/components/ui/Scrapbook";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getStudioPhotos, media } from "@/content/media";
+import { personSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
   title: "About Raul, Music Teacher & Audio Engineer in Corvallis",
@@ -51,8 +53,10 @@ const scrapbook: ScrapbookItem[] = [
 ];
 
 export default function AboutPage() {
+  const portrait = media.portrait.src;
   return (
     <>
+      <JsonLd data={personSchema(typeof portrait === "string" ? portrait : portrait.src)} />
       <Section space="page">
         <div className="grid gap-10 lg:grid-cols-[22rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr_auto]">
           <Photo

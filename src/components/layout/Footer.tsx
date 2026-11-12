@@ -17,11 +17,8 @@ export function Footer() {
       <div className="column-inset relative z-[var(--z-copy)]">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 pb-10 pt-8 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <Link
-            href="/"
-            aria-label={siteConfig.name}
-            className="group inline-block rounded-sm"
-          >
+          {/* Named by what it shows, like the header's. */}
+          <Link href="/" className="group inline-block rounded-sm">
             <LogoLockup />
           </Link>
           <p className="mt-4 font-display text-base italic text-marigold-800">

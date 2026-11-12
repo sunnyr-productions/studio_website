@@ -15,8 +15,11 @@ import { siteConfig } from "@/lib/site-config";
 
 const base = siteConfig.url;
 const STUDIO_ID = `${base}/#studio`;
+const PERSON_ID = `${base}/about#raul`;
 const LOGO = `${base}/images/sunnyr-logo.png`;
 const AUTHOR_NAME = "Raul";
+/** Raul as the author of a post or the founder of the studio: named, and pointing at his page. */
+const AUTHOR = { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME, url: `${base}/about` };
 
 type Faq = { q: string; a: string };
 type PostLike = { slug: string; title: string; excerpt: string; date: string };
@@ -43,6 +46,7 @@ export function localBusinessSchema() {
     image: LOGO,
     logo: LOGO,
     description: siteConfig.tagline,
+    founder: AUTHOR,
     email: siteConfig.email,
     address: {
       "@type": "PostalAddress",
@@ -105,8 +109,33 @@ export function blogPostingSchema(post: PostLike) {
     url,
     mainEntityOfPage: url,
     image: LOGO,
-    author: { "@type": "Person", name: AUTHOR_NAME },
+    author: AUTHOR,
     publisher: { "@id": STUDIO_ID },
+  };
+}
+
+/**
+ * Raul, on the About page: who runs the studio, what he knows, and where he
+ * studied, all as the page itself says. `image` is the portrait's path.
+ */
+export function personSchema(image: string) {
+  return {
+    "@context": "https://schema.org",
+    ...AUTHOR,
+    image: `${base}${image}`,
+    jobTitle: "Music teacher and audio engineer",
+    worksFor: { "@id": STUDIO_ID },
+    homeLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: siteConfig.location.city,
+        addressRegion: siteConfig.location.region,
+        addressCountry: siteConfig.location.country,
+      },
+    },
+    alumniOf: { "@type": "CollegeOrUniversity", name: "University of Oregon" },
+    knowsAbout: ["Guitar", "Singing", "Music production", "Audio engineering", "Mixing", "A cappella arranging"],
   };
 }
 

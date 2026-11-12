@@ -80,7 +80,8 @@ export default function Home() {
                   <Photo
                     photo={photo}
                     aspect="aspect-[4/3] sm:aspect-[4/5]"
-                    sizes="(min-width: 1024px) 200px, (min-width: 640px) 260px, 100vw"
+                    // On a phone it fills the card, inside the page's and the card's padding.
+                    sizes="(min-width: 1024px) 200px, (min-width: 640px) 260px, calc(100vw - 5rem)"
                     className="shrink-0 sm:w-2/5 sm:self-start"
                   />
                 )}

@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
   },
+  // AVIF first: photos come out much smaller than WebP at the same quality.
+  // Browsers without it get WebP, and the original JPEGs stay the source.
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
   // The old /services pages moved to /studio when the site split into two doors.
   async redirects() {
     return [
