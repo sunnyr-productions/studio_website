@@ -1501,6 +1501,42 @@ body::before {
   }
 }
 
+/* Light moving on the river (Scenery.tsx): soft pale patches on the water,
+   kept to the river's shape by its mask, drifting slowly downstream and
+   fading in and out (below). */
+.river-sheen {
+  pointer-events: none;
+  -webkit-mask: var(--river) 0 0 / 100% 100% no-repeat;
+  mask: var(--river) 0 0 / 100% 100% no-repeat;
+}
+
+.river-sheen > span {
+  position: absolute;
+  width: 44%;
+  height: 40%;
+  opacity: 0.45;
+  background: radial-gradient(closest-side, rgba(178, 220, 233, 0.32), transparent);
+}
+
+.river-sheen > span:nth-child(1) {
+  left: 24%;
+  top: 14%;
+}
+
+.river-sheen > span:nth-child(2) {
+  left: 48%;
+  top: 42%;
+  width: 52%;
+  height: 48%;
+}
+
+.river-sheen > span:nth-child(3) {
+  left: 6%;
+  top: 50%;
+  width: 40%;
+  height: 46%;
+}
+
 /* The thrush's notes (Scenery.tsx): just above its open beak, hidden unless
    they're drifting (below). */
 .song-note {
@@ -1735,6 +1771,37 @@ body::before {
 
   .menu-button:active {
     scale: 0.9;
+  }
+
+  /* The river's light drifts slowly downstream and back, brightening and
+     fading, each patch on its own beat. Only where and how bright, so the
+     compositor runs it. */
+  @keyframes river-sheen {
+    from {
+      opacity: 0.15;
+      translate: -5% -8%;
+    }
+    50% {
+      opacity: 0.85;
+    }
+    to {
+      opacity: 0.25;
+      translate: 7% 12%;
+    }
+  }
+
+  .river-sheen > span {
+    animation: river-sheen 13s ease-in-out infinite alternate;
+  }
+
+  .river-sheen > span:nth-child(2) {
+    animation-delay: -5s;
+    animation-duration: 17s;
+  }
+
+  .river-sheen > span:nth-child(3) {
+    animation-delay: -9s;
+    animation-duration: 15s;
   }
 
   /* The thrush's song: each note rises up and away from its beak, swaying a

@@ -523,8 +523,8 @@ const inRiver = (s: number, across: number): Point => {
   const t = k - i;
   return lerp(lerp(LEFT_BANK[i], LEFT_BANK[i + 1], t), lerp(RIGHT_BANK[i], RIGHT_BANK[i + 1], t), across);
 };
-const RIPPLES = Array.from({ length: 11 }, (_, i) => {
-  const across = 0.05 + (0.9 * i) / 10 + (currentRandom() - 0.5) * 0.04;
+const RIPPLES = Array.from({ length: 6 }, (_, i) => {
+  const across = 0.1 + (0.8 * i) / 5 + (currentRandom() - 0.5) * 0.06;
   const mid = 1 - Math.abs(across - 0.5) * 2;
   // Each line snakes gently as it comes, so its streaks are little curls of
   // water, not ticks: a few slow bends, a ripple on top of them.
@@ -536,12 +536,12 @@ const RIPPLES = Array.from({ length: 11 }, (_, i) => {
     const run = Array.from({ length: 22 }, (_, k): Point => at(from + ((to - from) * k) / 21));
     return `M${pt(...run[0])}${through(run)}`;
   };
-  const opacity = 0.35 + mid * 0.4 + currentRandom() * 0.15;
-  const width = 0.9 + mid * 0.6 + currentRandom() * 0.3;
+  const opacity = 0.28 + mid * 0.3 + currentRandom() * 0.1;
+  const width = 0.8 + mid * 0.35 + currentRandom() * 0.2;
   const speed = (0.006 + mid * 0.009) * (0.85 + currentRandom() * 0.3);
   return [
-    { d: course(0, 0.42), dash: streaks(3, [2, 5], [8, 20]), speed, opacity: opacity * 0.8, width: width * 0.8 },
-    { d: course(0.4, 1), dash: streaks(3, [6, 15], [12, 30]), speed: speed * 1.8, opacity, width },
+    { d: course(0, 0.42), dash: streaks(3, [2, 4], [14, 30]), speed, opacity: opacity * 0.8, width: width * 0.8 },
+    { d: course(0.4, 1), dash: streaks(3, [5, 12], [20, 44]), speed: speed * 1.8, opacity, width },
   ];
 }).flat();
 
@@ -597,6 +597,19 @@ const ROCKS = [
     style: { left, bottom: `calc(${bottom} - ${width} * ${drop})`, width, aspectRatio: `${ROCK_BOX.width} / ${ROCK_BOX.height}` },
   };
 }).filter((rock, i) => i >= FAR_STONES.length || Math.abs(rock.x - VALLEY.width / 2) < 72);
+
+/**
+ * The water's depth: hazy and pale far off where it catches the sky, deepening
+ * as it comes toward you, darker still down the channel in the middle, and
+ * bright in the shallows where it laps the gravel. And light moving on it: soft
+ * patches drifting slowly over the surface (.river-sheen in globals.css),
+ * inside the river's own shape (RIVER_MASK).
+ */
+const DEEP_CHANNEL = water(downstream(0.4), downstream(0.6));
+const SHALLOWS = [water(downstream(0), downstream(0.035)), water(downstream(0.965), downstream(1))];
+const RIVER_MASK = `url("data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VALLEY.width} ${VALLEY.height}" preserveAspectRatio="none"><path d="${RIVER}"/></svg>`,
+)}")`;
 
 /**
  * A wake below each stone out in the current: two short lines opening out
@@ -781,33 +794,43 @@ const PEBBLE_TONES = [
   ["#9fa5a4", "#838988"],
 ];
 
-/** The tile: stones packed close on a jittered grid, none crossing its edges, so it repeats without a seam. */
+/**
+ * The tile: stones packed close at random, mostly small, some middling and the
+ * odd big one, in all the tones, some flatter than others and lying at angles,
+ * none crossing its edges, so it repeats without a seam and without a grid.
+ */
 const GRAVEL_TILE = (() => {
-  const [w, h] = [120, 72];
-  let body = `<rect width="${w}" height="${h}" fill="#9d9483"/>`;
+  const [w, h] = [300, 180];
+  const tones = [...PEBBLE_TONES, ["#cfc6b3", "#b0a793"], ["#8f8a7f", "#75716a"]];
+  const shapes = tones.map(() => ({ lit: "", shade: "" }));
   let outline = "";
   let shine = "";
-  const shapes = PEBBLE_TONES.map(() => ({ lit: "", shade: "" }));
-  for (let row = 0; row < 6; row++) {
-    for (let col = 0; col < 6; col++) {
-      const rx = 7 + gravelRandom() * 3.2;
-      const ry = rx * (0.42 + gravelRandom() * 0.14);
-      const x = Math.min(w - rx - 0.8, Math.max(rx + 0.8, (col + 0.5 + (row % 2) * 0.5) * (w / 6.5) + (gravelRandom() - 0.5) * 4));
-      const y = Math.min(h - ry - 0.8, Math.max(ry + 0.8, (row + 0.5) * (h / 6) + (gravelRandom() - 0.5) * 3));
-      const tone = shapes[Math.floor(gravelRandom() * shapes.length)];
-      const [left, right] = [pt(x - rx, y), pt(x + rx, y)];
-      const oval = `M${left}A${num(rx)} ${num(ry)} 0 1 0 ${right}A${num(rx)} ${num(ry)} 0 1 0 ${left}Z`;
-      tone.lit += oval;
-      tone.shade += `M${left}A${num(rx)} ${num(ry)} 0 0 0 ${right}A${num(rx)} ${num(ry * 0.4)} 0 0 1 ${left}Z`;
-      outline += oval;
-      shine += `M${pt(x - rx * 0.55, y - ry * 0.3)}Q${pt(x - rx * 0.2, y - ry * 0.75)} ${pt(x + rx * 0.15, y - ry * 0.68)}`;
-    }
+  const placed: { x: number; y: number; rx: number; ry: number }[] = [];
+  for (let tries = 0; tries < 9000 && placed.length < 420; tries++) {
+    const size = gravelRandom();
+    const rx = size < 0.55 ? 4.5 + gravelRandom() * 3 : size < 0.9 ? 7.5 + gravelRandom() * 3.5 : 11 + gravelRandom() * 4;
+    const ry = rx * (0.36 + gravelRandom() * 0.26);
+    const x = rx + 1 + gravelRandom() * (w - 2 * rx - 2);
+    const y = rx * 0.6 + 1 + gravelRandom() * (h - rx * 1.2 - 2);
+    if (placed.some((q) => ((q.x - x) / (q.rx + rx)) ** 2 + ((q.y - y) / (q.ry + ry + 0.6)) ** 2 < 0.62)) continue;
+    placed.push({ x, y, rx, ry });
+    const tilt = (gravelRandom() - 0.5) * 40;
+    const [c, sn] = [Math.cos((tilt * Math.PI) / 180), Math.sin((tilt * Math.PI) / 180)];
+    const [left, right] = [pt(x - rx * c, y - rx * sn), pt(x + rx * c, y + rx * sn)];
+    const arc = (r: number) => `${num(rx)} ${num(r)} ${tilt.toFixed(0)}`;
+    const oval = `M${left}A${arc(ry)} 1 0 ${right}A${arc(ry)} 1 0 ${left}Z`;
+    const tone = shapes[Math.floor(gravelRandom() * shapes.length)];
+    tone.lit += oval;
+    tone.shade += `M${left}A${arc(ry)} 0 0 ${right}A${arc(ry * 0.4)} 0 1 ${left}Z`;
+    outline += oval;
+    if (rx > 6.5) shine += `M${pt(x - rx * 0.5, y - ry * 0.35)}Q${pt(x - rx * 0.15, y - ry * 0.75)} ${pt(x + rx * 0.2, y - ry * 0.65)}`;
   }
+  let body = `<rect width="${w}" height="${h}" fill="#a39a88"/>`;
   shapes.forEach(({ lit, shade }, i) => {
-    if (lit) body += `<path d="${lit}" fill="${PEBBLE_TONES[i][0]}"/><path d="${shade}" fill="${PEBBLE_TONES[i][1]}"/>`;
+    if (lit) body += `<path d="${lit}" fill="${tones[i][0]}"/><path d="${shade}" fill="${tones[i][1]}"/>`;
   });
-  body += `<path d="${outline}" fill="none" stroke="#1f2430" stroke-opacity="0.4" stroke-width="0.9"/>`;
-  body += `<path d="${shine}" fill="none" stroke="#fff" stroke-opacity="0.6" stroke-width="1" stroke-linecap="round"/>`;
+  body += `<path d="${outline}" fill="none" stroke="#1f2430" stroke-opacity="0.35" stroke-width="0.8"/>`;
+  body += `<path d="${shine}" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="0.9" stroke-linecap="round"/>`;
   return `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${body}</svg>`)}")`;
 })();
 
@@ -840,9 +863,9 @@ function gravelMask(from: number, to: number, widen = 1) {
 
 /** The three reaches: where they run down the valley, and how big a tile of stones is there, in vh. */
 const GRAVEL = [
-  { from: 50, to: 100, tile: 4.6 },
-  { from: 94, to: 150, tile: 8.5 },
-  { from: 144, to: 222, tile: 14 },
+  { from: 50, to: 100, tile: 11 },
+  { from: 94, to: 150, tile: 20 },
+  { from: 144, to: 222, tile: 34 },
 ]
   // On a phone the river's box is squeezed across, so the band's drawn three
   // times as wide to cover as much ground (.gravel-bed in globals.css).
@@ -2043,15 +2066,32 @@ export function Scenery() {
           <path d={BANK_EDGE} {...line} />
         </svg>
         <svg data-river viewBox={`0 0 ${VALLEY.width} ${VALLEY.height}`} preserveAspectRatio="none" className={riverBox}>
+          <defs>
+            <linearGradient id="river-depth" gradientUnits="userSpaceOnUse" x1="0" y1="56" x2="0" y2="216">
+              <stop offset="0" stopColor="#8fbccb" stopOpacity="0.6" />
+              <stop offset="0.3" stopColor="#4f8aa2" stopOpacity="0.12" />
+              <stop offset="1" stopColor="#1d4a60" stopOpacity="0.5" />
+            </linearGradient>
+          </defs>
           <path d={RIVER} fill={paint.water} />
           <path d={SKY_IN_WATER} fill={paint.skyInWater} />
+          <path d={DEEP_CHANNEL} fill="#244f66" fillOpacity={0.22} />
           {TREES_IN_WATER.map((d, i) => (
             <path key={i} d={d} fill={paint.treesInWater} />
+          ))}
+          <path d={RIVER} fill="url(#river-depth)" />
+          {SHALLOWS.map((d, i) => (
+            <path key={i} d={d} fill="#6aa6ae" fillOpacity={0.55} />
           ))}
           {RIVER_BANKS.map((d, i) => (
             <path key={i} d={d} {...line} />
           ))}
         </svg>
+        <div aria-hidden="true" className={`${riverBox} river-sheen`} style={{ "--river": RIVER_MASK } as CSSProperties}>
+          <span />
+          <span />
+          <span />
+        </div>
         {/* The ripples are a drawing of their own on a layer of its own, so that as
             they run, they're all that's redrawn, not the valley round them. */}
         <svg viewBox={`0 0 ${VALLEY.width} ${VALLEY.height}`} preserveAspectRatio="none" className={`${riverBox} will-change-transform`}>
