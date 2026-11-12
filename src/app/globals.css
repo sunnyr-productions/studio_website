@@ -1537,13 +1537,26 @@ body::before {
   height: 46%;
 }
 
+/* The thrush's beak, shut, with the open one over it hidden; they take turns
+   with each note (below). Still, it sits with its beak shut. */
+.thrush-beak {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.thrush-beak-open {
+  opacity: 0;
+}
+
 /* The thrush's notes (Scenery.tsx): just above its open beak, hidden unless
    they're drifting (below). */
 .song-note {
   position: absolute;
-  left: 80%;
-  top: -30%;
-  width: 30%;
+  left: 78%;
+  top: -42%;
+  width: 40%;
   aspect-ratio: 20 / 22;
   opacity: 0;
   pointer-events: none;
@@ -1825,6 +1838,38 @@ body::before {
 
   .song-note {
     animation: song-note 4.8s ease-out var(--note-delay) infinite;
+  }
+
+  /* Its beak opens as each note leaves it (a note every 1.6s, in step with
+     the notes' own beat) and shuts again between them. */
+  @keyframes beak-open {
+    0%,
+    32% {
+      opacity: 1;
+    }
+    38%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes beak-shut {
+    0%,
+    32% {
+      opacity: 0;
+    }
+    38%,
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .thrush-beak-open {
+    animation: beak-open 1.6s linear infinite;
+  }
+
+  .thrush-beak-shut {
+    animation: beak-shut 1.6s linear infinite;
   }
 
   /* The medallion's rays (Frame.tsx) swing gently as a fan, like the sun's,

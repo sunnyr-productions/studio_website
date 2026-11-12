@@ -1538,7 +1538,8 @@ function Salmon() {
 /**
  * A varied thrush, the Northwest's own songbird, slate blue with an orange
  * breast and eyebrow, perched on a big mossy boulder by the left bank and
- * singing, beak open, its notes drifting up and away one after another
+ * singing, its beak opening as each note leaves it, the notes drifting up and
+ * away one after another
  * (.song-note in globals.css). Only where they are and how faint they are
  * changes, so they cost nothing to run; with reduced motion there are none.
  */
@@ -1562,15 +1563,34 @@ function ThrushShape() {
       <path d="M21 24L30 25.5M22 27L31 28.5" {...line} stroke="#e0872f" strokeWidth={1.4} />
       <circle cx="44" cy="15" r="8" fill="#3d4b5e" {...thrushInk} />
       <path d="M38.5 11.5Q45 7.5 51.5 12" {...line} stroke="#e0872f" strokeWidth={2} />
-      <path d="M51 13L58.5 10.5L52 15.2Z" fill="#2b2b2b" {...thrushInk} strokeWidth={1} />
-      <path d="M52 16.2L57.5 19.5L51 17.6Z" fill="#2b2b2b" {...thrushInk} strokeWidth={1} />
       <path d="M44 20Q48 21.5 51 17.8" {...line} stroke="#e0872f" strokeWidth={1.8} />
       <circle cx="47" cy="14" r="1.3" fill="var(--color-ink-fixed)" />
     </svg>
   );
 }
 
-/** An eighth note, and a pair beamed together, in the sky's notes' periwinkle. */
+/**
+ * The thrush's beak, open and shut, as two pictures over the bird that take
+ * turns showing (.thrush-beak in globals.css), open as each note leaves it.
+ * Pictures of their own rather than parts of the bird's drawing, so swapping
+ * them is only a fade, which the compositor runs.
+ */
+function BeakShape({ open }: { open: boolean }) {
+  return (
+    <svg viewBox="0 0 60 44" className={`thrush-beak ${open ? "thrush-beak-open" : "thrush-beak-shut"} overflow-visible`}>
+      {open ? (
+        <>
+          <path d="M51 13L58.5 10.5L52 15.2Z" fill="#2b2b2b" {...thrushInk} strokeWidth={1} />
+          <path d="M52 16.2L57.5 19.5L51 17.6Z" fill="#2b2b2b" {...thrushInk} strokeWidth={1} />
+        </>
+      ) : (
+        <path d="M51 13.4L58 15.4L51 17.4Z" fill="#2b2b2b" {...thrushInk} strokeWidth={1} />
+      )}
+    </svg>
+  );
+}
+
+/** An eighth note, and a pair beamed together, in marigold outlined in ink, to stand out against the trees and the water. */
 const NOTES = [
   "M6 15.5a3.2 2.4 -20 1 1 -6.4 0a3.2 2.4 -20 1 1 6.4 0ZM6 15V2q4 2 5.5 6",
   "M5 16.5a3 2.2 -20 1 1 -6 0a3 2.2 -20 1 1 6 0ZM14 14.5a3 2.2 -20 1 1 -6 0a3 2.2 -20 1 1 6 0ZM5 16V4l9 -2v12.5M5 4l9 -2",
@@ -1591,10 +1611,12 @@ function Thrush() {
       }}
     >
       <ThrushShape />
+      <BeakShape open={false} />
+      <BeakShape open />
       {[0, 1, 2].map((i) => (
         <span key={i} className="song-note" style={{ "--note-delay": `${i * -1.6}s` } as CSSProperties}>
           <svg viewBox="-4 -1 20 22" className="h-full w-full overflow-visible">
-            <path d={NOTES[i % 2]} fill="var(--color-periwinkle-600)" stroke="var(--color-periwinkle-600)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+            <path d={NOTES[i % 2]} fill="var(--color-marigold-500)" stroke="var(--color-ink-fixed)" strokeWidth={1.3} strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       ))}
