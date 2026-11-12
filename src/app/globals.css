@@ -461,7 +461,8 @@ body {
      curving over a shaded one. Set --stone-lit and --stone-shade; --stone-split
      is where the light ends, and it reaches further as a thing lifts toward you. */
   .stone,
-  .card {
+  .card,
+  .nav-tab {
     --stone-split: 56%;
     background: radial-gradient(
       130% 115% at 32% 12%,
@@ -578,6 +579,43 @@ body {
   .nav-link[aria-current="page"]::after,
   .surface-night .nav-link::after {
     background-image: var(--squiggle);
+  }
+
+  /* The header's links (NavLinks.tsx): the logo's lettering, the display face
+     in small spaced capitals like its "the" and "studio", each on a flat river
+     stone that's only there when it means something. The page you're on sits
+     on a sunlit marigold stone, outlined in ink like the buttons; pointing at
+     another lays a pale stone under it. Bare, the stone's colours are clear. */
+  .nav-tab {
+    --stone-lit: transparent;
+    --stone-shade: transparent;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.42rem 0.8rem 0.45rem;
+    border: var(--ink-line-light) solid transparent;
+    border-radius: var(--radius-sketch-pill);
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 100;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-900);
+  }
+
+  .nav-tab:hover {
+    --stone-lit: #fffaf1;
+    --stone-shade: #f1e4d2;
+    border-color: rgba(31, 36, 48, 0.45);
+    box-shadow: var(--glint), var(--ground);
+  }
+
+  .nav-tab[aria-current="page"] {
+    --stone-lit: #ffd06a;
+    --stone-shade: #f0a11f;
+    border-color: var(--ink);
+    box-shadow: var(--glint), var(--ground);
   }
 
   /* The logo's asterisk (Asterisk in NavLinks.tsx), outlined in the logo's
@@ -1449,6 +1487,32 @@ body::before {
   }
 }
 
+/* The gravel beds (Scenery.tsx): a texture of stones, masked to a band along
+   each bank, a wider one on a phone, where the river's box is squeezed across. */
+.gravel-bed {
+  -webkit-mask: var(--gravel) 0 0 / 100% 100% no-repeat;
+  mask: var(--gravel) 0 0 / 100% 100% no-repeat;
+}
+
+@media (max-width: 40rem) {
+  .gravel-bed {
+    -webkit-mask-image: var(--gravel-narrow);
+    mask-image: var(--gravel-narrow);
+  }
+}
+
+/* The thrush's notes (Scenery.tsx): just above its open beak, hidden unless
+   they're drifting (below). */
+.song-note {
+  position: absolute;
+  left: 80%;
+  top: -30%;
+  width: 30%;
+  aspect-ratio: 20 / 22;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* ---- Motion primitives -------------------------------------------------
    Everything here is gated on prefers-reduced-motion: no-preference, so a
    reduced-motion visitor just sees the final state with no transition. */
@@ -1572,6 +1636,22 @@ body::before {
     transition: rotate var(--dur-lift) var(--ease-settle);
   }
 
+  /* A header stone lifts a touch as you point at it, and settles when pressed. */
+  .nav-tab {
+    transition:
+      translate var(--dur-lift) var(--ease-settle),
+      box-shadow var(--dur-lift) var(--ease-settle),
+      border-color var(--dur-tap) ease-out;
+  }
+
+  .nav-tab:hover {
+    translate: 0 -1px;
+  }
+
+  .nav-tab:active {
+    translate: 0 0;
+  }
+
   /* A header link's ripple is drawn in from the left as you point at it, and
      flows while you're on it, like the text links' ripples. */
   .nav-link::after {
@@ -1655,6 +1735,29 @@ body::before {
 
   .menu-button:active {
     scale: 0.9;
+  }
+
+  /* The thrush's song: each note rises up and away from its beak, swaying a
+     little and fading as it goes, one after another. Only where they are and
+     how faint, so the compositor runs them. */
+  @keyframes song-note {
+    0% {
+      opacity: 0;
+      translate: 0 0;
+      rotate: -8deg;
+    }
+    15% {
+      opacity: 0.95;
+    }
+    100% {
+      opacity: 0;
+      translate: 160% -260%;
+      rotate: 14deg;
+    }
+  }
+
+  .song-note {
+    animation: song-note 4.8s ease-out var(--note-delay) infinite;
   }
 
   /* The medallion's rays (Frame.tsx) swing gently as a fan, like the sun's,

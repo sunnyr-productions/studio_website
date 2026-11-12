@@ -40,14 +40,14 @@ export function Asterisk({ className = "" }: { className?: string }) {
 }
 
 /**
- * The header's links on wide screens. Hovering one draws a ripple in under it
- * from the left; the page you're on keeps its ripple, in marigold, with the
- * asterisk over it (.nav-link in globals.css).
+ * The header's links on wide screens, in the logo's own lettering, each on a
+ * flat river stone: the page you're on on a sunlit one, with the asterisk over
+ * it, the one you point at on a pale one (.nav-tab in globals.css).
  */
 export function NavLinks() {
   const isCurrent = useCurrent();
   return (
-    <ul className="flex items-center gap-6">
+    <ul className="flex items-center gap-1">
       {siteConfig.nav.map((item) => {
         const current = isCurrent(item.href);
         return (
@@ -55,7 +55,7 @@ export function NavLinks() {
             <Link
               href={item.href}
               aria-current={current ? "page" : undefined}
-              className={`nav-link text-sm font-medium ${current ? "text-ink-900" : "text-ink-700"}`}
+              className="nav-tab"
             >
               {current && <Asterisk className="nav-asterisk-over" />}
               {item.label}

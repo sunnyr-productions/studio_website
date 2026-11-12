@@ -503,18 +503,47 @@ const STREAM = water(
 const SKY_IN_WATER = water(downstream(0.3), downstream(0.66));
 const TREES_IN_WATER = [water(downstream(0), downstream(0.1)), water(downstream(0.9), downstream(1))];
 
-/** Current lines down the river. Speed is in units a millisecond, quickest mid-stream. */
-const RIPPLES = [
-  { across: 0.14, dash: "2 21", speed: 0.008 },
-  { across: 0.29, dash: "4 26", speed: 0.011 },
-  { across: 0.43, dash: "5 23", speed: 0.014 },
-  { across: 0.57, dash: "3 27", speed: 0.013 },
-  { across: 0.71, dash: "4 24", speed: 0.011 },
-  { across: 0.86, dash: "2 19", speed: 0.008 },
-].map((ripple) => {
-  const points = downstream(ripple.across);
-  return { ...ripple, d: `M${pt(...points[0])}${through(points)}` };
-});
+/**
+ * The current: lines down the river, each wavering a little as it comes and
+ * broken into an uneven run of streaks and gaps of its own, brightest and
+ * quickest mid-stream and slack by the banks. Each runs in two stretches, the
+ * far one in short, slow flecks and the near one in longer streaks that come on
+ * faster, as water does coming toward you. Speed is in units a millisecond. From
+ * a stream of numbers of its own, so the rest of the river keeps its shapes.
+ */
+const currentRandom = seeded(0xc0a5e);
+const between = ([lo, hi]: [number, number]) => Math.round(lo + currentRandom() * (hi - lo));
+/** An uneven dash pattern: `count` streaks and gaps, no two alike. */
+const streaks = (count: number, dash: [number, number], gap: [number, number]) =>
+  Array.from({ length: count }, () => `${between(dash)} ${between(gap)}`).join(" ");
+/** A point down the river, `s` of the way from its far end, `across` it from the left bank. */
+const inRiver = (s: number, across: number): Point => {
+  const k = s * (LEFT_BANK.length - 2);
+  const i = Math.min(Math.floor(k), LEFT_BANK.length - 3);
+  const t = k - i;
+  return lerp(lerp(LEFT_BANK[i], LEFT_BANK[i + 1], t), lerp(RIGHT_BANK[i], RIGHT_BANK[i + 1], t), across);
+};
+const RIPPLES = Array.from({ length: 11 }, (_, i) => {
+  const across = 0.05 + (0.9 * i) / 10 + (currentRandom() - 0.5) * 0.04;
+  const mid = 1 - Math.abs(across - 0.5) * 2;
+  // Each line snakes gently as it comes, so its streaks are little curls of
+  // water, not ticks: a few slow bends, a ripple on top of them.
+  const [phase, bends, ripples] = [currentRandom() * 6, 2 + currentRandom() * 1.5, 9 + currentRandom() * 5];
+  const sway = 0.012 + mid * 0.012;
+  const at = (s: number) =>
+    inRiver(s, Math.min(0.98, Math.max(0.02, across + Math.sin(s * bends * Math.PI + phase) * sway + Math.sin(s * ripples * Math.PI + phase * 2) * sway * 0.45)));
+  const course = (from: number, to: number) => {
+    const run = Array.from({ length: 22 }, (_, k): Point => at(from + ((to - from) * k) / 21));
+    return `M${pt(...run[0])}${through(run)}`;
+  };
+  const opacity = 0.35 + mid * 0.4 + currentRandom() * 0.15;
+  const width = 0.9 + mid * 0.6 + currentRandom() * 0.3;
+  const speed = (0.006 + mid * 0.009) * (0.85 + currentRandom() * 0.3);
+  return [
+    { d: course(0, 0.42), dash: streaks(3, [2, 5], [8, 20]), speed, opacity: opacity * 0.8, width: width * 0.8 },
+    { d: course(0.4, 1), dash: streaks(3, [6, 15], [12, 30]), speed: speed * 1.8, opacity, width },
+  ];
+}).flat();
 
 /**
  * Stones where they meet the water or the bank, and their width in vh (or `cap`
@@ -568,6 +597,17 @@ const ROCKS = [
     style: { left, bottom: `calc(${bottom} - ${width} * ${drop})`, width, aspectRatio: `${ROCK_BOX.width} / ${ROCK_BOX.height}` },
   };
 }).filter((rock, i) => i >= FAR_STONES.length || Math.abs(rock.x - VALLEY.width / 2) < 72);
+
+/**
+ * A wake below each stone out in the current: two short lines opening out
+ * downstream from it, as the water parts round it. In the river's units.
+ */
+const WAKES = ROCKS.filter((rock) => rock.wet && rock.y > 90 && rock.x > 280 && rock.x < 800)
+  .map(({ x, y, size }) => {
+    const [w, h] = [size * 3.2, size * 2.6];
+    return `M${pt(x - w * 0.35, y + 1)}Q${pt(x - w * 0.6, y + h * 0.5)} ${pt(x - w, y + h)}M${pt(x + w * 0.35, y + 1)}Q${pt(x + w * 0.6, y + h * 0.5)} ${pt(x + w, y + h)}`;
+  })
+  .join("");
 
 /**
  * The firs on each side, in from the edge by `offset` times their own width so
@@ -722,6 +762,99 @@ const FERNS = [
   ].map(({ x, y, size, cap }) => ({ centered: true, style: { ...riverAt(x, y), ...fernBox(size, cap) } })),
 ].map((spot) => ({ ...spot, fronds: fern(random), sway: swaying(1.2, 2.8 + random() * 0.8, random()), green: pick(greens.fern) }));
 
+/**
+ * Gravel: a bed of smooth, flat river stones covering the ground along both
+ * banks, from the shallows up into the grass, as a river leaves it. One texture
+ * (a tile of stones packed close on a sandy bed) laid over a band along each
+ * bank: the band follows the river (drawn in its stretched units, as a mask),
+ * but the stones are sized in screen units, so they stay round at any width.
+ * In three reaches, the stones coarser the nearer they are, each fading into
+ * the next. Three layers in all, from a stream of numbers of its own.
+ */
+const gravelRandom = seeded(0x67a7e1);
+/** Lit and shaded tones of washed river stone: greys, tans, and a bluish slate. */
+const PEBBLE_TONES = [
+  ["#c4bcaa", "#a59d8b"],
+  ["#b3ad9f", "#948e81"],
+  ["#a9a8a0", "#8b8a83"],
+  ["#c0b39b", "#a1947b"],
+  ["#9fa5a4", "#838988"],
+];
+
+/** The tile: stones packed close on a jittered grid, none crossing its edges, so it repeats without a seam. */
+const GRAVEL_TILE = (() => {
+  const [w, h] = [120, 72];
+  let body = `<rect width="${w}" height="${h}" fill="#9d9483"/>`;
+  let outline = "";
+  let shine = "";
+  const shapes = PEBBLE_TONES.map(() => ({ lit: "", shade: "" }));
+  for (let row = 0; row < 6; row++) {
+    for (let col = 0; col < 6; col++) {
+      const rx = 7 + gravelRandom() * 3.2;
+      const ry = rx * (0.42 + gravelRandom() * 0.14);
+      const x = Math.min(w - rx - 0.8, Math.max(rx + 0.8, (col + 0.5 + (row % 2) * 0.5) * (w / 6.5) + (gravelRandom() - 0.5) * 4));
+      const y = Math.min(h - ry - 0.8, Math.max(ry + 0.8, (row + 0.5) * (h / 6) + (gravelRandom() - 0.5) * 3));
+      const tone = shapes[Math.floor(gravelRandom() * shapes.length)];
+      const [left, right] = [pt(x - rx, y), pt(x + rx, y)];
+      const oval = `M${left}A${num(rx)} ${num(ry)} 0 1 0 ${right}A${num(rx)} ${num(ry)} 0 1 0 ${left}Z`;
+      tone.lit += oval;
+      tone.shade += `M${left}A${num(rx)} ${num(ry)} 0 0 0 ${right}A${num(rx)} ${num(ry * 0.4)} 0 0 1 ${left}Z`;
+      outline += oval;
+      shine += `M${pt(x - rx * 0.55, y - ry * 0.3)}Q${pt(x - rx * 0.2, y - ry * 0.75)} ${pt(x + rx * 0.15, y - ry * 0.68)}`;
+    }
+  }
+  shapes.forEach(({ lit, shade }, i) => {
+    if (lit) body += `<path d="${lit}" fill="${PEBBLE_TONES[i][0]}"/><path d="${shade}" fill="${PEBBLE_TONES[i][1]}"/>`;
+  });
+  body += `<path d="${outline}" fill="none" stroke="#1f2430" stroke-opacity="0.4" stroke-width="0.9"/>`;
+  body += `<path d="${shine}" fill="none" stroke="#fff" stroke-opacity="0.6" stroke-width="1" stroke-linecap="round"/>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${body}</svg>`)}")`;
+})();
+
+/**
+ * The band along each bank, in the river's units widened a tenth either side
+ * (GRAVEL_SPAN), from just into the water up the bank, wider the nearer it is,
+ * with a lumpy edge where it gives way to grass. As a mask for each reach:
+ * `from` and `to` down the valley, soft at both ends so the reaches blend.
+ */
+const GRAVEL_SPAN = { left: -100, width: 1200 };
+function gravelMask(from: number, to: number, widen = 1) {
+  const band = (bank: Point[], out: number) => {
+    const edge = Array.from({ length: 40 }, (_, k) => inRiver(k / 39, out < 0 ? 0 : 1));
+    const water = edge.map(([x, y]): Point => [x - out * 3, y]);
+    const grass = edge.map(([x, y], k): Point => {
+      const reach = (14 + Math.max(0, y - 58) * 1.15) * widen;
+      return [x + out * reach * (0.85 + 0.15 * Math.sin(k * 2.3) + 0.08 * Math.sin(k * 5.1)), y - 0.6];
+    });
+    return `M${pt(...water[0])}${through(water)}L${pt(...grass[grass.length - 1])}${through([...grass].reverse())}Z`;
+  };
+  const shape = band(LEFT_BANK, -1) + band(RIGHT_BANK, 1);
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${GRAVEL_SPAN.left} 0 ${GRAVEL_SPAN.width} ${VALLEY.height + 20}" preserveAspectRatio="none">` +
+    `<defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="0" y1="${from - 6}" x2="0" y2="${to + 6}">` +
+    `<stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="${(6 / (to - from + 12)).toFixed(3)}" stop-color="#fff"/>` +
+    `<stop offset="${(1 - 6 / (to - from + 12)).toFixed(3)}" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>` +
+    `<path d="${shape}" fill="url(#g)"/></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
+
+/** The three reaches: where they run down the valley, and how big a tile of stones is there, in vh. */
+const GRAVEL = [
+  { from: 50, to: 100, tile: 4.6 },
+  { from: 94, to: 150, tile: 8.5 },
+  { from: 144, to: 222, tile: 14 },
+]
+  // On a phone the river's box is squeezed across, so the band's drawn three
+  // times as wide to cover as much ground (.gravel-bed in globals.css).
+  .map(({ from, to, tile }) =>
+    ({
+      backgroundImage: GRAVEL_TILE,
+      backgroundSize: `min(${tile}vh, ${tile * 2}vw) auto`,
+      "--gravel": gravelMask(from, to),
+      "--gravel-narrow": gravelMask(from, to, 3),
+    }) as CSSProperties,
+  );
+
 function FirShape({ tree }: { tree: Tree }) {
   const { needles, barkColors: bark } = tree;
   return (
@@ -751,6 +884,35 @@ function FirShape({ tree }: { tree: Tree }) {
   );
 }
 
+/**
+ * Fiddleheads: young fronds still curled tight at the tip, standing up out of
+ * the front ferns, their coils just like the scroll of a fiddle, which is how
+ * they got the name. A stem rising from the fern's root and a spiral winding in
+ * at its top, in the fern's own green with an ink line, two to a fern. Each
+ * fern's from a stream of numbers of its own, so nothing else moves.
+ */
+function fiddleheads(random: () => number) {
+  return Array.from({ length: 2 }, (_, n) => {
+    const root: Point = [FERN_BOX.width / 2 + (random() - 0.5) * 18, FERN_BOX.height - 2];
+    const height = 30 + random() * 14;
+    const top: Point = [root[0] + (n ? 1 : -1) * (4 + random() * 10), root[1] - height];
+    const dir = top[0] < root[0] ? -1 : 1;
+    const r0 = 4.5 + random() * 2;
+    const centre: Point = [top[0] + dir * r0, top[1]];
+    // Up and over, outward, and winding in to the middle.
+    const coil = Array.from({ length: 14 }, (_, k): Point => {
+      const turn = (k / 13) * 2.4 * Math.PI;
+      const r = r0 * (1 - turn / (2.7 * Math.PI));
+      const angle = dir > 0 ? Math.PI + turn : -turn;
+      return [centre[0] + Math.cos(angle) * r, centre[1] + Math.sin(angle) * r];
+    });
+    const stem = `M${pt(...root)}Q${pt(root[0] + (top[0] - root[0]) * 0.2, root[1] - height * 0.6)} ${pt(...top)}`;
+    return `${stem}${through([top, ...coil.slice(1)])}`;
+  });
+}
+
+const FIDDLEHEADS = FERNS.map((fern, i) => (fern.centered ? [] : fiddleheads(seeded(0xf1dd1e + i))));
+
 function FernShape({ index }: { index: number }) {
   const fern = FERNS[index];
   // Centred by a box of its own, swaying in another: a translate and the sway's
@@ -766,6 +928,12 @@ function FernShape({ index }: { index: number }) {
             <Fragment key={i}>
               <path d={frond.leaf} fill={fern.green} {...ink} strokeOpacity={0.4} />
               <path d={frond.rib} {...line} stroke={paint.fernRib} strokeWidth={1.2} />
+            </Fragment>
+          ))}
+          {FIDDLEHEADS[index].map((d, i) => (
+            <Fragment key={`f${i}`}>
+              <path d={d} {...line} strokeWidth={3.6} strokeOpacity={0.7} />
+              <path d={d} {...line} stroke={fern.green} strokeWidth={2} />
             </Fragment>
           ))}
         </svg>
@@ -1345,6 +1513,73 @@ function Salmon() {
 }
 
 /**
+ * A varied thrush, the Northwest's own songbird, slate blue with an orange
+ * breast and eyebrow, perched on a big mossy boulder by the left bank and
+ * singing, beak open, its notes drifting up and away one after another
+ * (.song-note in globals.css). Only where they are and how faint they are
+ * changes, so they cost nothing to run; with reduced motion there are none.
+ */
+const PERCH = ROCKS.find((rock) => rock.x === 130 && rock.y === 134)!;
+/** How high the boulder's top is in its box (ROCK_BOX), read off its own outline, so the bird stands on it. */
+const PERCH_PEAK = Math.min(...PERCH.outline.match(/-?[\d.]+/g)!.map(Number).filter((_, i) => i % 2 === 1));
+// The outline's highest numbers are its corners, which the curve only reaches
+// toward, so its true top is a little below them.
+const PERCH_TOP = PERCH_PEAK + (WATERLINE - PERCH_PEAK) * 0.3;
+const thrushInk = { ...ink, strokeWidth: 1.3 } as const;
+
+function ThrushShape() {
+  return (
+    <svg viewBox="0 0 60 44" className="h-full w-full overflow-visible">
+      <path d="M26 37L25 42M31 37L31 42" {...line} strokeWidth={1.2} />
+      <path d="M10 26L0 29L2 34L13 30Z" fill="#33404f" {...thrushInk} />
+      <path d="M10 28Q14 16 30 16Q44 16 46 26Q44 36 28 37Q16 37 10 28Z" fill="#3d4b5e" {...thrushInk} />
+      <path d="M30 18Q44 18 46 27Q44 35 30 36Q36 28 30 18Z" fill="#e0872f" />
+      <path d="M38 19Q41 26 37 34" {...line} stroke="#263040" strokeWidth={2.2} />
+      <path d="M18 22Q28 20 36 26Q28 30 18 28Z" fill="#33404f" {...thrushInk} />
+      <path d="M21 24L30 25.5M22 27L31 28.5" {...line} stroke="#e0872f" strokeWidth={1.4} />
+      <circle cx="44" cy="15" r="8" fill="#3d4b5e" {...thrushInk} />
+      <path d="M38.5 11.5Q45 7.5 51.5 12" {...line} stroke="#e0872f" strokeWidth={2} />
+      <path d="M51 13L58.5 10.5L52 15.2Z" fill="#2b2b2b" {...thrushInk} strokeWidth={1} />
+      <path d="M52 16.2L57.5 19.5L51 17.6Z" fill="#2b2b2b" {...thrushInk} strokeWidth={1} />
+      <path d="M44 20Q48 21.5 51 17.8" {...line} stroke="#e0872f" strokeWidth={1.8} />
+      <circle cx="47" cy="14" r="1.3" fill="var(--color-ink-fixed)" />
+    </svg>
+  );
+}
+
+/** An eighth note, and a pair beamed together, in the sky's notes' periwinkle. */
+const NOTES = [
+  "M6 15.5a3.2 2.4 -20 1 1 -6.4 0a3.2 2.4 -20 1 1 6.4 0ZM6 15V2q4 2 5.5 6",
+  "M5 16.5a3 2.2 -20 1 1 -6 0a3 2.2 -20 1 1 6 0ZM14 14.5a3 2.2 -20 1 1 -6 0a3 2.2 -20 1 1 6 0ZM5 16V4l9 -2v12.5M5 4l9 -2",
+];
+
+function Thrush() {
+  const { left, bottom } = riverAt(PERCH.x, PERCH.y);
+  const width = `min(${PERCH.size}vh, ${PERCH.size * 2}vw)`;
+  return (
+    <div
+      className="absolute -translate-x-1/2"
+      // Its feet (at 42 of its 44) on the stone's top, a little in from its middle.
+      style={{
+        left: `calc(${left} - ${width} * 0.04)`,
+        bottom: `calc(${bottom} - ${width} * ${((ROCK_BOX.height - WATERLINE) / ROCK_BOX.width).toFixed(3)} + ${width} * ${((ROCK_BOX.height - PERCH_TOP) / ROCK_BOX.width - 0.02).toFixed(3)} - ${width} * 0.72 * ${(2 / 60).toFixed(3)})`,
+        width: `calc(${width} * 0.72)`,
+        aspectRatio: "60 / 44",
+      }}
+    >
+      <ThrushShape />
+      {[0, 1, 2].map((i) => (
+        <span key={i} className="song-note" style={{ "--note-delay": `${i * -1.6}s` } as CSSProperties}>
+          <svg viewBox="-4 -1 20 22" className="h-full w-full overflow-visible">
+            <path d={NOTES[i % 2]} fill="var(--color-periwinkle-600)" stroke="var(--color-periwinkle-600)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/**
  * Swimmers crossing the river, a nod to Oregon's two big universities: a pair of
  * mallards with their ducklings paddling along behind, and a beaver with its head
  * and back out of the water and a wake fanning out behind it. Like the things in
@@ -1820,6 +2055,7 @@ export function Scenery() {
         {/* The ripples are a drawing of their own on a layer of its own, so that as
             they run, they're all that's redrawn, not the valley round them. */}
         <svg viewBox={`0 0 ${VALLEY.width} ${VALLEY.height}`} preserveAspectRatio="none" className={`${riverBox} will-change-transform`}>
+          <path d={WAKES} {...line} stroke={paint.foam} strokeOpacity={0.55} strokeWidth={1.2} />
           {RIPPLES.map((ripple, i) => (
             <path
               key={i}
@@ -1830,10 +2066,20 @@ export function Scenery() {
               d={ripple.d}
               {...line}
               stroke={paint.foam}
+              strokeOpacity={ripple.opacity}
+              strokeWidth={ripple.width}
               strokeDasharray={ripple.dash}
             />
           ))}
         </svg>
+        {/* The gravel beds, over the bank and the river's edge, under the stones. In
+            the river's box, a tenth wider either side, and as far below as the
+            river reaches. */}
+        <div className={riverBox}>
+          {GRAVEL.map((style, i) => (
+            <div key={i} className="gravel-bed absolute -inset-x-[10%] top-0 h-[110%]" style={style} />
+          ))}
+        </div>
         {/* Further up the valley is further off: the rocks beyond each swimmer go
             behind it, the nearer ones in front. */}
         {ROCKS.map((rock, i) => (rock.y <= SWIMMERS[0].y ? <RockShape key={i} rock={rock} /> : null))}
@@ -1841,6 +2087,7 @@ export function Scenery() {
         {ROCKS.map((rock, i) => (rock.y > SWIMMERS[0].y && rock.y <= SWIMMERS[1].y ? <RockShape key={i} rock={rock} /> : null))}
         <Swimmer index={1} />
         {ROCKS.map((rock, i) => (rock.y > SWIMMERS[1].y ? <RockShape key={i} rock={rock} /> : null))}
+        <Thrush />
         {FERNS.map((fern, i) => (fern.centered ? <FernShape key={i} index={i} /> : null))}
         {MID_WOODS.map((tree, i) => (
           <FirShape key={i} tree={tree} />
